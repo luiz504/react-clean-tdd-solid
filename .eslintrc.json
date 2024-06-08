@@ -1,5 +1,8 @@
 {
-  "extends": ["next/core-web-vitals", "plugin:vitest/legacy-recommended"],
+  "extends": [
+    "@rocketseat/eslint-config/react",
+    "plugin:vitest/legacy-recommended"
+  ],
   "overrides": [
     {
       // 3) Now we enable eslint-plugin-testing-library rules or preset only for matching testing files!
@@ -18,7 +21,13 @@
   "rules": {
     "no-console": "warn",
     "camelcase": "off",
-    "react/self-closing-comp": ["error"],
+    "react/self-closing-comp": [
+      "error",
+      {
+        "component": true,
+        "html": true
+      }
+    ],
     "react/jsx-curly-brace-presence": ["error", { "props": "never" }],
     "@typescript-eslint/no-explicit-any": "off",
     "no-useless-constructor": "off"
