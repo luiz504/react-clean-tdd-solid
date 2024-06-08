@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker'
 import { AxiosHttpAdapter } from './axios-adapter'
 import axios from 'axios'
 import { Mocked } from 'vitest'
+import { HttpPostParams } from '~/data/protocols/http'
 
 vi.mock('axios')
 const mockedAxios = axios as Mocked<typeof axios>
@@ -11,12 +12,16 @@ const makeSut = () => {
   return { sut }
 }
 
-describe('AxiosHttpAdapter', () => {
-  it('Should call axios with correct URL and verb', () => {
-    const url = faker.internet.url()
-    const { sut } = makeSut()
+const mockPostRequest = (): HttpPostParams<any> => ({
+  url: faker.internet.url(),
+  body: faker.finance.currency(),
+})
 
-    sut.post({ url })
-    expect(mockedAxios.post).toHaveBeenCalledWith(url)
+describe('AxiosHttpAdapter', () => {
+  it('Should call axios with correct values', () => {
+    const { sut } = makeSut()
+    const request = mockPostRequest()
+    sut.post(request)
+    expect(mockedAxios.post).toHaveBeenCalledWith(request.url, request.body)
   })
 })
