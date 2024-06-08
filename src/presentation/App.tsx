@@ -14,7 +14,7 @@ export function App() {
           <img src={reactLogo} alt="React logo" />
         </a>
       </div>
-      <h1>Vite + React</h1>
+      <h1 className="font-roboto">Vite + React</h1>
       <div className="bg-red-400">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
