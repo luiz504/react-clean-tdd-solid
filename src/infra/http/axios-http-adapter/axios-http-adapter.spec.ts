@@ -12,7 +12,7 @@ const makeSut = () => {
 }
 
 describe('AxiosHttpAdapter', () => {
-  it('Should call axios with correct URL', () => {
+  it('Should call axios with correct URL and verb', () => {
     const url = faker.internet.url()
     const { sut } = makeSut()
 
