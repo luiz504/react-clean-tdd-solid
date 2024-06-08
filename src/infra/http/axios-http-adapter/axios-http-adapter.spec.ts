@@ -6,10 +6,15 @@ import { Mocked } from 'vitest'
 vi.mock('axios')
 const mockedAxios = axios as Mocked<typeof axios>
 
+const makeSut = () => {
+  const sut = new AxiosHttpAdapter()
+  return { sut }
+}
+
 describe('AxiosHttpAdapter', () => {
   it('Should call axios with correct URL', () => {
     const url = faker.internet.url()
-    const sut = new AxiosHttpAdapter()
+    const { sut } = makeSut()
 
     sut.post({ url })
     expect(mockedAxios.post).toHaveBeenCalledWith(url)
