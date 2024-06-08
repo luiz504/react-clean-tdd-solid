@@ -1,33 +1,24 @@
 import { faker } from '@faker-js/faker'
+
+import { mockPostRequest } from '~/data/__test__'
+
+import { mockAxios } from '~/infra/__test__'
+
 import { AxiosHttpAdapter } from './axios-adapter'
-import axios from 'axios'
-import { Mocked } from 'vitest'
-import { HttpPostParams } from '~/data/protocols/http'
 
 vi.mock('axios')
-const mockedAxios = axios as Mocked<typeof axios>
 
 const makeSut = () => {
   const sut = new AxiosHttpAdapter()
-  return { sut }
+  const { mockedAxios } = mockAxios()
+
+  return { sut, mockedAxios }
 }
 
-const mockPostRequest = (): HttpPostParams<any> => ({
-  url: faker.internet.url(),
-  body: faker.finance.currency(),
-})
-
 describe('AxiosHttpAdapter', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
   it('Should call axios with correct values', () => {
-    const mockedAxiosResult = {
-      status: faker.number.int(),
-      data: faker.finance.currency(),
-    }
-    mockedAxios.post.mockResolvedValue(mockedAxiosResult)
-    const { sut } = makeSut()
+    const { sut, mockedAxios } = makeSut()
+
     const request = mockPostRequest()
     sut.post(request)
     expect(mockedAxios.post).toHaveBeenCalledWith(request.url, request.body)
@@ -38,8 +29,9 @@ describe('AxiosHttpAdapter', () => {
       status: faker.number.int(),
       data: faker.finance.currency(),
     }
+    const { sut, mockedAxios } = makeSut()
     mockedAxios.post.mockResolvedValue(mockedAxiosResult)
-    const { sut } = makeSut()
+
     const httpResponse = await sut.post(mockPostRequest())
 
     expect(httpResponse).toEqual({
