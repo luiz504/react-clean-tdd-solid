@@ -24,8 +24,13 @@ export const SignIn: FC<Props> = ({ validation }) => {
   const { submitError, isSubmitting, emailError, passwordError } = formValue
 
   const handleChange = (fieldName: 'email' | 'password', value: string) => {
-    validation.validate(fieldName, value)
-    setFormValue((old) => ({ ...old, [fieldName]: value }))
+    const error = validation.validate(fieldName, value)
+
+    setFormValue((old) => ({
+      ...old,
+      [fieldName]: value,
+      [`${fieldName}Error`]: error,
+    }))
   }
 
   return (
