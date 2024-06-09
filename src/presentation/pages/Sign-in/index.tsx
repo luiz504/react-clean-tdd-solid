@@ -1,7 +1,10 @@
 import { FC } from 'react'
+import { cn } from '~/presentation/utils/cn'
+
 import { Input } from '~/presentation/components/Input'
 import { Spinner } from '~/presentation/components/Spinner'
-import { cn } from '~/presentation/utils/cn'
+import { Footer } from '~/presentation/components/Footer'
+
 import { Header } from './components/Header'
 
 export const SignIn: FC = () => {
@@ -61,7 +64,7 @@ export const SignIn: FC = () => {
           </div>
         </form>
       </main>
-      <footer className="h-12 bg-primary" />
+      <Footer />
     </>
   )
 }
