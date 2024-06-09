@@ -58,4 +58,17 @@ describe('Page: Sing-in', () => {
     expect(validationSpy.fieldName).toEqual('password')
     expect(validationSpy.fieldValue).toEqual(passwordValue)
   })
+
+  it('should show email error if validation fails', async () => {
+    const { validationSpy } = makeSut()
+    const errorMsg = faker.string.sample()
+    validationSpy.errorMessage = errorMsg
+    const emailInput = screen.getByTestId('email-input')
+
+    fireEvent.input(emailInput, { target: { value: faker.internet.email() } })
+
+    const emailError = await screen.findByTestId('email-error')
+
+    expect(emailError).toHaveTextContent(errorMsg)
+  })
 })
