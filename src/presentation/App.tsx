@@ -1,5 +1,5 @@
-import { SignIn } from './pages/Sign-in'
+import { Router } from './router'
 
 export function App() {
-  return <SignIn />
+  return <Router />
 }
