@@ -2,13 +2,13 @@ import { FC } from 'react'
 import { cn } from '~/presentation/utils/cn'
 
 import { Input } from '~/presentation/components/Input'
-import { Spinner } from '~/presentation/components/Spinner'
 import { Footer } from '~/presentation/components/Footer'
 
-import { Header } from './components/Header'
+import { Header, FormStatus } from './components'
 
 export const SignIn: FC = () => {
   const error = 'Invalid credentials'
+  const loading = true
   return (
     <>
       <Header />
@@ -58,12 +58,10 @@ export const SignIn: FC = () => {
             Sign Up
           </a>
 
-          <div className="flex flex-col items-center">
-            <Spinner className="mt-8" />
-            <span className="mt-8 text-sm text-primary-light">{error}</span>
-          </div>
+          <FormStatus error={error} loading={loading} />
         </form>
       </main>
+
       <Footer />
     </>
   )
