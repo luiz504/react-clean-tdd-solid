@@ -44,6 +44,14 @@ export const SignIn: FC<Props> = ({ validation }) => {
       },
     }))
   }
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    setFormValue((old) => ({
+      ...old,
+      isSubmitting: true,
+    }))
+  }
 
   return (
     <>
@@ -56,6 +64,7 @@ export const SignIn: FC<Props> = ({ validation }) => {
             'mt-[10%] p-10',
             'rounded-lg bg-white shadow-md',
           )}
+          onSubmit={handleSubmit}
         >
           <h2 className="text-center text-xl font-bold uppercase text-primary-dark">
             Sign In
@@ -85,6 +94,7 @@ export const SignIn: FC<Props> = ({ validation }) => {
           </Input>
 
           <button
+            data-testid="submit-button"
             type="submit"
             className={cn([
               'mt-8 w-full',

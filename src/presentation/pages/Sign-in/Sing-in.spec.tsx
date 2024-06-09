@@ -90,4 +90,23 @@ describe('Page: Sing-in', () => {
 
     expect(passwordError).toHaveTextContent(errorMsg)
   })
+
+  it('should show spinner on submit', async () => {
+    makeSut()
+
+    const emailInput = screen.getByTestId('email-input')
+    const passwordInput = screen.getByTestId('pw-input')
+
+    fireEvent.input(emailInput, { target: { value: faker.internet.email() } })
+    fireEvent.input(passwordInput, {
+      target: { value: faker.internet.password() },
+    })
+
+    const submitButton = screen.getByTestId('submit-button')
+
+    fireEvent.click(submitButton)
+
+    const spinner = await screen.findByTestId('form-status-spinner')
+    expect(spinner).toBeInTheDocument()
+  })
 })
