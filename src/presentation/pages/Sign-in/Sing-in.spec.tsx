@@ -5,8 +5,12 @@ import { ValidationStub } from '~/presentation/__test__'
 
 import { SignIn } from '.'
 
-const makeSut = () => {
+type SutParams = {
+  validationError?: string
+}
+const makeSut = (params?: SutParams) => {
   const validationStub = new ValidationStub()
+  validationStub.errorMessage = params?.validationError
   render(<SignIn validation={validationStub} />)
 
   return { validationStub }
@@ -60,9 +64,9 @@ describe('Page: Sing-in', () => {
   })
 
   it('should show email error if validation fails', async () => {
-    const { validationStub } = makeSut()
     const errorMsg = faker.string.sample()
-    validationStub.errorMessage = errorMsg
+    makeSut({ validationError: errorMsg })
+
     const emailInput = screen.getByTestId('email-input')
 
     fireEvent.input(emailInput, { target: { value: faker.internet.email() } })
@@ -70,5 +74,20 @@ describe('Page: Sing-in', () => {
     const emailError = await screen.findByTestId('email-error')
 
     expect(emailError).toHaveTextContent(errorMsg)
+  })
+
+  it('should show password error if validation fails', async () => {
+    const errorMsg = faker.string.sample()
+    makeSut({ validationError: errorMsg })
+
+    const passwordInput = screen.getByTestId('pw-input')
+
+    fireEvent.input(passwordInput, {
+      target: { value: faker.internet.password() },
+    })
+
+    const passwordError = await screen.findByTestId('pw-error')
+
+    expect(passwordError).toHaveTextContent(errorMsg)
   })
 })
