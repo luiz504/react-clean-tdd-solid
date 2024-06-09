@@ -1,22 +1,35 @@
-import { FC, useState } from 'react'
+import { FC, useEffect, useRef, useState } from 'react'
 import { cn } from '~/presentation/utils/cn'
 
 import { Input } from '~/presentation/components/Input'
 import { Footer } from '~/presentation/components/Footer'
 
 import { Header, FormStatus } from './components'
+import { Validation } from '~/presentation/protocols/validation'
 
-export const SignIn: FC = () => {
-  const [
-    formValue,
-    //  setFormValue
-  ] = useState({
+type Props = {
+  validation: Validation
+}
+export const SignIn: FC<Props> = ({ validation }) => {
+  const emailInputRef = useRef<HTMLInputElement>(null)
+  const pwInputRef = useRef<HTMLInputElement>(null)
+  const [formValue, setFormValue] = useState({
     isSubmitting: false,
     submitError: '',
+    email: '',
     emailError: '',
-    pwError: '',
+    password: '',
+    passwordError: '',
   })
-  const { submitError, isSubmitting, emailError, pwError } = formValue
+  const { submitError, isSubmitting, emailError, passwordError } = formValue
+
+  const handleChange = (id: 'email' | 'password', value: string) => {
+    setFormValue((old) => ({ ...old, [id]: value }))
+  }
+
+  useEffect(() => {
+    validation?.validate({ email: formValue.email })
+  }, [formValue.email, validation])
 
   return (
     <>
@@ -36,9 +49,11 @@ export const SignIn: FC = () => {
           <Input>
             <Input.InputField
               data-testid="email-input"
+              ref={emailInputRef}
               type="email"
               name="email"
               placeholder="Email"
+              onChange={({ target }) => handleChange('email', target.value)}
             />
             <Input.Error data-testid="email-error" error={emailError} />
           </Input>
@@ -46,11 +61,13 @@ export const SignIn: FC = () => {
           <Input>
             <Input.InputField
               data-testid="pw-input"
+              ref={pwInputRef}
               type="password"
               name="password"
               placeholder="Password"
+              onChange={({ target }) => handleChange('password', target.value)}
             />
-            <Input.Error data-testid="pw-error" error={pwError} />
+            <Input.Error data-testid="pw-error" error={passwordError} />
           </Input>
 
           <button
