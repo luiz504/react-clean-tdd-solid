@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from 'react'
+import { FC, useRef, useState } from 'react'
 import { cn } from '~/presentation/utils/cn'
 
 import { Input } from '~/presentation/components/Input'
@@ -24,12 +24,9 @@ export const SignIn: FC<Props> = ({ validation }) => {
   const { submitError, isSubmitting, emailError, passwordError } = formValue
 
   const handleChange = (id: 'email' | 'password', value: string) => {
+    validation.validate({ [id]: value })
     setFormValue((old) => ({ ...old, [id]: value }))
   }
-
-  useEffect(() => {
-    validation?.validate({ email: formValue.email })
-  }, [formValue.email, validation])
 
   return (
     <>
