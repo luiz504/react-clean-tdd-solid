@@ -4,10 +4,12 @@ import { Validation } from '~/presentation/protocols/validation'
 
 class ValidationSpy implements Validation {
   errorMessage?: string = undefined
-  input: object = {}
+  fieldName?: string = undefined
+  fieldValue?: string = undefined
 
-  validate(input: object): string {
-    this.input = input
+  validate(fieldName: string, FieldValue: string): string | undefined {
+    this.fieldName = fieldName
+    this.fieldValue = FieldValue
     return this.errorMessage
   }
 }
@@ -41,11 +43,21 @@ describe('Page: Sing-in', () => {
     expect(link).toHaveAttribute('href', '/sign-up')
   })
 
-  it('should call validation with correct input value', () => {
+  it('should call validation with correct email value', () => {
     const { validationSpy } = makeSut()
     const emailInput = screen.getByTestId('email-input')
 
     fireEvent.input(emailInput, { target: { value: 'any_email' } })
-    expect(validationSpy.input).toEqual({ email: 'any_email' })
+    expect(validationSpy.fieldName).toEqual('email')
+    expect(validationSpy.fieldValue).toEqual('any_email')
+  })
+
+  it('should call validation with correct password value', () => {
+    const { validationSpy } = makeSut()
+    const passwordInput = screen.getByTestId('pw-input')
+
+    fireEvent.input(passwordInput, { target: { value: 'any_password' } })
+    expect(validationSpy.fieldName).toEqual('password')
+    expect(validationSpy.fieldValue).toEqual('any_password')
   })
 })
