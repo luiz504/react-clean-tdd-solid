@@ -30,6 +30,6 @@
       "public/*": ["./public/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "vitest.setup.mts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
