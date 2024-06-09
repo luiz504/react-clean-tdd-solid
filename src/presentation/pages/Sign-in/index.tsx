@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { cn } from '~/presentation/utils/cn'
 
 import { Input } from '~/presentation/components/Input'
@@ -7,8 +7,17 @@ import { Footer } from '~/presentation/components/Footer'
 import { Header, FormStatus } from './components'
 
 export const SignIn: FC = () => {
-  const error = 'Invalid credentials'
-  const loading = true
+  const [
+    formValue,
+    //  setFormValue
+  ] = useState({
+    isSubmitting: false,
+    submitError: '',
+    emailError: '',
+    pwError: '',
+  })
+  const { submitError, isSubmitting, emailError, pwError } = formValue
+
   return (
     <>
       <Header />
@@ -25,17 +34,23 @@ export const SignIn: FC = () => {
             Sign In
           </h2>
           <Input>
-            <Input.InputField type="email" name="email" placeholder="Email" />
-            <Input.Error error="Invalid email" />
+            <Input.InputField
+              data-testid="email-input"
+              type="email"
+              name="email"
+              placeholder="Email"
+            />
+            <Input.Error data-testid="email-error" error={emailError} />
           </Input>
 
           <Input>
             <Input.InputField
+              data-testid="pw-input"
               type="password"
               name="password"
               placeholder="Password"
             />
-            <Input.Error error="Invalid password" />
+            <Input.Error data-testid="pw-error" error={pwError} />
           </Input>
 
           <button
@@ -52,13 +67,14 @@ export const SignIn: FC = () => {
           </button>
 
           <a
+            data-testid="sign-up-link"
             href="/sign-up"
             className="mt-4 text-center lowercase text-primary hover:underline"
           >
             Sign Up
           </a>
 
-          <FormStatus error={error} loading={loading} />
+          <FormStatus error={submitError} isLoading={isSubmitting} />
         </form>
       </main>
 
