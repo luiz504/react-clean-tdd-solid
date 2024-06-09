@@ -1,24 +1,17 @@
 import { fireEvent, render, screen } from '@testing-library/react'
+import { faker } from '@faker-js/faker'
+
+import { ValidationSpy } from '~/presentation/__test__'
+
 import { SignIn } from '.'
-import { Validation } from '~/presentation/protocols/validation'
 
-class ValidationSpy implements Validation {
-  errorMessage?: string = undefined
-  fieldName?: string = undefined
-  fieldValue?: string = undefined
-
-  validate(fieldName: string, FieldValue: string): string | undefined {
-    this.fieldName = fieldName
-    this.fieldValue = FieldValue
-    return this.errorMessage
-  }
-}
 const makeSut = () => {
   const validationSpy = new ValidationSpy()
   render(<SignIn validation={validationSpy} />)
 
   return { validationSpy }
 }
+
 describe('Page: Sing-in', () => {
   it('should render correctly with initial state', () => {
     makeSut()
@@ -45,19 +38,24 @@ describe('Page: Sing-in', () => {
 
   it('should call validation with correct email value', () => {
     const { validationSpy } = makeSut()
+
     const emailInput = screen.getByTestId('email-input')
 
-    fireEvent.input(emailInput, { target: { value: 'any_email' } })
+    const emailValue = faker.internet.email()
+    fireEvent.input(emailInput, { target: { value: emailValue } })
     expect(validationSpy.fieldName).toEqual('email')
-    expect(validationSpy.fieldValue).toEqual('any_email')
+    expect(validationSpy.fieldValue).toEqual(emailValue)
   })
 
   it('should call validation with correct password value', () => {
     const { validationSpy } = makeSut()
+
     const passwordInput = screen.getByTestId('pw-input')
 
-    fireEvent.input(passwordInput, { target: { value: 'any_password' } })
+    const passwordValue = faker.internet.password()
+
+    fireEvent.input(passwordInput, { target: { value: passwordValue } })
     expect(validationSpy.fieldName).toEqual('password')
-    expect(validationSpy.fieldValue).toEqual('any_password')
+    expect(validationSpy.fieldValue).toEqual(passwordValue)
   })
 })
