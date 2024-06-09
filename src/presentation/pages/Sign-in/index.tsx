@@ -10,26 +10,38 @@ import { Validation } from '~/presentation/protocols/validation'
 type Props = {
   validation: Validation
 }
+type Field = {
+  error?: string
+}
+type FormType = {
+  email: Field
+  password: Field
+  submitError?: string
+  isSubmitting: boolean
+}
 export const SignIn: FC<Props> = ({ validation }) => {
   const emailInputRef = useRef<HTMLInputElement>(null)
   const pwInputRef = useRef<HTMLInputElement>(null)
-  const [formValue, setFormValue] = useState({
+  const [formValue, setFormValue] = useState<FormType>({
     isSubmitting: false,
-    submitError: '',
-    email: '',
-    emailError: '',
-    password: '',
-    passwordError: '',
+    submitError: undefined,
+    email: {
+      error: undefined,
+    },
+    password: {
+      error: undefined,
+    },
   })
-  const { submitError, isSubmitting, emailError, passwordError } = formValue
+  const { submitError, isSubmitting, email, password } = formValue
 
   const handleChange = (fieldName: 'email' | 'password', value: string) => {
     const error = validation.validate(fieldName, value)
 
     setFormValue((old) => ({
       ...old,
-      [fieldName]: value,
-      [`${fieldName}Error`]: error,
+      [fieldName]: {
+        error,
+      },
     }))
   }
 
@@ -57,7 +69,7 @@ export const SignIn: FC<Props> = ({ validation }) => {
               placeholder="Email"
               onChange={({ target }) => handleChange('email', target.value)}
             />
-            <Input.Error data-testid="email-error" error={emailError} />
+            <Input.Error data-testid="email-error" error={email.error} />
           </Input>
 
           <Input>
@@ -69,7 +81,7 @@ export const SignIn: FC<Props> = ({ validation }) => {
               placeholder="Password"
               onChange={({ target }) => handleChange('password', target.value)}
             />
-            <Input.Error data-testid="pw-error" error={passwordError} />
+            <Input.Error data-testid="pw-error" error={password.error} />
           </Input>
 
           <button

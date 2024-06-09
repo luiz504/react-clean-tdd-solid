@@ -1,7 +1,7 @@
 import { Validation } from '../protocols/validation'
 
-export class ValidationSpy implements Validation {
-  errorMessage?: string = undefined
+export class ValidationStub implements Validation {
+  errorMessage: string | undefined = undefined
   fieldName?: string = undefined
   fieldValue?: string = undefined
 

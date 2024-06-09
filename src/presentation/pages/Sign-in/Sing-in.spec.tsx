@@ -1,15 +1,15 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { faker } from '@faker-js/faker'
 
-import { ValidationSpy } from '~/presentation/__test__'
+import { ValidationStub } from '~/presentation/__test__'
 
 import { SignIn } from '.'
 
 const makeSut = () => {
-  const validationSpy = new ValidationSpy()
-  render(<SignIn validation={validationSpy} />)
+  const validationStub = new ValidationStub()
+  render(<SignIn validation={validationStub} />)
 
-  return { validationSpy }
+  return { validationStub }
 }
 
 describe('Page: Sing-in', () => {
@@ -37,32 +37,32 @@ describe('Page: Sing-in', () => {
   })
 
   it('should call validation with correct email value', () => {
-    const { validationSpy } = makeSut()
+    const { validationStub } = makeSut()
 
     const emailInput = screen.getByTestId('email-input')
 
     const emailValue = faker.internet.email()
     fireEvent.input(emailInput, { target: { value: emailValue } })
-    expect(validationSpy.fieldName).toEqual('email')
-    expect(validationSpy.fieldValue).toEqual(emailValue)
+    expect(validationStub.fieldName).toEqual('email')
+    expect(validationStub.fieldValue).toEqual(emailValue)
   })
 
   it('should call validation with correct password value', () => {
-    const { validationSpy } = makeSut()
+    const { validationStub } = makeSut()
 
     const passwordInput = screen.getByTestId('pw-input')
 
     const passwordValue = faker.internet.password()
 
     fireEvent.input(passwordInput, { target: { value: passwordValue } })
-    expect(validationSpy.fieldName).toEqual('password')
-    expect(validationSpy.fieldValue).toEqual(passwordValue)
+    expect(validationStub.fieldName).toEqual('password')
+    expect(validationStub.fieldValue).toEqual(passwordValue)
   })
 
   it('should show email error if validation fails', async () => {
-    const { validationSpy } = makeSut()
+    const { validationStub } = makeSut()
     const errorMsg = faker.string.sample()
-    validationSpy.errorMessage = errorMsg
+    validationStub.errorMessage = errorMsg
     const emailInput = screen.getByTestId('email-input')
 
     fireEvent.input(emailInput, { target: { value: faker.internet.email() } })
