@@ -2,23 +2,13 @@ import { FC } from 'react'
 import { Input } from '~/presentation/components/Input'
 import { Spinner } from '~/presentation/components/Spinner'
 import { cn } from '~/presentation/utils/cn'
+import { Header } from './components/Header'
 
 export const SignIn: FC = () => {
   const error = 'Invalid credentials'
   return (
     <>
-      <header
-        className={cn(
-          'flex flex-col items-center px-4 py-10',
-          'bg-gradient-to-b from-primary-dark to-primary',
-        )}
-      >
-        <img className="h-[87px]" src="/logo.svg" alt="logo" />
-
-        <h1 className="mt-4 text-sm font-bold text-white">
-          4Dev - Polls for programmers
-        </h1>
-      </header>
+      <Header />
 
       <main className="flex flex-1 flex-col items-center px-4">
         <form
