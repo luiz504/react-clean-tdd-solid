@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { faker } from '@faker-js/faker'
+import { MemoryRouter } from 'react-router-dom'
 
 import { AuthenticationSpy, ValidationStub } from '~/presentation/__test__'
 
@@ -9,12 +10,15 @@ import { InvalidCredentialsError } from '~/domain/errors'
 type SutParams = {
   validationError?: string
 }
+
 const makeSut = (params?: SutParams) => {
   const validationStub = new ValidationStub()
   const authenticationSpy = new AuthenticationSpy()
   validationStub.errorMessage = params?.validationError
   render(
-    <SignIn validation={validationStub} authentication={authenticationSpy} />,
+    <MemoryRouter>
+      <SignIn validation={validationStub} authentication={authenticationSpy} />,
+    </MemoryRouter>,
   )
 
   return { authenticationSpy, validationStub }
@@ -148,6 +152,7 @@ describe('Page: Sing-in', () => {
 
     expect(authenticationSpy.callsCount).toBe(1)
   })
+
   it('should not call authentication if form is invalid', async () => {
     const { authenticationSpy } = makeSut({
       validationError: faker.lorem.sentence(),
@@ -169,6 +174,7 @@ describe('Page: Sing-in', () => {
     expect(formStatusError).toBeInTheDocument()
     expect(formStatusError).toHaveTextContent(error.message)
   })
+
   it('should clear error on next submit', async () => {
     const error = new InvalidCredentialsError()
     vi.spyOn(AuthenticationSpy.prototype, 'auth').mockRejectedValueOnce(error)
@@ -183,6 +189,7 @@ describe('Page: Sing-in', () => {
 
     expect(formStatusError).not.toBeInTheDocument()
   })
+
   it('should add accessToken to the localStorage on Authentication success', async () => {
     const { authenticationSpy } = makeSut()
     simulateValidSubmit()

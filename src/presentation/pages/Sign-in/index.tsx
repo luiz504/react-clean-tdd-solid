@@ -1,5 +1,6 @@
 import { FC, useRef, useState } from 'react'
 import { cn } from '~/presentation/utils/cn'
+import { Link } from 'react-router-dom'
 
 import { Input } from '~/presentation/components/Input'
 import { Footer } from '~/presentation/components/Footer'
@@ -138,13 +139,13 @@ export const SignIn: FC<Props> = ({ validation, authentication }) => {
             Enter
           </button>
 
-          <a
+          <Link
             data-testid="sign-up-link"
-            href="/sign-up"
+            to="/sign-up"
             className="mt-4 text-center lowercase text-primary hover:underline"
           >
             Sign Up
-          </a>
+          </Link>
 
           <FormStatus error={submitError} isLoading={isSubmitting} />
         </form>
