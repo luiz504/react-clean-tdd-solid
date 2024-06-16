@@ -6,11 +6,14 @@ import { Footer } from '~/presentation/components/Footer'
 
 import { Header, FormStatus } from './components'
 import { Validation } from '~/presentation/protocols/validation'
+import { Authentication } from '~/domain/use-cases'
 
 type Props = {
   validation: Validation
+  authentication: Authentication
 }
 type Field = {
+  value: string
   error?: string
 }
 type FormType = {
@@ -19,16 +22,18 @@ type FormType = {
   submitError?: string
   isSubmitting: boolean
 }
-export const SignIn: FC<Props> = ({ validation }) => {
+export const SignIn: FC<Props> = ({ validation, authentication }) => {
   const emailInputRef = useRef<HTMLInputElement>(null)
   const pwInputRef = useRef<HTMLInputElement>(null)
   const [formValue, setFormValue] = useState<FormType>({
     isSubmitting: false,
     submitError: undefined,
     email: {
+      value: '',
       error: undefined,
     },
     password: {
+      value: '',
       error: undefined,
     },
   })
@@ -40,6 +45,7 @@ export const SignIn: FC<Props> = ({ validation }) => {
     setFormValue((old) => ({
       ...old,
       [fieldName]: {
+        value,
         error,
       },
     }))
@@ -51,6 +57,11 @@ export const SignIn: FC<Props> = ({ validation }) => {
       ...old,
       isSubmitting: true,
     }))
+
+    await authentication.auth({
+      email: email.value,
+      password: password.value,
+    })
   }
 
   return (
