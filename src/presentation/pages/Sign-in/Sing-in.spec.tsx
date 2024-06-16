@@ -144,4 +144,13 @@ describe('Page: Sing-in', () => {
 
     expect(authenticationSpy.callsCount).toBe(1)
   })
+  it('should not call authentication if form is invalid', async () => {
+    const { authenticationSpy } = makeSut({
+      validationError: faker.lorem.sentence(),
+    })
+    populateEmailField()
+
+    fireEvent.submit(screen.getByTestId('form'))
+    expect(authenticationSpy.callsCount).toBe(0)
+  })
 })
