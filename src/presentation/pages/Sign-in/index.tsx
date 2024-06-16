@@ -52,7 +52,7 @@ export const SignIn: FC<Props> = ({ validation, authentication }) => {
   }
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (isSubmitting) return
+    if (isSubmitting || email.error || password.error) return
 
     setFormValue((old) => ({
       ...old,
@@ -71,6 +71,7 @@ export const SignIn: FC<Props> = ({ validation, authentication }) => {
 
       <main className="flex flex-1 flex-col items-center px-4">
         <form
+          data-testid="form"
           className={cn(
             'flex w-full max-w-[400px] flex-col',
             'mt-[10%] p-10',
