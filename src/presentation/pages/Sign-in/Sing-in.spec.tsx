@@ -41,6 +41,8 @@ const simulateValidSubmit = (
   const submitButton = screen.getByTestId('submit-button')
 
   fireEvent.click(submitButton)
+
+  return { submitButton }
 }
 
 describe('Page: Sing-in', () => {
@@ -130,5 +132,16 @@ describe('Page: Sing-in', () => {
       email,
       password,
     })
+  })
+
+  it('should call authentication only once', async () => {
+    const { authenticationSpy } = makeSut()
+    const { submitButton } = simulateValidSubmit()
+
+    expect(submitButton).toBeDisabled()
+
+    fireEvent.click(submitButton)
+
+    expect(authenticationSpy.callsCount).toBe(1)
   })
 })

@@ -52,6 +52,7 @@ export const SignIn: FC<Props> = ({ validation, authentication }) => {
   }
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    if (isSubmitting) return
 
     setFormValue((old) => ({
       ...old,
@@ -107,6 +108,7 @@ export const SignIn: FC<Props> = ({ validation, authentication }) => {
           <button
             data-testid="submit-button"
             type="submit"
+            disabled={isSubmitting}
             className={cn([
               'mt-8 w-full',
               'rounded bg-primary leading-10 text-white transition-opacity',
