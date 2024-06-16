@@ -1,7 +1,7 @@
 import { FC, useRef, useState } from 'react'
-import { cn } from '~/presentation/utils/cn'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
+import { cn } from '~/presentation/utils/cn'
 import { Input } from '~/presentation/components/Input'
 import { Footer } from '~/presentation/components/Footer'
 
@@ -41,6 +41,8 @@ export const SignIn: FC<Props> = ({ validation, authentication }) => {
   })
   const { submitError, isSubmitting, email, password } = formValue
 
+  const navigate = useNavigate()
+
   const handleChange = (fieldName: 'email' | 'password', value: string) => {
     const error = validation.validate(fieldName, value)
 
@@ -69,6 +71,8 @@ export const SignIn: FC<Props> = ({ validation, authentication }) => {
       })
 
       localStorage.setItem('accessToken', accessToken)
+
+      navigate('/', { replace: true })
     } catch (error) {
       let msg = 'Something went wrong. Please try again.'
 
