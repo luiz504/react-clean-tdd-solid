@@ -55,11 +55,13 @@ export const SignIn: FC<Props> = ({ validation, authentication }) => {
     event.preventDefault()
     if (isSubmitting || email.error || password.error) return
 
-    setFormValue((old) => ({
-      ...old,
-      isSubmitting: true,
-    }))
     try {
+      setFormValue((old) => ({
+        ...old,
+        isSubmitting: true,
+        submitError: undefined,
+      }))
+
       await authentication.auth({
         email: email.value,
         password: password.value,
