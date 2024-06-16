@@ -7,6 +7,7 @@ import { Footer } from '~/presentation/components/Footer'
 import { Header, FormStatus } from './components'
 import { Validation } from '~/presentation/protocols/validation'
 import { Authentication } from '~/domain/use-cases'
+import { InvalidCredentialsError } from '~/domain/errors'
 
 type Props = {
   validation: Validation
@@ -58,11 +59,23 @@ export const SignIn: FC<Props> = ({ validation, authentication }) => {
       ...old,
       isSubmitting: true,
     }))
+    try {
+      await authentication.auth({
+        email: email.value,
+        password: password.value,
+      })
+    } catch (error) {
+      let msg = 'Something went wrong. Please try again.'
 
-    await authentication.auth({
-      email: email.value,
-      password: password.value,
-    })
+      if (error instanceof InvalidCredentialsError) {
+        msg = error.message
+      }
+      setFormValue((old) => ({
+        ...old,
+        isSubmitting: false,
+        submitError: msg,
+      }))
+    }
   }
 
   return (
