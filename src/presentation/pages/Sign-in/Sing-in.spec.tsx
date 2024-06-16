@@ -22,7 +22,7 @@ type SutParams = {
 const makeSut = (params?: SutParams) => {
   const validationStub = new ValidationStub()
   const authenticationSpy = new AuthenticationSpy()
-  validationStub.errorMessage = params?.validationError
+  validationStub.errorMessage = params?.validationError || null
   render(
     <MemoryRouter>
       <SignIn validation={validationStub} authentication={authenticationSpy} />,
