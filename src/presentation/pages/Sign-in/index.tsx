@@ -62,10 +62,12 @@ export const SignIn: FC<Props> = ({ validation, authentication }) => {
         submitError: undefined,
       }))
 
-      await authentication.auth({
+      const { accessToken } = await authentication.auth({
         email: email.value,
         password: password.value,
       })
+
+      localStorage.setItem('accessToken', accessToken)
     } catch (error) {
       let msg = 'Something went wrong. Please try again.'
 
