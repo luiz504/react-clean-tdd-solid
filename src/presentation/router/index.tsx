@@ -6,7 +6,10 @@ export const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/sign-in" element={<SignIn />} />
+        <Route
+          path="/sign-in"
+          element={<SignIn authentication={{} as any} validation={{} as any} />}
+        />
       </Routes>
     </BrowserRouter>
   )

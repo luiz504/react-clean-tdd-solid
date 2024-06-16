@@ -7,6 +7,14 @@ import { AuthenticationSpy, ValidationStub } from '~/presentation/__test__'
 import { SignIn } from '.'
 import { InvalidCredentialsError } from '~/domain/errors'
 
+const mockedNavigate = vi.fn()
+vi.mock('react-router-dom', async () => {
+  const mod = await vi.importActual('react-router-dom')
+  return {
+    ...mod,
+    useNavigate: () => mockedNavigate,
+  }
+})
 type SutParams = {
   validationError?: string
 }
@@ -199,6 +207,14 @@ describe('Page: Sing-in', () => {
         'accessToken',
         authenticationSpy.account.accessToken,
       )
+    })
+  })
+  it.only('should navigate to home page on Authentication success', async () => {
+    makeSut()
+    simulateValidSubmit()
+
+    await waitFor(() => {
+      expect(mockedNavigate).toHaveBeenCalledWith('/', { replace: true })
     })
   })
 })
