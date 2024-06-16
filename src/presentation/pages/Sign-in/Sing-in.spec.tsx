@@ -166,4 +166,18 @@ describe('Page: Sing-in', () => {
     expect(formStatusError).toBeInTheDocument()
     expect(formStatusError).toHaveTextContent(error.message)
   })
+  it('should clear error on next submit', async () => {
+    const error = new InvalidCredentialsError()
+    vi.spyOn(AuthenticationSpy.prototype, 'auth').mockRejectedValueOnce(error)
+    makeSut()
+    simulateValidSubmit()
+
+    const formStatusError = await screen.findByTestId('form-status-error')
+
+    expect(formStatusError).toBeInTheDocument()
+    expect(formStatusError).toHaveTextContent(error.message)
+    simulateValidSubmit()
+
+    expect(formStatusError).not.toBeInTheDocument()
+  })
 })
