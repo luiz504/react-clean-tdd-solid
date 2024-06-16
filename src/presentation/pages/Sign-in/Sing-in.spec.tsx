@@ -4,6 +4,7 @@ import { faker } from '@faker-js/faker'
 import { AuthenticationSpy, ValidationStub } from '~/presentation/__test__'
 
 import { SignIn } from '.'
+import { InvalidCredentialsError } from '~/domain/errors'
 
 type SutParams = {
   validationError?: string
@@ -152,5 +153,17 @@ describe('Page: Sing-in', () => {
 
     fireEvent.submit(screen.getByTestId('form'))
     expect(authenticationSpy.callsCount).toBe(0)
+  })
+
+  it('should display an error feedback if authentication fails', async () => {
+    const error = new InvalidCredentialsError()
+    vi.spyOn(AuthenticationSpy.prototype, 'auth').mockRejectedValueOnce(error)
+    makeSut()
+    simulateValidSubmit()
+
+    const formStatusError = await screen.findByTestId('form-status-error')
+
+    expect(formStatusError).toBeInTheDocument()
+    expect(formStatusError).toHaveTextContent(error.message)
   })
 })
