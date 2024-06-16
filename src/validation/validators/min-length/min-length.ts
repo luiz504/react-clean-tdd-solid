@@ -4,10 +4,10 @@ import { FieldValidation } from '~/validation/protocols/field-validation'
 export class MinLengthValidation implements FieldValidation {
   constructor(
     readonly fieldName: string,
-    private readonly minLentgh: number, //eslint-disable-line
+    private readonly minLength: number,
   ) {}
 
-  validate(fieldValue: string): Error | null {//eslint-disable-line
-    return new InvalidFieldError()
+  validate(fieldValue: string): Error | null {
+    return fieldValue.length >= this.minLength ? null : new InvalidFieldError()
   }
 }
