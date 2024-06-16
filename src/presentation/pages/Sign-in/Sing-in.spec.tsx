@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { faker } from '@faker-js/faker'
 
 import { AuthenticationSpy, ValidationStub } from '~/presentation/__test__'
@@ -47,6 +47,9 @@ const simulateValidSubmit = (
 }
 
 describe('Page: Sing-in', () => {
+  beforeEach(() => {
+    localStorage.clear()
+  })
   it('should render correctly with initial state', () => {
     makeSut()
 
@@ -179,5 +182,16 @@ describe('Page: Sing-in', () => {
     simulateValidSubmit()
 
     expect(formStatusError).not.toBeInTheDocument()
+  })
+  it('should add accessToken to the localStorage on Authentication success', async () => {
+    const { authenticationSpy } = makeSut()
+    simulateValidSubmit()
+
+    await waitFor(() => {
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        'accessToken',
+        authenticationSpy.account.accessToken,
+      )
+    })
   })
 })
