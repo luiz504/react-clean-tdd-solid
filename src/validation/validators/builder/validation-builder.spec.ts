@@ -1,10 +1,11 @@
+import { faker } from '@faker-js/faker'
 import {
   EmailValidation,
   MinLengthValidation,
   RequiredFieldValidation,
 } from '~/validation/validators'
+
 import { ValidationBuilder } from './validation-builder'
-import { faker } from '@faker-js/faker'
 
 describe('ValidationBuilder', () => {
   it('should return RequiredFiledValidation', () => {
