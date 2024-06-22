@@ -5,14 +5,14 @@ import {
   HttpStatusCode,
 } from '../protocols/http'
 
-export class HttpPostClientSpy<T, R> implements HttpPostClient<T, R> {
+export class HttpPostClientSpy implements HttpPostClient {
   url?: string
-  body?: T
-  response: HttpResponse<R> = {
+  body?: any
+  response: HttpResponse<any> = {
     statusCode: HttpStatusCode.ok,
   }
 
-  async post(params: HttpPostParams<T>): Promise<HttpResponse<R>> {
+  async post<T, R>(params: HttpPostParams<T>): Promise<HttpResponse<R>> {
     this.url = params.url
     this.body = params.body
     return this.response
