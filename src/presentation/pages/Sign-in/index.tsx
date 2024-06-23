@@ -73,12 +73,13 @@ export const SignIn: FC<Props> = ({ validation, authentication }) => {
       localStorage.setItem('accessToken', accessToken)
 
       navigate('/', { replace: true })
-    } catch (error) {
+    } catch (err) {
       let msg = 'Something went wrong. Please try again.'
 
-      if (error instanceof InvalidCredentialsError) {
-        msg = error.message
+      if (err instanceof InvalidCredentialsError) {
+        msg = err.message
       }
+
       setFormValue((old) => ({
         ...old,
         isSubmitting: false,

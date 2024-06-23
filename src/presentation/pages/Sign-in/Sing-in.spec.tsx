@@ -22,7 +22,7 @@ type SutParams = {
 const makeSut = (params?: SutParams) => {
   const validationStub = new ValidationStub()
   const authenticationSpy = new AuthenticationSpy()
-  validationStub.errorMessage = params?.validationError
+  validationStub.errorMessage = params?.validationError || null
   render(
     <MemoryRouter>
       <SignIn validation={validationStub} authentication={authenticationSpy} />,
@@ -183,6 +183,20 @@ describe('Page: Sing-in', () => {
     expect(formStatusError).toHaveTextContent(error.message)
   })
 
+  it('should display an error feedback if any other non-expected error occurs', async () => {
+    const error = new Error(faker.lorem.sentence())
+    vi.spyOn(AuthenticationSpy.prototype, 'auth').mockRejectedValueOnce(error)
+    makeSut()
+    simulateValidSubmit()
+
+    const formStatusError = await screen.findByTestId('form-status-error')
+
+    expect(formStatusError).toBeInTheDocument()
+    expect(formStatusError).toHaveTextContent(
+      'Something went wrong. Please try again.',
+    )
+  })
+
   it('should clear error on next submit', async () => {
     const error = new InvalidCredentialsError()
     vi.spyOn(AuthenticationSpy.prototype, 'auth').mockRejectedValueOnce(error)
@@ -209,7 +223,7 @@ describe('Page: Sing-in', () => {
       )
     })
   })
-  it.only('should navigate to home page on Authentication success', async () => {
+  it('should navigate to home page on Authentication success', async () => {
     makeSut()
     simulateValidSubmit()
 

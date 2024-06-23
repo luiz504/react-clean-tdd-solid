@@ -30,6 +30,6 @@
       "public/*": ["./public/*"]
     }
   },
-  "include": ["src", "vitest.setup.mts"],
+  "include": ["src", "vitest.setup.mts", "src/vite-env.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
