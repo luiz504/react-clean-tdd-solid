@@ -1,3 +1,3 @@
 export const makeApiUrl = (): string => {
-  return 'http://fordevs.herokuapp.com/api/login'
+  return 'http://localhost:5050/api/login'
 }
