@@ -76,4 +76,15 @@ describe('RemoteAuthentication', () => {
     const account = await sut.auth(mockAuthentication())
     expect(account).toEqual(httpResult)
   })
+
+  it('should throw UnexpectedError if HttpClient returns 200 but with invalid data', async () => {
+    const { sut, httpPostClientSpy } = makeSut()
+
+    httpPostClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: faker.datatype.boolean(),
+    }
+    const promise = sut.auth(mockAuthentication())
+    await expect(() => promise).rejects.toThrow(new UnexpectedError())
+  })
 })

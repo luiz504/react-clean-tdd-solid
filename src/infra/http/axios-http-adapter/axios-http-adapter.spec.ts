@@ -55,7 +55,7 @@ describe('AxiosHttpAdapter', () => {
       statusCode: HttpStatusCode.serverError,
     })
   })
-  it.only('should return the correct statusCode and body on Failure with response', async () => {
+  it('should return the correct statusCode and body on Failure with response', async () => {
     const { sut, mockedAxios } = makeSut()
 
     const mockedErrorResponse = mockHttpResponse()
