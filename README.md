@@ -18,3 +18,9 @@ Project made following an outdated course [ReactJS, Hooks, Recoil, TDD, Clean Ar
 
 - YAGNI - You aren't gonna need it
   keep it simple and implement when needed
+
+## Disclaimers about the course
+
+- While the course has its value, it has aged poorly in some aspects. Some cases will require additional knowledge, like find the other twin course that the same author made on github but with backend stuff, because the API links from the course uses is down for long time. Some libs changed a lot like react-router-dom, so be prepared :)
+
+- Cost and Time Investment: The course is not cheap, considering its price and the time required to ignore outdated content, resolve old dependencies, and find the APIs used in the course.
