@@ -18,4 +18,13 @@ describe('LocalSaveAccessToken', () => {
     expect(storageMock.key).toBe('accessToken')
     expect(storageMock.value).toBe(accessToken)
   })
+  it('should throw if Storage.save throws', async () => {
+    const { storageMock, sut } = makeSut()
+
+    vi.spyOn(storageMock, 'set').mockRejectedValueOnce(new Error())
+
+    const promise = sut.save(faker.string.uuid())
+
+    await expect(promise).rejects.toThrow(new Error())
+  })
 })
