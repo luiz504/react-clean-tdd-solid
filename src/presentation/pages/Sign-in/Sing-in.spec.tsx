@@ -6,6 +6,7 @@ import { AuthenticationSpy, ValidationStub } from '~/presentation/__test__'
 
 import { SignIn } from '.'
 import { InvalidCredentialsError } from '~/domain/errors'
+import { SaveAccessTokenMock } from '~/presentation/__test__/mock-save-access-token'
 
 const mockedNavigate = vi.fn()
 vi.mock('react-router-dom', async () => {
@@ -22,14 +23,20 @@ type SutParams = {
 const makeSut = (params?: SutParams) => {
   const validationStub = new ValidationStub()
   const authenticationSpy = new AuthenticationSpy()
+  const saveAccessTokenMock = new SaveAccessTokenMock()
   validationStub.errorMessage = params?.validationError || null
   render(
     <MemoryRouter>
-      <SignIn validation={validationStub} authentication={authenticationSpy} />,
+      <SignIn
+        validation={validationStub}
+        authentication={authenticationSpy}
+        saveAccessToken={saveAccessTokenMock}
+      />
+      ,
     </MemoryRouter>,
   )
 
-  return { authenticationSpy, validationStub }
+  return { authenticationSpy, validationStub, saveAccessTokenMock }
 }
 
 const populateEmailField = (email = faker.internet.email()) => {
@@ -59,9 +66,6 @@ const simulateValidSubmit = (
 }
 
 describe('Page: Sing-in', () => {
-  beforeEach(() => {
-    localStorage.clear()
-  })
   it('should render correctly with initial state', () => {
     makeSut()
 
@@ -212,16 +216,28 @@ describe('Page: Sing-in', () => {
     expect(formStatusError).not.toBeInTheDocument()
   })
 
-  it('should add accessToken to the localStorage on Authentication success', async () => {
-    const { authenticationSpy } = makeSut()
+  it('should call SaveAccessToken on Authentication success', async () => {
+    const { authenticationSpy, saveAccessTokenMock } = makeSut()
     simulateValidSubmit()
 
     await waitFor(() => {
-      expect(localStorage.setItem).toHaveBeenCalledWith(
-        'accessToken',
+      expect(saveAccessTokenMock.accessToken).toBe(
         authenticationSpy.account.accessToken,
       )
     })
+  })
+
+  it('should display error if SaveAccessToken fails', async () => {
+    const { saveAccessTokenMock } = makeSut()
+
+    vi.spyOn(saveAccessTokenMock, 'save').mockRejectedValueOnce(new Error())
+
+    simulateValidSubmit()
+    const formStatusError = await screen.findByTestId('form-status-error')
+    expect(formStatusError).toBeInTheDocument()
+    expect(formStatusError).toHaveTextContent(
+      'Something went wrong. Please try again.',
+    )
   })
   it('should navigate to home page on Authentication success', async () => {
     makeSut()
