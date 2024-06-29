@@ -226,6 +226,19 @@ describe('Page: Sing-in', () => {
       )
     })
   })
+
+  it('should display error if SaveAccessToken fails', async () => {
+    const { saveAccessTokenMock } = makeSut()
+
+    vi.spyOn(saveAccessTokenMock, 'save').mockRejectedValueOnce(new Error())
+
+    simulateValidSubmit()
+    const formStatusError = await screen.findByTestId('form-status-error')
+    expect(formStatusError).toBeInTheDocument()
+    expect(formStatusError).toHaveTextContent(
+      'Something went wrong. Please try again.',
+    )
+  })
   it('should navigate to home page on Authentication success', async () => {
     makeSut()
     simulateValidSubmit()
