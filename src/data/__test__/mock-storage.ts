@@ -1,6 +1,6 @@
-import { Storage } from '../protocols/cache/storage'
+import { SetStorage } from '../protocols/cache/set-storage'
 
-export class StorageMock implements Storage {
+export class StorageMock implements SetStorage {
   key?: string
   value?: any
 
