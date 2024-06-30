@@ -5,6 +5,7 @@ import { cn } from '~/presentation/utils/cn'
 import { Header, Input, Footer, FormStatus } from '~/presentation/components'
 
 import { InvalidCredentialsError } from '~/domain/errors'
+import { Validation } from '~/presentation/protocols/validation'
 
 type Field = {
   value: string
@@ -15,13 +16,17 @@ type FormType = {
   email: Field
   password: Field
   confirmPassword: Field
-
   submitError?: string
   isSubmitting: boolean
 }
-export const SignUp: FC = () => {
+type Props = {
+  validation: Validation
+}
+export const SignUp: FC<Props> = ({ validation }) => {
+  const nameInputRef = useRef<HTMLInputElement>(null)
   const emailInputRef = useRef<HTMLInputElement>(null)
   const pwInputRef = useRef<HTMLInputElement>(null)
+  const pwConfirmationInputRef = useRef<HTMLInputElement>(null)
   const [formValue, setFormValue] = useState<FormType>({
     isSubmitting: false,
     submitError: undefined,
@@ -42,13 +47,14 @@ export const SignUp: FC = () => {
       error: undefined,
     },
   })
-  const { submitError, isSubmitting, email, password } = formValue
+  const { submitError, isSubmitting, name, email, password, confirmPassword } =
+    formValue
 
   const handleChange = (
     fieldName: 'name' | 'email' | 'password' | 'passwordConfirmation',
     value: string,
   ) => {
-    const error = ''
+    const error = validation.validate(fieldName, value)
 
     setFormValue((old) => ({
       ...old,
@@ -113,13 +119,13 @@ export const SignUp: FC = () => {
           <Input>
             <Input.InputField
               data-testid="name-input"
-              ref={emailInputRef}
+              ref={nameInputRef}
               type="text"
               name="name"
               placeholder="Name"
               onChange={({ target }) => handleChange('name', target.value)}
             />
-            <Input.Error data-testid="name-error" error={email.error} />
+            <Input.Error data-testid="name-error" error={name.error} />
           </Input>
           <Input>
             <Input.InputField
@@ -147,7 +153,7 @@ export const SignUp: FC = () => {
           <Input>
             <Input.InputField
               data-testid="pw-confirmation-input"
-              ref={pwInputRef}
+              ref={pwConfirmationInputRef}
               type="password"
               name="password-confirmation"
               autoComplete="new-password"
@@ -158,7 +164,7 @@ export const SignUp: FC = () => {
             />
             <Input.Error
               data-testid="pw-confirmation-error"
-              error={password.error}
+              error={confirmPassword.error}
             />
           </Input>
 
@@ -178,7 +184,7 @@ export const SignUp: FC = () => {
           </button>
 
           <Link
-            data-testid="sign-up-link"
+            data-testid="sign-in-link"
             to="/sign-in"
             className="mt-4 text-center lowercase text-primary hover:underline"
           >
