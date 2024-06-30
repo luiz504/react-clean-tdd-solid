@@ -52,4 +52,25 @@ describe('RemoteRegisterAccount', () => {
     const promise = sut.register(mockRegisterAccountParams())
     await expect(() => promise).rejects.toThrow(new UnexpectedError())
   })
+  it('should return an AccountModel if HttpClient returns 200', async () => {
+    const { sut, httpPostClientSpy } = makeSut()
+    const httpResult = mockAccountModel()
+    httpPostClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: httpResult,
+    }
+    const account = await sut.register(mockRegisterAccountParams())
+    expect(account).toEqual(httpResult)
+  })
+
+  it('should throw UnexpectedError if HttpClient returns 200 but with invalid data', async () => {
+    const { sut, httpPostClientSpy } = makeSut()
+
+    httpPostClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: faker.datatype.boolean(),
+    }
+    const promise = sut.register(mockRegisterAccountParams())
+    await expect(() => promise).rejects.toThrow(new UnexpectedError())
+  })
 })
