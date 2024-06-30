@@ -6,6 +6,7 @@ import { Header, Input, Footer, FormStatus } from '~/presentation/components'
 
 import { InvalidCredentialsError } from '~/domain/errors'
 import { Validation } from '~/presentation/protocols/validation'
+import { RegisterAccount } from '~/domain/use-cases'
 
 type Field = {
   value: string
@@ -21,8 +22,9 @@ type FormType = {
 }
 type Props = {
   validation: Validation
+  registerAccount: RegisterAccount
 }
-export const SignUp: FC<Props> = ({ validation }) => {
+export const SignUp: FC<Props> = ({ validation, registerAccount }) => {
   const nameInputRef = useRef<HTMLInputElement>(null)
   const emailInputRef = useRef<HTMLInputElement>(null)
   const pwInputRef = useRef<HTMLInputElement>(null)
@@ -72,7 +74,9 @@ export const SignUp: FC<Props> = ({ validation }) => {
   }
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (isSubmitting || email.error || password.error) return
+    const hasError =
+      name.error || email.error || password.error || passwordConfirmation.error
+    if (isSubmitting || hasError) return
 
     try {
       setFormValue((old) => ({
@@ -80,11 +84,13 @@ export const SignUp: FC<Props> = ({ validation }) => {
         isSubmitting: true,
         submitError: undefined,
       }))
-
-      // const { accessToken } = await authentication.auth({
-      //   email: email.value,
-      //   password: password.value,
-      // })
+      // const { accessToken } =
+      await registerAccount.register({
+        name: name.value,
+        email: email.value,
+        password: password.value,
+        passwordConfirmation: passwordConfirmation.value,
+      })
 
       // await saveAccessToken.save(accessToken)
 
