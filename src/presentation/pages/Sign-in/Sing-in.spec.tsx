@@ -79,9 +79,7 @@ describe('Page: Sing-in', () => {
     expect(screen.queryByTestId('email-error')).not.toBeInTheDocument()
 
     expect(screen.getByTestId('pw-input')).toBeEnabled()
-    expect(screen.getByTestId('pw-input')).toBeEnabled()
     expect(screen.getByTestId('pw-input')).toHaveValue('')
-
     expect(screen.queryByTestId('pw-error')).not.toBeInTheDocument()
 
     const link = screen.getByTestId('sign-up-link')
