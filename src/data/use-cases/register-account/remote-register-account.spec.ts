@@ -44,4 +44,12 @@ describe('RemoteRegisterAccount', () => {
     const promise = sut.register(mockRegisterAccountParams())
     await expect(() => promise).rejects.toThrow(new UnexpectedError())
   })
+  it('should throw UnexpectedError if HttpClient returns 500', async () => {
+    const { sut, httpPostClientSpy } = makeSut()
+    httpPostClientSpy.response = {
+      statusCode: HttpStatusCode.serverError,
+    }
+    const promise = sut.register(mockRegisterAccountParams())
+    await expect(() => promise).rejects.toThrow(new UnexpectedError())
+  })
 })
