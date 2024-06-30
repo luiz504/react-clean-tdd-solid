@@ -25,6 +25,6 @@ describe('RemoteRegisterAccount', () => {
     const account = mockRegisterAccountParams()
     await sut.register(account)
     expect(httpPostClientSpy.url).toBe(url)
-    // expect(httpPostClientSpy.body).toEqual(credentials)
+    expect(httpPostClientSpy.body).toEqual(account)
   })
 })
