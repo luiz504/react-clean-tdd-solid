@@ -8,10 +8,10 @@ export class RemoteRegisterAccount implements RegisterAccount {
     private readonly httpPostClient: HttpPostClient,
   ) {}
 
-  async register() // params: RegisterAccountParams
-  : Promise<AccountModel> {
+  async register(params: RegisterAccountParams): Promise<AccountModel> {
     await this.httpPostClient.post<RegisterAccountParams, AccountModel>({
       url: this.url,
+      body: params,
     })
     return { accessToken: 'any_token' }
   }
