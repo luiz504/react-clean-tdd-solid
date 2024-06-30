@@ -1,5 +1,5 @@
 import { HttpPostClient, HttpStatusCode } from '~/data/protocols/http'
-import { EmailInUserError } from '~/domain/errors'
+import { EmailInUserError, UnexpectedError } from '~/domain/errors'
 import { AccountModel } from '~/domain/models'
 import { RegisterAccount, RegisterAccountParams } from '~/domain/use-cases'
 
@@ -19,15 +19,16 @@ export class RemoteRegisterAccount implements RegisterAccount {
     })
 
     switch (httpResponse.statusCode) {
-      // case HttpStatusCode.ok:
-      //   if (httpResponse.body?.accessToken) {
-      //     return { accessToken: httpResponse.body.accessToken }
-      //   }
-      //   throw new UnexpectedError()
+      case HttpStatusCode.ok:
+        // if (httpResponse.body?.accessToken) {
+        //   return { accessToken: httpResponse.body.accessToken }
+        // }
+        // throw new UnexpectedError()
+        return { accessToken: 'any_token' }
       case HttpStatusCode.forbidden:
         throw new EmailInUserError()
       default:
-        return { accessToken: 'any_token' }
+        throw new UnexpectedError()
     }
   }
 }
