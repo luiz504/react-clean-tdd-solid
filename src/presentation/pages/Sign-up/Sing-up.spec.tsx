@@ -200,4 +200,14 @@ describe('Page: Sign-up', () => {
 
     expect(registerAccountSpy.callsCount).toBe(1)
   })
+
+  it('should not call authentication if form is invalid', async () => {
+    const { registerAccountSpy } = makeSut({
+      validationError: faker.lorem.sentence(),
+    })
+    populateInputField(FIELDS_TEST_ID.email.input, faker.internet.email())
+
+    fireEvent.submit(screen.getByTestId('form'))
+    expect(registerAccountSpy.callsCount).toBe(0)
+  })
 })
