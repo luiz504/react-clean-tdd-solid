@@ -1,7 +1,7 @@
 import { MemoryRouter } from 'react-router-dom'
 
 import { SignUp } from '.'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { ValidationStub, populateInputField } from '~/presentation/__test__'
 import { faker } from '@faker-js/faker'
 
@@ -38,6 +38,24 @@ const makeSut = (params?: SutParams) => {
     </MemoryRouter>,
   )
   return { validationStub }
+}
+
+const simulateValidSubmit = (
+  name = faker.person.fullName(),
+  email = faker.internet.email(),
+  password = faker.internet.password(),
+) => {
+  populateInputField(FIELDS_TEST_ID.email.input, name)
+
+  populateInputField(FIELDS_TEST_ID.email.input, email)
+  populateInputField(FIELDS_TEST_ID.password.input, password)
+  populateInputField(FIELDS_TEST_ID['password-confirmation'].input, password)
+
+  const submitButton = screen.getByTestId(FIELDS_TEST_ID['submit-button'])
+
+  fireEvent.click(submitButton)
+
+  return { submitButton }
 }
 
 describe('Page: Sign-up', () => {
@@ -134,5 +152,16 @@ describe('Page: Sign-up', () => {
     )
     expect(passwordError).toBeInTheDocument()
     expect(passwordError).toHaveTextContent(errorMsg)
+  })
+
+  it('should show spinner on submit and submit button must be disabled', async () => {
+    makeSut()
+    simulateValidSubmit()
+
+    const spinner = await screen.findByTestId('form-status-spinner')
+    expect(spinner).toBeInTheDocument()
+
+    const btnSubmit = screen.getByTestId(FIELDS_TEST_ID['submit-button'])
+    expect(btnSubmit).toBeDisabled()
   })
 })
