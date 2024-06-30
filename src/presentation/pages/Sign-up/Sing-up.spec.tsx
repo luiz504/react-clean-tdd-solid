@@ -189,4 +189,15 @@ describe('Page: Sign-up', () => {
       passwordConfirmation: password,
     })
   })
+
+  it('should call authentication only once', async () => {
+    const { registerAccountSpy } = makeSut()
+    const { submitButton } = simulateValidSubmit()
+
+    expect(submitButton).toBeDisabled()
+
+    fireEvent.click(submitButton)
+
+    expect(registerAccountSpy.callsCount).toBe(1)
+  })
 })
