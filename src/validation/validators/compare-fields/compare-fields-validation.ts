@@ -7,8 +7,8 @@ export class CompareFieldsValidation implements FieldValidation {
     private readonly fieldToCompare: string,
   ) {}
 
-  validate() // fieldValue: string
-  : Error | null {
-    return new InvalidFieldError()
+  validate(fieldValue: string): Error | null {
+    const isEqual = fieldValue === this.fieldToCompare
+    return isEqual ? null : new InvalidFieldError()
   }
 }
