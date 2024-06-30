@@ -8,9 +8,9 @@ import {
   SaveAccessTokenMock,
   populateInputField,
 } from '~/presentation/__test__'
+import { InvalidCredentialsError } from '~/domain/errors'
 
 import { SignIn } from '.'
-import { InvalidCredentialsError } from '~/domain/errors'
 
 const FIELDS_TEST_ID = {
   email: {

@@ -1,13 +1,14 @@
 import { MemoryRouter } from 'react-router-dom'
-
-import { SignUp } from '.'
+import { faker } from '@faker-js/faker'
 import { fireEvent, render, screen } from '@testing-library/react'
+
 import {
   RegisterAccountSpy,
   ValidationStub,
   populateInputField,
 } from '~/presentation/__test__'
-import { faker } from '@faker-js/faker'
+
+import { SignUp } from '.'
 
 const FIELDS_TEST_ID = {
   name: {
