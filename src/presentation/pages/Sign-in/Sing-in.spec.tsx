@@ -123,12 +123,15 @@ describe('Page: Sing-in', () => {
     expect(passwordError).toHaveTextContent(errorMsg)
   })
 
-  it('should show spinner on submit', async () => {
+  it('should show spinner on submit and submit button must be disabled', async () => {
     makeSut()
     simulateValidSubmit()
 
     const spinner = await screen.findByTestId('form-status-spinner')
     expect(spinner).toBeInTheDocument()
+
+    const btnSubmit = screen.getByTestId(FIELDS_TEST_ID['submit-button'])
+    expect(btnSubmit).toBeDisabled()
   })
 
   it('should call authentication with correct values', async () => {
