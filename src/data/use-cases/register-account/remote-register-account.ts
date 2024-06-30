@@ -20,11 +20,11 @@ export class RemoteRegisterAccount implements RegisterAccount {
 
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
-        // if (httpResponse.body?.accessToken) {
-        //   return { accessToken: httpResponse.body.accessToken }
-        // }
-        // throw new UnexpectedError()
-        return { accessToken: 'any_token' }
+        if (httpResponse.body?.accessToken) {
+          return { accessToken: httpResponse.body.accessToken }
+        }
+        throw new UnexpectedError()
+
       case HttpStatusCode.forbidden:
         throw new EmailInUserError()
       default:
