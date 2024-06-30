@@ -15,7 +15,7 @@ type FormType = {
   name: Field
   email: Field
   password: Field
-  confirmPassword: Field
+  passwordConfirmation: Field
   submitError?: string
   isSubmitting: boolean
 }
@@ -42,13 +42,19 @@ export const SignUp: FC<Props> = ({ validation }) => {
       value: '',
       error: undefined,
     },
-    confirmPassword: {
+    passwordConfirmation: {
       value: '',
       error: undefined,
     },
   })
-  const { submitError, isSubmitting, name, email, password, confirmPassword } =
-    formValue
+  const {
+    submitError,
+    isSubmitting,
+    name,
+    email,
+    password,
+    passwordConfirmation,
+  } = formValue
 
   const handleChange = (
     fieldName: 'name' | 'email' | 'password' | 'passwordConfirmation',
@@ -164,7 +170,7 @@ export const SignUp: FC<Props> = ({ validation }) => {
             />
             <Input.Error
               data-testid="pw-confirmation-error"
-              error={confirmPassword.error}
+              error={passwordConfirmation.error}
             />
           </Input>
 
