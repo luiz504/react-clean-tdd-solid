@@ -11,15 +11,16 @@ describe('CompareFieldsValidation', () => {
     expect(sut.fieldName).toBe(fieldName)
   })
   it('Should return error if compare is invalid', () => {
-    const sut = makeSut()
+    const sut = makeSut(faker.lorem.word())
 
-    const error = sut.validate('')
+    const error = sut.validate('any_value')
 
     expect(error).toEqual(new InvalidFieldError())
   })
-  it.todo('should return null if field is not empty', () => {
-    const sut = makeSut()
-    const error = sut.validate(faker.lorem.word())
+  it('should return null if compare is valid', () => {
+    const value = faker.lorem.word()
+    const sut = makeSut(value)
+    const error = sut.validate(value)
 
     expect(error).toBeNull()
   })
