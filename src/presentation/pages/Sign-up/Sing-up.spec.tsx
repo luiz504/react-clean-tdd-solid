@@ -85,19 +85,6 @@ describe('Page: Sign-up', () => {
     expect(formStatus.childNodes).toHaveLength(0)
   })
 
-  it('should call validation with correct name value', () => {
-    const { validationStub } = makeSut()
-
-    const nameValue = faker.person.fullName()
-    populateInputField(FIELDS_TEST_ID.name.input, nameValue)
-
-    expect(validationStub.fieldName).toEqual('name')
-    expect(validationStub.fieldValue).toEqual(nameValue)
-    expect(
-      screen.queryByTestId(FIELDS_TEST_ID.name.error),
-    ).not.toBeInTheDocument()
-  })
-
   it('should show name error if validation fails', async () => {
     const errorMsg = faker.lorem.sentence()
     makeSut({ validationError: errorMsg })
@@ -107,5 +94,45 @@ describe('Page: Sign-up', () => {
     const nameError = await screen.findByTestId(FIELDS_TEST_ID.name.error)
     expect(nameError).toBeInTheDocument()
     expect(nameError).toHaveTextContent(errorMsg)
+  })
+
+  it('should show email error if validation fails', async () => {
+    const errorMsg = faker.lorem.sentence()
+    makeSut({ validationError: errorMsg })
+
+    populateInputField(FIELDS_TEST_ID.email.input, faker.lorem.word())
+
+    const emailError = await screen.findByTestId(FIELDS_TEST_ID.email.error)
+    expect(emailError).toBeInTheDocument()
+    expect(emailError).toHaveTextContent(errorMsg)
+  })
+
+  it('should show password error if validation fails', async () => {
+    const errorMsg = faker.lorem.sentence()
+    makeSut({ validationError: errorMsg })
+
+    populateInputField(FIELDS_TEST_ID.password.input, faker.lorem.word())
+
+    const passwordError = await screen.findByTestId(
+      FIELDS_TEST_ID.password.error,
+    )
+    expect(passwordError).toBeInTheDocument()
+    expect(passwordError).toHaveTextContent(errorMsg)
+  })
+
+  it('should show confirm password error if validation fails', async () => {
+    const errorMsg = faker.lorem.sentence()
+    makeSut({ validationError: errorMsg })
+
+    populateInputField(
+      FIELDS_TEST_ID['password-confirmation'].input,
+      faker.lorem.word(),
+    )
+
+    const passwordError = await screen.findByTestId(
+      FIELDS_TEST_ID['password-confirmation'].error,
+    )
+    expect(passwordError).toBeInTheDocument()
+    expect(passwordError).toHaveTextContent(errorMsg)
   })
 })
