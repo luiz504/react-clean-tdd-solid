@@ -11,8 +11,11 @@ type Field = {
   error?: string
 }
 type FormType = {
+  name: Field
   email: Field
   password: Field
+  confirmPassword: Field
+
   submitError?: string
   isSubmitting: boolean
 }
@@ -22,6 +25,10 @@ export const SignUp: FC = () => {
   const [formValue, setFormValue] = useState<FormType>({
     isSubmitting: false,
     submitError: undefined,
+    name: {
+      value: '',
+      error: undefined,
+    },
     email: {
       value: '',
       error: undefined,
@@ -30,11 +37,15 @@ export const SignUp: FC = () => {
       value: '',
       error: undefined,
     },
+    confirmPassword: {
+      value: '',
+      error: undefined,
+    },
   })
   const { submitError, isSubmitting, email, password } = formValue
 
   const handleChange = (
-    fieldName: 'name' | 'email' | 'password' | 'password-confirmation',
+    fieldName: 'name' | 'email' | 'password' | 'passwordConfirmation',
     value: string,
   ) => {
     const error = ''
@@ -108,7 +119,7 @@ export const SignUp: FC = () => {
               placeholder="Name"
               onChange={({ target }) => handleChange('name', target.value)}
             />
-            <Input.Error data-testid="email-error" error={email.error} />
+            <Input.Error data-testid="name-error" error={email.error} />
           </Input>
           <Input>
             <Input.InputField
@@ -142,10 +153,13 @@ export const SignUp: FC = () => {
               autoComplete="new-password"
               placeholder="Confirm Password"
               onChange={({ target }) =>
-                handleChange('password-confirmation', target.value)
+                handleChange('passwordConfirmation', target.value)
               }
             />
-            <Input.Error data-testid="pw-error" error={password.error} />
+            <Input.Error
+              data-testid="pw-confirmation-error"
+              error={password.error}
+            />
           </Input>
 
           <button
