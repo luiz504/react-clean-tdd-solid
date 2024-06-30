@@ -2,10 +2,8 @@ import { FC, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { cn } from '~/presentation/utils/cn'
-import { Input } from '~/presentation/components/Input'
-import { Footer } from '~/presentation/components/Footer'
+import { Header, Input, Footer, FormStatus } from '~/presentation/components'
 
-import { Header, FormStatus } from './components'
 import { Validation } from '~/presentation/protocols/validation'
 import { Authentication, SaveAccessToken } from '~/domain/use-cases'
 import { InvalidCredentialsError } from '~/domain/errors'
