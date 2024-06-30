@@ -3,7 +3,7 @@ import { HttpPostClientSpy } from '~/data/__test__'
 import { RemoteRegisterAccount } from './remote-register-account'
 import { mockAccountModel, mockRegisterAccountParams } from '~/domain/__test__'
 import { HttpStatusCode } from '~/data/protocols/http'
-import { EmailInUserError } from '~/domain/errors'
+import { EmailInUserError, UnexpectedError } from '~/domain/errors'
 
 const makeSut = (url: string = faker.internet.url()) => {
   const httpPostClientSpy = new HttpPostClientSpy()
@@ -35,5 +35,13 @@ describe('RemoteRegisterAccount', () => {
     }
     const promise = sut.register(mockRegisterAccountParams())
     await expect(() => promise).rejects.toThrow(new EmailInUserError())
+  })
+  it('should throw UnexpectedError if HttpClient returns 400', async () => {
+    const { sut, httpPostClientSpy } = makeSut()
+    httpPostClientSpy.response = {
+      statusCode: HttpStatusCode.badRequest,
+    }
+    const promise = sut.register(mockRegisterAccountParams())
+    await expect(() => promise).rejects.toThrow(new UnexpectedError())
   })
 })
