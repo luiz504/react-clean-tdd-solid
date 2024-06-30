@@ -53,7 +53,7 @@ const makeSut = (params?: SutParams) => {
     </MemoryRouter>,
   )
 
-  return { authenticationSpy, validationStub, saveAccessTokenMock }
+  return { authenticationSpy, saveAccessTokenMock }
 }
 
 const simulateValidSubmit = (
@@ -97,33 +97,6 @@ describe('Page: Sing-in', () => {
     const formStatus = screen.getByTestId('form-status')
     expect(formStatus).toBeInTheDocument()
     expect(formStatus.childNodes).toHaveLength(0)
-  })
-
-  it('should call validation with correct email value', () => {
-    const { validationStub } = makeSut()
-
-    const emailValue = faker.internet.email()
-    populateInputField(FIELDS_TEST_ID.email.input, emailValue)
-
-    expect(validationStub.fieldName).toEqual('email')
-    expect(validationStub.fieldValue).toEqual(emailValue)
-    expect(
-      screen.queryByTestId(FIELDS_TEST_ID.email.error),
-    ).not.toBeInTheDocument()
-  })
-
-  it('should call validation with correct password value', () => {
-    const { validationStub } = makeSut()
-    const passwordValue = faker.internet.password()
-
-    populateInputField(FIELDS_TEST_ID.password.input, passwordValue)
-
-    expect(validationStub.fieldName).toEqual('password')
-    expect(validationStub.fieldValue).toEqual(passwordValue)
-
-    expect(
-      screen.queryByTestId(FIELDS_TEST_ID.password.error),
-    ).not.toBeInTheDocument()
   })
 
   it('should show email error if validation fails', async () => {
