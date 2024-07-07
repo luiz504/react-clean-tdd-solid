@@ -1,15 +1,25 @@
 import { MemoryRouter } from 'react-router-dom'
 import { faker } from '@faker-js/faker'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import {
   RegisterAccountSpy,
+  SaveAccessTokenMock,
   ValidationStub,
   populateInputField,
 } from '~/presentation/__test__'
 
 import { SignUp } from '.'
 import { EmailInUserError } from '~/domain/errors'
+
+const mockedNavigate = vi.fn()
+vi.mock('react-router-dom', async () => {
+  const mod = await vi.importActual('react-router-dom')
+  return {
+    ...mod,
+    useNavigate: () => mockedNavigate,
+  }
+})
 
 const FIELDS_TEST_ID = {
   name: {
@@ -41,17 +51,19 @@ const makeSut = (params?: SutParams) => {
   validationStub.errorMessage = params?.validationError || null
 
   const registerAccountSpy = new RegisterAccountSpy()
+  const saveAccessTokenMock = new SaveAccessTokenMock()
 
   render(
     <MemoryRouter>
       <SignUp
         validation={validationStub}
         registerAccount={registerAccountSpy}
+        saveAccessToken={saveAccessTokenMock}
       />
       ,
     </MemoryRouter>,
   )
-  return { validationStub, registerAccountSpy }
+  return { validationStub, registerAccountSpy, saveAccessTokenMock }
 }
 
 const simulateValidSubmit = (
@@ -268,5 +280,32 @@ describe('Page: Sign-up', () => {
     simulateValidSubmit()
 
     expect(formStatusError).not.toBeInTheDocument()
+  })
+
+  it('should call SaveAccessToken on registerAccount success and replace to `/`', async () => {
+    const { registerAccountSpy, saveAccessTokenMock } = makeSut()
+    simulateValidSubmit()
+
+    await waitFor(() => {
+      expect(saveAccessTokenMock.accessToken).toBe(
+        registerAccountSpy.account.accessToken,
+      )
+    })
+    expect(mockedNavigate).toBeCalledWith('/', { replace: true })
+  })
+
+  it('should display error if SaveAccessToken fails', async () => {
+    const { saveAccessTokenMock } = makeSut()
+
+    vi.spyOn(saveAccessTokenMock, 'save').mockRejectedValueOnce(new Error())
+
+    simulateValidSubmit()
+    const formStatusError = await screen.findByTestId(
+      FIELDS_TEST_ID['form-status-error'],
+    )
+    expect(formStatusError).toBeInTheDocument()
+    expect(formStatusError).toHaveTextContent(
+      'Something went wrong. Please try again.',
+    )
   })
 })
