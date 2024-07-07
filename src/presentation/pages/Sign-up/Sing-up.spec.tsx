@@ -253,4 +253,20 @@ describe('Page: Sign-up', () => {
       screen.queryByTestId(FIELDS_TEST_ID['form-status-spinner']),
     ).not.toBeInTheDocument()
   })
+
+  it('should clear error on next submit', async () => {
+    const error = new EmailInUserError()
+    vi.spyOn(RegisterAccountSpy.prototype, 'register').mockRejectedValueOnce(
+      error,
+    )
+    makeSut()
+    simulateValidSubmit()
+
+    const formStatusError = await screen.findByTestId('form-status-error')
+
+    expect(formStatusError).toHaveTextContent(error.message)
+    simulateValidSubmit()
+
+    expect(formStatusError).not.toBeInTheDocument()
+  })
 })

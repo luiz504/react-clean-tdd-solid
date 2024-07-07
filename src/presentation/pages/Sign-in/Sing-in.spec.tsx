@@ -23,6 +23,8 @@ const FIELDS_TEST_ID = {
   },
 
   'submit-button': 'submit-button',
+  'form-status-error': 'form-status-error',
+  'form-status-spinner': 'form-status-spinner',
 } as const
 
 const mockedNavigate = vi.fn()
@@ -127,7 +129,9 @@ describe('Page: Sing-in', () => {
     makeSut()
     simulateValidSubmit()
 
-    const spinner = await screen.findByTestId('form-status-spinner')
+    const spinner = await screen.findByTestId(
+      FIELDS_TEST_ID['form-status-spinner'],
+    )
     expect(spinner).toBeInTheDocument()
 
     const btnSubmit = screen.getByTestId(FIELDS_TEST_ID['submit-button'])
@@ -173,7 +177,9 @@ describe('Page: Sing-in', () => {
     makeSut()
     simulateValidSubmit()
 
-    const formStatusError = await screen.findByTestId('form-status-error')
+    const formStatusError = await screen.findByTestId(
+      FIELDS_TEST_ID['form-status-error'],
+    )
 
     expect(formStatusError).toBeInTheDocument()
     expect(formStatusError).toHaveTextContent(error.message)
@@ -185,7 +191,9 @@ describe('Page: Sing-in', () => {
     makeSut()
     simulateValidSubmit()
 
-    const formStatusError = await screen.findByTestId('form-status-error')
+    const formStatusError = await screen.findByTestId(
+      FIELDS_TEST_ID['form-status-error'],
+    )
 
     expect(formStatusError).toBeInTheDocument()
     expect(formStatusError).toHaveTextContent(
@@ -199,7 +207,9 @@ describe('Page: Sing-in', () => {
     makeSut()
     simulateValidSubmit()
 
-    const formStatusError = await screen.findByTestId('form-status-error')
+    const formStatusError = await screen.findByTestId(
+      FIELDS_TEST_ID['form-status-error'],
+    )
 
     expect(formStatusError).toBeInTheDocument()
     expect(formStatusError).toHaveTextContent(error.message)
@@ -225,7 +235,9 @@ describe('Page: Sing-in', () => {
     vi.spyOn(saveAccessTokenMock, 'save').mockRejectedValueOnce(new Error())
 
     simulateValidSubmit()
-    const formStatusError = await screen.findByTestId('form-status-error')
+    const formStatusError = await screen.findByTestId(
+      FIELDS_TEST_ID['form-status-error'],
+    )
     expect(formStatusError).toBeInTheDocument()
     expect(formStatusError).toHaveTextContent(
       'Something went wrong. Please try again.',
