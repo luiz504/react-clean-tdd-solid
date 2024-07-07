@@ -4,35 +4,46 @@ import { Link, useNavigate } from 'react-router-dom'
 import { cn } from '~/presentation/utils/cn'
 import { Header, Input, Footer, FormStatus } from '~/presentation/components'
 
+import { EmailInUserError } from '~/domain/errors'
 import { Validation } from '~/presentation/protocols/validation'
-import { Authentication, SaveAccessToken } from '~/domain/use-cases'
-import { InvalidCredentialsError } from '~/domain/errors'
+import { RegisterAccount, SaveAccessToken } from '~/domain/use-cases'
 
-type Props = {
-  validation: Validation
-  authentication: Authentication
-  saveAccessToken: SaveAccessToken
-}
 type Field = {
   value: string
   error?: string
 }
 type FormType = {
+  name: Field
   email: Field
   password: Field
+  passwordConfirmation: Field
   submitError?: string
   isSubmitting: boolean
 }
-export const SignIn: FC<Props> = ({
+type Props = {
+  validation: Validation
+  registerAccount: RegisterAccount
+  saveAccessToken: SaveAccessToken
+}
+export const SignUp: FC<Props> = ({
   validation,
-  authentication,
+  registerAccount,
   saveAccessToken,
 }) => {
+  const nameInputRef = useRef<HTMLInputElement>(null)
   const emailInputRef = useRef<HTMLInputElement>(null)
   const pwInputRef = useRef<HTMLInputElement>(null)
+  const pwConfirmationInputRef = useRef<HTMLInputElement>(null)
+
+  const navigate = useNavigate()
+
   const [formValue, setFormValue] = useState<FormType>({
     isSubmitting: false,
     submitError: undefined,
+    name: {
+      value: '',
+      error: undefined,
+    },
     email: {
       value: '',
       error: undefined,
@@ -41,13 +52,29 @@ export const SignIn: FC<Props> = ({
       value: '',
       error: undefined,
     },
+    passwordConfirmation: {
+      value: '',
+      error: undefined,
+    },
   })
-  const { submitError, isSubmitting, email, password } = formValue
-  const formData = { email: email.value, password: password.value }
-
-  const navigate = useNavigate()
-
-  const handleChange = (fieldName: 'email' | 'password', value: string) => {
+  const {
+    submitError,
+    isSubmitting,
+    name,
+    email,
+    password,
+    passwordConfirmation,
+  } = formValue
+  const formData = {
+    name: name.value,
+    email: email.value,
+    password: password.value,
+    passwordConfirmation: passwordConfirmation.value,
+  }
+  const handleChange = (
+    fieldName: 'name' | 'email' | 'password' | 'passwordConfirmation',
+    value: string,
+  ) => {
     const error = validation.validate(fieldName, {
       ...formData,
       [fieldName]: value,
@@ -63,7 +90,9 @@ export const SignIn: FC<Props> = ({
   }
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (isSubmitting || email.error || password.error) return
+    const hasError =
+      name.error || email.error || password.error || passwordConfirmation.error
+    if (isSubmitting || hasError) return
 
     try {
       setFormValue((old) => ({
@@ -71,10 +100,11 @@ export const SignIn: FC<Props> = ({
         isSubmitting: true,
         submitError: undefined,
       }))
-
-      const { accessToken } = await authentication.auth({
+      const { accessToken } = await registerAccount.register({
+        name: name.value,
         email: email.value,
         password: password.value,
+        passwordConfirmation: passwordConfirmation.value,
       })
 
       await saveAccessToken.save(accessToken)
@@ -83,7 +113,7 @@ export const SignIn: FC<Props> = ({
     } catch (err) {
       let msg = 'Something went wrong. Please try again.'
 
-      if (err instanceof InvalidCredentialsError) {
+      if (err instanceof EmailInUserError) {
         msg = err.message
       }
 
@@ -104,14 +134,26 @@ export const SignIn: FC<Props> = ({
           data-testid="form"
           className={cn(
             'flex w-full max-w-[400px] flex-col',
-            'mt-[10%] p-10',
+            'mt-[5%] p-10',
             'rounded-lg bg-white shadow-md',
           )}
           onSubmit={handleSubmit}
         >
           <h2 className="text-center text-xl font-bold uppercase text-primary-dark">
-            Sign In
+            Sign Up
           </h2>
+
+          <Input>
+            <Input.InputField
+              data-testid="name-input"
+              ref={nameInputRef}
+              type="text"
+              name="name"
+              placeholder="Name"
+              onChange={({ target }) => handleChange('name', target.value)}
+            />
+            <Input.Error data-testid="name-error" error={name.error} />
+          </Input>
           <Input>
             <Input.InputField
               data-testid="email-input"
@@ -135,6 +177,23 @@ export const SignIn: FC<Props> = ({
             />
             <Input.Error data-testid="pw-error" error={password.error} />
           </Input>
+          <Input>
+            <Input.InputField
+              data-testid="pw-confirmation-input"
+              ref={pwConfirmationInputRef}
+              type="password"
+              name="password-confirmation"
+              autoComplete="new-password"
+              placeholder="Confirm Password"
+              onChange={({ target }) =>
+                handleChange('passwordConfirmation', target.value)
+              }
+            />
+            <Input.Error
+              data-testid="pw-confirmation-error"
+              error={passwordConfirmation.error}
+            />
+          </Input>
 
           <button
             data-testid="submit-button"
@@ -148,15 +207,16 @@ export const SignIn: FC<Props> = ({
               'disabled:bg-disabled-bg disabled:text-disabled-color',
             ])}
           >
-            Enter
+            Register
           </button>
 
           <Link
-            data-testid="sign-up-link"
-            to="/sign-up"
+            replace
+            data-testid="sign-in-link"
+            to="/sign-in"
             className="mt-4 text-center lowercase text-primary hover:underline"
           >
-            Sign Up
+            Sign In
           </Link>
 
           <FormStatus error={submitError} isLoading={isSubmitting} />

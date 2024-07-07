@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker'
 import {
   HttpPostClient,
   HttpPostParams,
@@ -18,3 +19,8 @@ export class HttpPostClientSpy implements HttpPostClient {
     return this.response
   }
 }
+
+export const mockPostRequest = (): HttpPostParams<any> => ({
+  url: faker.internet.url(),
+  body: faker.finance.currency(),
+})

@@ -5,7 +5,7 @@ import { makeApiUrl } from '../../http/api-url-factory'
 
 export const makeRemoteAuthentication = (): Authentication => {
   return new RemoteAuthentication(
-    makeApiUrl('/login').toString(),
+    makeApiUrl('/api/login').toString(),
     makeAxiosHttpAdapter(),
   )
 }
