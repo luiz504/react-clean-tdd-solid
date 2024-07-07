@@ -1,16 +1,16 @@
 import { FC, ReactNode } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
-type Props = {
-  MakeSignIn: ReactNode
-  MakeSignUp: ReactNode
+type Factory = {
+  makeSignIn: ReactNode
+  makeSignUp: ReactNode
 }
-export const Router: FC<Props> = ({ MakeSignIn, MakeSignUp }) => {
+export const Router: FC<Factory> = (factory) => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/sign-in" element={MakeSignIn} />
-        <Route path="/sign-up" element={MakeSignUp} />
+        <Route path="/sign-in" element={factory.makeSignIn} />
+        <Route path="/sign-up" element={factory.makeSignUp} />
       </Routes>
     </BrowserRouter>
   )
