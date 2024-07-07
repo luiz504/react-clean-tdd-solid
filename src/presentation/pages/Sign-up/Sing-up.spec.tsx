@@ -9,6 +9,7 @@ import {
 } from '~/presentation/__test__'
 
 import { SignUp } from '.'
+import { EmailInUserError } from '~/domain/errors'
 
 const FIELDS_TEST_ID = {
   name: {
@@ -28,6 +29,8 @@ const FIELDS_TEST_ID = {
     error: 'pw-confirmation-error',
   },
   'submit-button': 'submit-button',
+  'form-status-error': 'form-status-error',
+  'form-status-spinner': 'form-status-spinner',
 } as const
 
 type SutParams = {
@@ -190,7 +193,7 @@ describe('Page: Sign-up', () => {
     })
   })
 
-  it('should call authentication only once', async () => {
+  it('should call registerAccount only once', async () => {
     const { registerAccountSpy } = makeSut()
     const { submitButton } = simulateValidSubmit()
 
@@ -201,13 +204,32 @@ describe('Page: Sign-up', () => {
     expect(registerAccountSpy.callsCount).toBe(1)
   })
 
-  it('should not call authentication if form is invalid', async () => {
+  it('should not call registerAccount if form is invalid', async () => {
     const { registerAccountSpy } = makeSut({
       validationError: faker.lorem.sentence(),
     })
-    populateInputField(FIELDS_TEST_ID.email.input, faker.internet.email())
+    populateInputField(FIELDS_TEST_ID.email.input, faker.lorem.sentence())
 
     fireEvent.submit(screen.getByTestId('form'))
     expect(registerAccountSpy.callsCount).toBe(0)
+  })
+
+  it('should display an error feedback if registerAccount fails', async () => {
+    const error = new EmailInUserError()
+    vi.spyOn(RegisterAccountSpy.prototype, 'register').mockRejectedValueOnce(
+      error,
+    )
+    makeSut()
+    simulateValidSubmit()
+
+    const formStatusError = await screen.findByTestId(
+      FIELDS_TEST_ID['form-status-error'],
+    )
+
+    expect(formStatusError).toBeInTheDocument()
+    expect(formStatusError).toHaveTextContent(error.message)
+    expect(
+      screen.queryByTestId(FIELDS_TEST_ID['form-status-spinner']),
+    ).not.toBeInTheDocument()
   })
 })
