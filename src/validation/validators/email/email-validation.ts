@@ -7,7 +7,10 @@ const complexEmailRegex =
 
 export class EmailValidation implements FieldValidation {
   constructor(readonly fieldName: string) {}
-  validate(fieldValue: string): Error | null {
+  validate(context: { [key: string]: unknown }): Error | null {
+    const fieldValue = context[this.fieldName]
+
+    if (typeof fieldValue !== 'string') return new InvalidFieldError()
     if (!fieldValue) return null
 
     return complexEmailRegex.test(fieldValue) ? null : new InvalidFieldError()

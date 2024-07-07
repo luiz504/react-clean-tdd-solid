@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker'
 import { InvalidFieldError } from '~/validation/errors'
 
 import { MinLengthValidation } from './min-length'
-const makeSut = (fieldName = faker.database.column(), length = 5) =>
+const makeSut = (fieldName: string, length = 5) =>
   new MinLengthValidation(fieldName, length)
 
 describe('MinLengthValidation', () => {
@@ -13,18 +13,20 @@ describe('MinLengthValidation', () => {
     expect(sut.fieldName).toBe(fieldName)
   })
   it('Should return error if field is invalid', () => {
-    const sut = makeSut()
-    const error = sut.validate(
-      faker.string.alphanumeric({ length: { min: 0, max: 4 } }),
-    )
+    const fieldName = faker.database.column()
+    const sut = makeSut(fieldName)
+    const error = sut.validate({
+      [fieldName]: faker.string.alphanumeric({ length: { min: 0, max: 4 } }),
+    })
 
     expect(error).toEqual(new InvalidFieldError())
   })
   it('Should return null if field is valid', () => {
-    const sut = makeSut()
-    const error = sut.validate(
-      faker.string.alphanumeric({ length: { min: 5, max: 10 } }),
-    )
+    const fieldName = faker.database.column()
+    const sut = makeSut(fieldName)
+    const error = sut.validate({
+      [fieldName]: faker.string.alphanumeric({ length: { min: 5, max: 10 } }),
+    })
 
     expect(error).toBeNull()
   })

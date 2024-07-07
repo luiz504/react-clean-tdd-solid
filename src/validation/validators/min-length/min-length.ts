@@ -7,7 +7,10 @@ export class MinLengthValidation implements FieldValidation {
     private readonly minLength: number,
   ) {}
 
-  validate(fieldValue: string): Error | null {
+  validate(context: { [key: string]: unknown }): Error | null {
+    const fieldValue = context[this.fieldName]
+
+    if (typeof fieldValue !== 'string') return new InvalidFieldError()
     return fieldValue.length >= this.minLength ? null : new InvalidFieldError()
   }
 }

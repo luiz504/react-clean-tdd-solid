@@ -43,11 +43,15 @@ export const SignIn: FC<Props> = ({
     },
   })
   const { submitError, isSubmitting, email, password } = formValue
+  const formData = { email: email.value, password: password.value }
 
   const navigate = useNavigate()
 
   const handleChange = (fieldName: 'email' | 'password', value: string) => {
-    const error = validation.validate(fieldName, value)
+    const error = validation.validate(fieldName, {
+      ...formData,
+      [fieldName]: value,
+    })
 
     setFormValue((old) => ({
       ...old,

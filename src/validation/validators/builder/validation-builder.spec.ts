@@ -6,6 +6,7 @@ import {
 } from '~/validation/validators'
 
 import { ValidationBuilder } from './validation-builder'
+import { CompareFieldsValidation } from '../compare-fields/compare-fields-validation'
 
 describe('ValidationBuilder', () => {
   it('should return RequiredFiledValidation', () => {
@@ -26,6 +27,16 @@ describe('ValidationBuilder', () => {
       .build()
     expect(validations).toEqual([
       new MinLengthValidation(fieldName, fieldLength),
+    ])
+  })
+  it('should return CompareFieldsValidation', () => {
+    const fieldName = faker.database.column()
+    const fieldToCompare = faker.database.column()
+    const validations = ValidationBuilder.field(fieldName)
+      .sameAs(fieldToCompare)
+      .build()
+    expect(validations).toEqual([
+      new CompareFieldsValidation(fieldName, fieldToCompare),
     ])
   })
   it('should return a sequence of validations', () => {

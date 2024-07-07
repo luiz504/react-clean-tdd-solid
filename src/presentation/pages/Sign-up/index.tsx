@@ -65,12 +65,20 @@ export const SignUp: FC<Props> = ({
     password,
     passwordConfirmation,
   } = formValue
-
+  const formData = {
+    name: name.value,
+    email: email.value,
+    password: password.value,
+    passwordConfirmation: passwordConfirmation.value,
+  }
   const handleChange = (
     fieldName: 'name' | 'email' | 'password' | 'passwordConfirmation',
     value: string,
   ) => {
-    const error = validation.validate(fieldName, value)
+    const error = validation.validate(fieldName, {
+      ...formData,
+      [fieldName]: value,
+    })
 
     setFormValue((old) => ({
       ...old,

@@ -20,7 +20,9 @@ describe('ValidationComposite', () => {
     fieldValidationSpies[0].error = new Error(error1)
     fieldValidationSpies[1].error = new Error(faker.lorem.word())
 
-    const error = sut.validate(fieldName, faker.database.column())
+    const error = sut.validate(fieldName, {
+      [fieldName]: faker.database.column(),
+    })
     expect(error).toBe(error1)
   })
 
@@ -29,7 +31,9 @@ describe('ValidationComposite', () => {
 
     const { sut } = makeSut(fieldName)
 
-    const error = sut.validate(fieldName, faker.database.column())
+    const error = sut.validate(fieldName, {
+      [fieldName]: faker.database.column(),
+    })
     expect(error).toBeNull()
   })
 })
