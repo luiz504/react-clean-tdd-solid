@@ -214,7 +214,7 @@ describe('Page: Sign-up', () => {
     expect(registerAccountSpy.callsCount).toBe(0)
   })
 
-  it('should display an error feedback if registerAccount fails', async () => {
+  it('should display an expected error feedback if registerAccount fails', async () => {
     const error = new EmailInUserError()
     vi.spyOn(RegisterAccountSpy.prototype, 'register').mockRejectedValueOnce(
       error,
@@ -228,6 +228,27 @@ describe('Page: Sign-up', () => {
 
     expect(formStatusError).toBeInTheDocument()
     expect(formStatusError).toHaveTextContent(error.message)
+    expect(
+      screen.queryByTestId(FIELDS_TEST_ID['form-status-spinner']),
+    ).not.toBeInTheDocument()
+  })
+
+  it('should display an error feedback if any other non-expected error occurs', async () => {
+    const error = new Error(faker.lorem.sentence())
+    vi.spyOn(RegisterAccountSpy.prototype, 'register').mockRejectedValueOnce(
+      error,
+    )
+    makeSut()
+    simulateValidSubmit()
+
+    const formStatusError = await screen.findByTestId(
+      FIELDS_TEST_ID['form-status-error'],
+    )
+
+    expect(formStatusError).toBeInTheDocument()
+    expect(formStatusError).toHaveTextContent(
+      'Something went wrong. Please try again.',
+    )
     expect(
       screen.queryByTestId(FIELDS_TEST_ID['form-status-spinner']),
     ).not.toBeInTheDocument()
