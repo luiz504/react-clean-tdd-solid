@@ -203,6 +203,7 @@ export const SignUp: FC<Props> = ({
           </button>
 
           <Link
+            replace
             data-testid="sign-in-link"
             to="/sign-in"
             className="mt-4 text-center lowercase text-primary hover:underline"
