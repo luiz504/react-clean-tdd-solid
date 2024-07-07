@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { cn } from '~/presentation/utils/cn'
 import { Header, Input, Footer, FormStatus } from '~/presentation/components'
 
-import { InvalidCredentialsError } from '~/domain/errors'
+import { EmailInUserError } from '~/domain/errors'
 import { Validation } from '~/presentation/protocols/validation'
 import { RegisterAccount } from '~/domain/use-cases'
 
@@ -98,7 +98,7 @@ export const SignUp: FC<Props> = ({ validation, registerAccount }) => {
     } catch (err) {
       let msg = 'Something went wrong. Please try again.'
 
-      if (err instanceof InvalidCredentialsError) {
+      if (err instanceof EmailInUserError) {
         msg = err.message
       }
 
