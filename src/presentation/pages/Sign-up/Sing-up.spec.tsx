@@ -122,6 +122,7 @@ describe('Page: Sign-up', () => {
     const link = screen.getByTestId('sign-in-link')
     expect(link).toBeVisible()
     expect(link).toHaveAttribute('href', '/sign-in')
+    expect(link).toHaveRole('link')
 
     const formStatus = screen.getByTestId('form-status')
     expect(formStatus).toBeInTheDocument()
