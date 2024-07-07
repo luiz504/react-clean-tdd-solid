@@ -1,12 +1,12 @@
 import { FC, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { cn } from '~/presentation/utils/cn'
 import { Header, Input, Footer, FormStatus } from '~/presentation/components'
 
 import { EmailInUserError } from '~/domain/errors'
 import { Validation } from '~/presentation/protocols/validation'
-import { RegisterAccount } from '~/domain/use-cases'
+import { RegisterAccount, SaveAccessToken } from '~/domain/use-cases'
 
 type Field = {
   value: string
@@ -23,12 +23,20 @@ type FormType = {
 type Props = {
   validation: Validation
   registerAccount: RegisterAccount
+  saveAccessToken: SaveAccessToken
 }
-export const SignUp: FC<Props> = ({ validation, registerAccount }) => {
+export const SignUp: FC<Props> = ({
+  validation,
+  registerAccount,
+  saveAccessToken,
+}) => {
   const nameInputRef = useRef<HTMLInputElement>(null)
   const emailInputRef = useRef<HTMLInputElement>(null)
   const pwInputRef = useRef<HTMLInputElement>(null)
   const pwConfirmationInputRef = useRef<HTMLInputElement>(null)
+
+  const navigate = useNavigate()
+
   const [formValue, setFormValue] = useState<FormType>({
     isSubmitting: false,
     submitError: undefined,
@@ -84,17 +92,16 @@ export const SignUp: FC<Props> = ({ validation, registerAccount }) => {
         isSubmitting: true,
         submitError: undefined,
       }))
-      // const { accessToken } =
-      await registerAccount.register({
+      const { accessToken } = await registerAccount.register({
         name: name.value,
         email: email.value,
         password: password.value,
         passwordConfirmation: passwordConfirmation.value,
       })
 
-      // await saveAccessToken.save(accessToken)
+      await saveAccessToken.save(accessToken)
 
-      // navigate('/', { replace: true })
+      navigate('/', { replace: true })
     } catch (err) {
       let msg = 'Something went wrong. Please try again.'
 
