@@ -126,7 +126,7 @@ export const SignUp: FC<Props> = ({
           data-testid="form"
           className={cn(
             'flex w-full max-w-[400px] flex-col',
-            'mt-[10%] p-10',
+            'mt-[5%] p-10',
             'rounded-lg bg-white shadow-md',
           )}
           onSubmit={handleSubmit}
