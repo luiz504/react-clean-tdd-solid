@@ -1,8 +1,5 @@
 {
-  "extends": [
-    "@rocketseat/eslint-config/react",
-    "plugin:vitest/legacy-recommended"
-  ],
+  "extends": ["@rocketseat/eslint-config/react"],
   "overrides": [
     {
       // 3) Now we enable eslint-plugin-testing-library rules or preset only for matching testing files!
@@ -10,7 +7,8 @@
       "excludedFiles": ["cypress/**"],
       "extends": [
         "plugin:testing-library/react",
-        "plugin:jest-dom/recommended"
+        "plugin:jest-dom/recommended",
+        "plugin:vitest/legacy-recommended"
       ],
       "rules": {
         "@typescript-eslint/no-explicit-any": "off",
@@ -19,7 +17,7 @@
       }
     },
     {
-      "files": ["cypress/**/?(*.)+(spec|test).[jt]s?(x)"],
+      "files": ["cypress/**/?(*.)+(spec|test|cy).[jt]s?(x)"],
       "extends": ["plugin:cypress/recommended"],
       "env": {
         "cypress/globals": true
