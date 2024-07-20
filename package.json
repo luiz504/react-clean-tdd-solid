@@ -12,6 +12,7 @@
     "lint-ts": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:cypress": "cypress open",
     "test:ci": "vitest run --coverage"
   },
   "dependencies": {
@@ -35,7 +36,9 @@
     "@vitest/coverage-istanbul": "^1.6.0",
     "autoprefixer": "^10.4.19",
     "clsx": "^2.1.1",
+    "cypress": "^13.13.0",
     "eslint": "^8.57.0",
+    "eslint-plugin-cypress": "^3.3.0",
     "eslint-plugin-jest-dom": "^5.4.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
