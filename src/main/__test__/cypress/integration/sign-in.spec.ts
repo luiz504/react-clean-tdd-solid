@@ -5,14 +5,18 @@ const elementsId = {
   pwInput: 'pw-input',
   pwError: 'pw-error',
   submitButton: 'submit-button',
+  form: 'form',
   spinner: 'form-status-spinner',
   formError: 'form-status-error',
 } as const
+
+const baseUrl = Cypress.config().baseUrl
 
 describe('Sign in', () => {
   beforeEach(() => {
     cy.visit('/sign-in')
   })
+
   it('should render page correctly with initial states', () => {
     cy.getByTestId(elementsId.emailInput)
       .should('have.attr', 'type', 'email')
@@ -35,15 +39,26 @@ describe('Sign in', () => {
     cy.getByTestId(elementsId.spinner).should('not.exist')
     cy.getByTestId(elementsId.formError).should('not.exist')
   })
-  it('should show errors if form is invalid', () => {
-    cy.getByTestId(elementsId.emailInput).type(faker.lorem.word())
-    cy.getByTestId(elementsId.emailError).should('have.text', 'Invalid field')
 
+  it('should show error if invalid credentials are provided', () => {
+    cy.getByTestId(elementsId.emailInput).type(faker.internet.email())
     cy.getByTestId(elementsId.pwInput).type(
-      faker.lorem.word({ length: { min: 0, max: 4 } }),
+      faker.lorem.word({ length: { min: 5, max: 30 } }),
     )
-    cy.getByTestId(elementsId.pwError).should('have.text', 'Invalid field')
-    cy.getByTestId(elementsId.spinner).should('not.exist')
+    cy.getByTestId(elementsId.submitButton).click()
+
+    cy.getByTestId(elementsId.spinner).should('exist')
     cy.getByTestId(elementsId.formError).should('not.exist')
+    cy.getByTestId(elementsId.submitButton).should('be.disabled')
+
+    cy.getByTestId(elementsId.spinner).should('not.exist')
+    cy.getByTestId(elementsId.formError).should('exist')
+    cy.getByTestId(elementsId.formError).should(
+      'have.text',
+      'Invalid credentials',
+    )
+    cy.getByTestId(elementsId.submitButton).should('be.enabled')
+
+    cy.url().should('eq', `${baseUrl}/sign-in`)
   })
 })
