@@ -128,4 +128,28 @@ describe('Sign in', () => {
 
     cy.url().should('eq', `${baseUrl}/sign-in`)
   })
+
+  it('should save access token and redirect on success', () => {
+    cy.intercept(
+      {
+        method: 'POST',
+        url: /login/,
+      },
+      {
+        statusCode: 200,
+        body: { accessToken: faker.string.uuid() },
+        delay: 200,
+      },
+    )
+    cy.getByTestId(elementsId.emailInput).type('johndoe@example.com')
+    cy.getByTestId(elementsId.pwInput).type('123456')
+    cy.getByTestId(elementsId.submitButton).click()
+
+    cy.getByTestId(elementsId.spinner).should('exist')
+    cy.getByTestId(elementsId.formError).should('not.exist')
+    cy.getByTestId(elementsId.submitButton).should('be.disabled')
+
+    cy.url().should('eq', `${baseUrl}/`)
+    cy.window().then((w) => assert.isOk(w.localStorage.getItem('accessToken')))
+  })
 })
