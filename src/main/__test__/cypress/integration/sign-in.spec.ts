@@ -126,6 +126,22 @@ describe('Sign in', () => {
 
     cy.url().should('eq', `${baseUrl}/sign-in`)
   })
+  it.only('should not make multiple requests', () => {
+    cy.intercept(
+      {
+        method: 'POST',
+        url: /login/,
+      },
+      {
+        statusCode: 400,
+        delay: 500,
+      },
+    ).as('requestAuthenticate')
+    fillAndSubmitForm()
+    cy.getByTestId(elementsId.form).submit()
+
+    cy.get('@requestAuthenticate.all').should('have.length', 1)
+  })
 
   it('should save access token and redirect on success', () => {
     cy.intercept(
