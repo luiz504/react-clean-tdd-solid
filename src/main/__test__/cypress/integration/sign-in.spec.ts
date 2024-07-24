@@ -81,4 +81,51 @@ describe('Sign in', () => {
 
     cy.url().should('eq', `${baseUrl}/sign-in`)
   })
+
+  it('should show UnexpectedError if any general error occurs', () => {
+    cy.intercept(
+      {
+        method: 'POST',
+        url: /login/,
+      },
+      {
+        statusCode: faker.number.int({ min: 402, max: 600 }),
+        delay: 200,
+      },
+    )
+    cy.getByTestId(elementsId.emailInput).type('johndoe@example.com')
+    cy.getByTestId(elementsId.pwInput).type(faker.internet.password())
+    cy.getByTestId(elementsId.submitButton).click()
+
+    cy.getByTestId(elementsId.spinner).should('not.exist')
+    cy.getByTestId(elementsId.formError)
+      .should('exist')
+      .should('have.text', 'Something went wrong. Please try again.')
+
+    cy.url().should('eq', `${baseUrl}/sign-in`)
+  })
+
+  it('should show UnexpectedError if status 200 but unexpected response', () => {
+    cy.intercept(
+      {
+        method: 'POST',
+        url: /login/,
+      },
+      {
+        statusCode: 200,
+        body: { invalidProperty: faker.string.uuid() },
+        delay: 200,
+      },
+    )
+    cy.getByTestId(elementsId.emailInput).type('johndoe@example.com')
+    cy.getByTestId(elementsId.pwInput).type(faker.internet.password())
+    cy.getByTestId(elementsId.submitButton).click()
+
+    cy.getByTestId(elementsId.spinner).should('not.exist')
+    cy.getByTestId(elementsId.formError)
+      .should('exist')
+      .should('have.text', 'Something went wrong. Please try again.')
+
+    cy.url().should('eq', `${baseUrl}/sign-in`)
+  })
 })
