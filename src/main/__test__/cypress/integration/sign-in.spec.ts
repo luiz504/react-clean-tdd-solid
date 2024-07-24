@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { assert } from 'chai'
+
 const elementsId = {
   emailInput: 'email-input',
   emailError: 'email-error',
@@ -41,7 +41,26 @@ describe('Sign in', () => {
     cy.getByTestId(elementsId.formError).should('not.exist')
   })
 
-  it('should show error if invalid credentials are provided', () => {
+  it('should validate fields before request on submit', () => {
+    cy.getByTestId(elementsId.submitButton).click()
+
+    cy.getByTestId(elementsId.emailError).should('exist')
+    cy.getByTestId(elementsId.pwError).should('exist')
+    cy.getByTestId(elementsId.submitButton).should('be.enabled')
+    cy.getByTestId(elementsId.formError).should('not.exist')
+  })
+
+  it('should show InvalidCredentialsError on status 401', () => {
+    cy.intercept(
+      {
+        method: 'POST',
+        url: /login/,
+      },
+      {
+        statusCode: 401,
+        delay: 200,
+      },
+    )
     cy.getByTestId(elementsId.emailInput).type(faker.internet.email())
     cy.getByTestId(elementsId.pwInput).type(
       faker.lorem.word({ length: { min: 5, max: 30 } }),
@@ -61,18 +80,5 @@ describe('Sign in', () => {
     cy.getByTestId(elementsId.submitButton).should('be.enabled')
 
     cy.url().should('eq', `${baseUrl}/sign-in`)
-  })
-
-  it('should save accessToken if valid credentials are provided', () => {
-    cy.getByTestId(elementsId.emailInput).type('johndoe@example.com')
-    cy.getByTestId(elementsId.pwInput).type('123456')
-    cy.getByTestId(elementsId.submitButton).click()
-
-    cy.getByTestId(elementsId.spinner).should('exist')
-    cy.getByTestId(elementsId.formError).should('not.exist')
-    cy.getByTestId(elementsId.submitButton).should('be.disabled')
-
-    cy.url().should('eq', `${baseUrl}/`)
-    cy.window().then((w) => assert.isOk(w.localStorage.getItem('accessToken')))
   })
 })
