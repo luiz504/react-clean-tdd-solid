@@ -13,6 +13,12 @@ const elementsId = {
 
 const baseUrl = Cypress.config().baseUrl
 
+const fillAndSubmitForm = () => {
+  cy.getByTestId(elementsId.emailInput).type(faker.internet.email())
+  cy.getByTestId(elementsId.pwInput).type(faker.internet.password())
+  cy.getByTestId(elementsId.submitButton).click()
+}
+
 describe('Sign in', () => {
   beforeEach(() => {
     cy.visit('/sign-in')
@@ -61,11 +67,7 @@ describe('Sign in', () => {
         delay: 200,
       },
     )
-    cy.getByTestId(elementsId.emailInput).type(faker.internet.email())
-    cy.getByTestId(elementsId.pwInput).type(
-      faker.lorem.word({ length: { min: 5, max: 30 } }),
-    )
-    cy.getByTestId(elementsId.submitButton).click()
+    fillAndSubmitForm()
 
     cy.getByTestId(elementsId.spinner).should('exist')
     cy.getByTestId(elementsId.formError).should('not.exist')
@@ -93,9 +95,7 @@ describe('Sign in', () => {
         delay: 200,
       },
     )
-    cy.getByTestId(elementsId.emailInput).type('johndoe@example.com')
-    cy.getByTestId(elementsId.pwInput).type(faker.internet.password())
-    cy.getByTestId(elementsId.submitButton).click()
+    fillAndSubmitForm()
 
     cy.getByTestId(elementsId.spinner).should('not.exist')
     cy.getByTestId(elementsId.formError)
@@ -117,9 +117,7 @@ describe('Sign in', () => {
         delay: 200,
       },
     )
-    cy.getByTestId(elementsId.emailInput).type('johndoe@example.com')
-    cy.getByTestId(elementsId.pwInput).type(faker.internet.password())
-    cy.getByTestId(elementsId.submitButton).click()
+    fillAndSubmitForm()
 
     cy.getByTestId(elementsId.spinner).should('not.exist')
     cy.getByTestId(elementsId.formError)
@@ -141,9 +139,7 @@ describe('Sign in', () => {
         delay: 200,
       },
     )
-    cy.getByTestId(elementsId.emailInput).type('johndoe@example.com')
-    cy.getByTestId(elementsId.pwInput).type('123456')
-    cy.getByTestId(elementsId.submitButton).click()
+    fillAndSubmitForm()
 
     cy.getByTestId(elementsId.spinner).should('exist')
     cy.getByTestId(elementsId.formError).should('not.exist')
