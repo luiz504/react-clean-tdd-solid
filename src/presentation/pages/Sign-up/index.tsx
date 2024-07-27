@@ -88,10 +88,44 @@ export const SignUp: FC<Props> = ({
       },
     }))
   }
+
+  const validateFormFields = () => {
+    const name = validation.validate('name', formData)
+    const email = validation.validate('email', formData)
+    const password = validation.validate('password', formData)
+    const passwordConfirmation = validation.validate(
+      'passwordConfirmation',
+      formData,
+    )
+
+    if (email || password) {
+      setFormValue((old) => ({
+        ...old,
+        name: {
+          ...old.name,
+          error: name || undefined,
+        },
+        email: {
+          ...old.email,
+          error: email || undefined,
+        },
+        password: {
+          ...old.password,
+          error: password || undefined,
+        },
+        passwordConfirmation: {
+          ...old.passwordConfirmation,
+          error: passwordConfirmation || undefined,
+        },
+      }))
+    }
+    return { hasError: email || password }
+  }
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const hasError =
-      name.error || email.error || password.error || passwordConfirmation.error
+
+    const { hasError } = validateFormFields()
+
     if (isSubmitting || hasError) return
 
     try {
