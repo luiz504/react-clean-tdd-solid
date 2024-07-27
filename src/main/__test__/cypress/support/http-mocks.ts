@@ -6,3 +6,10 @@ export const mockSignInApiCall = (response?: RouteHandler) => {
     ...(response as object),
   })
 }
+
+export const mockSignUpApiCall = (response?: RouteHandler) => {
+  return cy.intercept('POST', /signup/, {
+    delay: 200,
+    ...(response as object),
+  })
+}
