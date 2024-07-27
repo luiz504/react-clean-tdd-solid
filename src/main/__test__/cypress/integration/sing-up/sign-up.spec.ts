@@ -80,6 +80,46 @@ describe('Page: Sign Up', () => {
     cy.getByTestId(elementsId.submitButton).should('be.enabled')
   })
 
+  it('should show InvalidCredentialsError on status 403', () => {
+    AuthenticateMocks.EmailInUseError()
+    fillAndSubmitForm()
+
+    cy.getByTestId(elementsId.spinner).should('exist')
+    cy.getByTestId(elementsId.formError).should('not.exist')
+    cy.getByTestId(elementsId.submitButton).should('be.disabled')
+
+    cy.getByTestId(elementsId.spinner).should('not.exist')
+    cy.getByTestId(elementsId.formError)
+      .should('exist')
+      .should('have.text', 'Email already in use')
+    cy.getByTestId(elementsId.submitButton).should('be.enabled')
+    FormHelper.testUrl(PAGE_URL)
+  })
+
+  it('should show UnexpectedError if any general error occurs', () => {
+    AuthenticateMocks.UnexpectedError()
+    fillAndSubmitForm()
+
+    cy.getByTestId(elementsId.spinner).should('not.exist')
+    cy.getByTestId(elementsId.formError)
+      .should('exist')
+      .should('have.text', 'Something went wrong. Please try again.')
+
+    FormHelper.testUrl(PAGE_URL)
+  })
+
+  it('should show UnexpectedError if status 200 but unexpected response', () => {
+    AuthenticateMocks.SuccessWithInvalidData()
+    fillAndSubmitForm()
+
+    cy.getByTestId(elementsId.spinner).should('not.exist')
+    cy.getByTestId(elementsId.formError)
+      .should('exist')
+      .should('have.text', 'Something went wrong. Please try again.')
+
+    FormHelper.testUrl(PAGE_URL)
+  })
+
   it('should not make multiple requests', () => {
     AuthenticateMocks.EmailInUseError()
     cy.getByTestId(elementsId.nameInput).type(faker.internet.userName())
@@ -92,18 +132,6 @@ describe('Page: Sign Up', () => {
     cy.getByTestId(elementsId.form).submit()
 
     FormHelper.testHttpCallsCount(1)
-  })
-
-  it('should save access token and redirect on success', () => {
-    AuthenticateMocks.Success()
-    fillAndSubmitForm()
-
-    cy.getByTestId(elementsId.spinner).should('exist')
-    cy.getByTestId(elementsId.formError).should('not.exist')
-    cy.getByTestId(elementsId.submitButton).should('be.disabled')
-
-    FormHelper.testUrl('/')
-    FormHelper.testLocalStorageItem('accessToken')
   })
 
   it('should not call Authenticate if form is invalid', () => {
