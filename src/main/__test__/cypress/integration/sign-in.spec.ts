@@ -126,7 +126,8 @@ describe('Sign in', () => {
 
     cy.url().should('eq', `${baseUrl}/sign-in`)
   })
-  it.only('should not make multiple requests', () => {
+
+  it('should not make multiple requests', () => {
     cy.intercept(
       {
         method: 'POST',
@@ -137,7 +138,10 @@ describe('Sign in', () => {
         delay: 500,
       },
     ).as('requestAuthenticate')
-    fillAndSubmitForm()
+    cy.getByTestId(elementsId.emailInput).type(faker.internet.email())
+    cy.getByTestId(elementsId.pwInput).type(faker.internet.password())
+    cy.getByTestId(elementsId.pwInput).type(`{enter}`)
+
     cy.getByTestId(elementsId.form).submit()
 
     cy.get('@requestAuthenticate.all').should('have.length', 1)
@@ -163,5 +167,27 @@ describe('Sign in', () => {
 
     cy.url().should('eq', `${baseUrl}/`)
     cy.window().then((w) => assert.isOk(w.localStorage.getItem('accessToken')))
+  })
+
+  it('should not call Authenticate if form is invalid', () => {
+    cy.intercept(
+      {
+        method: 'POST',
+        url: /login/,
+      },
+      {
+        statusCode: 200,
+        body: { accessToken: faker.string.uuid() },
+        delay: 200,
+      },
+    ).as('requestAuthenticate')
+
+    cy.getByTestId(elementsId.emailInput).type(faker.internet.email())
+    cy.getByTestId(elementsId.pwInput).type(
+      faker.lorem.word({ length: { min: 0, max: 4 } }),
+    )
+    cy.getByTestId(elementsId.submitButton).click()
+
+    cy.get('@requestAuthenticate.all').should('have.length', 0)
   })
 })
