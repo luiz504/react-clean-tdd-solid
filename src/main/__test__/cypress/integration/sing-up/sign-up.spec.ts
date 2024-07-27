@@ -63,4 +63,16 @@ describe('Page: Sign Up', () => {
     cy.getByTestId(elementsId.spinner).should('not.exist')
     cy.getByTestId(elementsId.formError).should('not.exist')
   })
+
+  it('should validate fields before request on submit', () => {
+    cy.getByTestId(elementsId.submitButton).click()
+
+    cy.getByTestId(elementsId.submitButton).should('be.enabled')
+
+    cy.getByTestId(elementsId.nameError).should('exist')
+    cy.getByTestId(elementsId.emailError).should('exist')
+    cy.getByTestId(elementsId.pwError).should('exist')
+    cy.getByTestId(elementsId.pwConfirmationError).should('exist')
+    cy.getByTestId(elementsId.formError).should('not.exist')
+  })
 })
