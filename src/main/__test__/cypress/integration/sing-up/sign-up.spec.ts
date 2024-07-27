@@ -134,6 +134,18 @@ describe('Page: Sign Up', () => {
     FormHelper.testHttpCallsCount(1)
   })
 
+  it('should save access token and redirect on success', () => {
+    AuthenticateMocks.Success()
+    fillAndSubmitForm()
+
+    cy.getByTestId(elementsId.spinner).should('exist')
+    cy.getByTestId(elementsId.formError).should('not.exist')
+    cy.getByTestId(elementsId.submitButton).should('be.disabled')
+
+    FormHelper.testUrl('/')
+    FormHelper.testLocalStorageItem('accessToken')
+  })
+
   it('should not call Authenticate if form is invalid', () => {
     AuthenticateMocks.Success()
     cy.getByTestId(elementsId.nameInput).type(faker.internet.userName())
