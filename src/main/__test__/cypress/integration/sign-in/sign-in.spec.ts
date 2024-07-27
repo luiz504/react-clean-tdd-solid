@@ -18,7 +18,7 @@ const fillAndSubmitForm = () => {
   cy.getByTestId(elementsId.submitButton).click()
 }
 
-describe('Sign in', () => {
+describe('Page: Sign in', () => {
   beforeEach(() => {
     cy.visit('/sign-in')
   })
