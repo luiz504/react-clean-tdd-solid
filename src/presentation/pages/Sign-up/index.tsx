@@ -98,7 +98,7 @@ export const SignUp: FC<Props> = ({
       formData,
     )
 
-    if (email || password) {
+    if (name || email || password || passwordConfirmation) {
       setFormValue((old) => ({
         ...old,
         name: {
@@ -119,7 +119,7 @@ export const SignUp: FC<Props> = ({
         },
       }))
     }
-    return { hasError: email || password }
+    return { hasError: name || email || password || passwordConfirmation }
   }
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
