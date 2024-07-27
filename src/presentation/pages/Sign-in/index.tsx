@@ -13,6 +13,7 @@ type Props = {
   authentication: Authentication
   saveAccessToken: SaveAccessToken
 }
+type FieldName = 'email' | 'password'
 type Field = {
   value: string
   error?: string
@@ -47,7 +48,7 @@ export const SignIn: FC<Props> = ({
 
   const navigate = useNavigate()
 
-  const handleChange = (fieldName: 'email' | 'password', value: string) => {
+  const handleChange = (fieldName: FieldName, value: string) => {
     const error = validation.validate(fieldName, {
       ...formData,
       [fieldName]: value,
@@ -61,9 +62,30 @@ export const SignIn: FC<Props> = ({
       },
     }))
   }
+  const validateFormFields = () => {
+    const email = validation.validate('email', formData)
+    const password = validation.validate('password', formData)
+
+    if (email || password) {
+      setFormValue((old) => ({
+        ...old,
+        email: {
+          ...old.email,
+          error: email || undefined,
+        },
+        password: {
+          ...old.password,
+          error: password || undefined,
+        },
+      }))
+    }
+    return { hasError: email || password }
+  }
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (isSubmitting || email.error || password.error) return
+    const { hasError } = validateFormFields()
+
+    if (isSubmitting || hasError) return
 
     try {
       setFormValue((old) => ({

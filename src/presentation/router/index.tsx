@@ -11,6 +11,14 @@ export const Router: FC<Factory> = (factory) => {
       <Routes>
         <Route path="/sign-in" element={factory.makeSignIn} />
         <Route path="/sign-up" element={factory.makeSignUp} />
+        <Route
+          path="*"
+          element={
+            <div className="flex flex-1 items-center justify-center text-3xl font-semibold text-primary">
+              Page not found
+            </div>
+          }
+        />
       </Routes>
     </BrowserRouter>
   )

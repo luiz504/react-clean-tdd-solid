@@ -31,5 +31,6 @@
     }
   },
   "include": ["src", "vitest.setup.mts", "src/vite-env.d.ts"],
+  "exclude": ["**/node_modules/**", "**/dist/**", "**/cypress/**"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
