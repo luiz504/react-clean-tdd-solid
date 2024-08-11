@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 
-import { mockPostRequest } from '~/data/__test__'
+import { mockGetRequest, mockPostRequest } from '~/data/__test__'
 
 import { mockAxios, mockHttpResponse } from '~/infra/__test__'
 
@@ -76,6 +76,16 @@ describe('AxiosHttpAdapter', () => {
         statusCode: mockedErrorResponse.status,
         body: mockedErrorResponse.data,
       })
+    })
+  })
+  describe('get', () => {
+    it('Should call axios.get with correct values', async () => {
+      const request = mockGetRequest()
+      const { sut, mockedAxios } = makeSut()
+
+      await sut.get(request)
+
+      expect(mockedAxios.get).toHaveBeenCalledWith(request.url)
     })
   })
 })
