@@ -1,12 +1,12 @@
 import { faker } from '@faker-js/faker'
+import { AxiosError } from 'axios'
 
 import { mockGetRequest, mockPostRequest } from '~/data/__test__'
-
 import { mockAxios, mockHttpResponse } from '~/infra/__test__'
 
-import { AxiosHttpAdapter } from './axios-adapter'
-import { AxiosError } from 'axios'
 import { HttpStatusCode } from '~/data/protocols/http'
+
+import { AxiosHttpAdapter } from './axios-adapter'
 
 vi.mock('axios')
 
@@ -113,7 +113,6 @@ describe('AxiosHttpAdapter', () => {
         statusCode: HttpStatusCode.serverError,
       })
     })
-
     it('should return correct response on Failure with AxiosResponse on axios.post', async () => {
       const { sut, mockedAxios } = makeSut()
 

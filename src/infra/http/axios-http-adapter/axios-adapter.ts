@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 import {
   HttpGetParams,
   HttpPostClient,
@@ -12,20 +12,9 @@ export class AxiosHttpAdapter implements HttpPostClient, HttpPostClient {
     try {
       const response = await axios.post(params.url, params.body)
 
-      return {
-        statusCode: response.status,
-        body: response.data,
-      }
+      return this.adaptResponse(response)
     } catch (err) {
-      if (err instanceof AxiosError && err.response) {
-        return {
-          statusCode: err.response.status,
-          body: err.response.data,
-        }
-      }
-      return {
-        statusCode: HttpStatusCode.serverError,
-      }
+      return this.adaptError(err)
     }
   }
 
@@ -33,20 +22,28 @@ export class AxiosHttpAdapter implements HttpPostClient, HttpPostClient {
     try {
       const response = await axios.get(params.url)
 
-      return {
-        statusCode: response.status,
-        body: response.data,
-      }
+      return this.adaptResponse(response)
     } catch (err) {
-      if (err instanceof AxiosError && err.response) {
-        return {
-          statusCode: err.response.status,
-          body: err.response.data,
-        }
-      }
+      return this.adaptError(err)
+    }
+  }
+
+  private adaptResponse(axiosResponse: AxiosResponse): HttpResponse {
+    return {
+      statusCode: axiosResponse.status,
+      body: axiosResponse.data,
+    }
+  }
+
+  private adaptError(err: unknown): HttpResponse {
+    if (err instanceof AxiosError && err.response) {
       return {
-        statusCode: HttpStatusCode.serverError,
+        statusCode: err.response.status,
+        body: err.response.data,
       }
+    }
+    return {
+      statusCode: HttpStatusCode.serverError,
     }
   }
 }
