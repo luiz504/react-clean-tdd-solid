@@ -1,4 +1,5 @@
-import { HttpGetClient } from '~/data/protocols/http'
+import { HttpGetClient, HttpStatusCode } from '~/data/protocols/http'
+import { UnexpectedError } from '~/domain/errors'
 import { SurveyModel } from '~/domain/models'
 import { FetchSurveyList } from '~/domain/use-cases/fetch-survey-list'
 
@@ -9,10 +10,16 @@ export class RemoteFetchSurveyList implements FetchSurveyList {
   ) {}
 
   async fetch(): Promise<SurveyModel[]> {
-    await this.httpGetClient.get({
+    const httpResponse = await this.httpGetClient.get<SurveyModel[]>({
       url: this.url,
     })
+    switch (httpResponse.statusCode) {
+      case HttpStatusCode.ok:
+        return httpResponse.body || []
 
-    return []
+      case HttpStatusCode.forbidden:
+      default:
+        throw new UnexpectedError()
+    }
   }
 }
