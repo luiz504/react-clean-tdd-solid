@@ -8,7 +8,7 @@ export const mockHttpResponse = () => ({
 })
 export const mockAxios = () => {
   const mockedAxios = axios as Mocked<typeof axios>
-  mockedAxios.post.mockResolvedValue(mockHttpResponse())
+  mockedAxios.request.mockResolvedValue(mockHttpResponse())
 
   return { mockedAxios }
 }

@@ -80,12 +80,27 @@ describe('AxiosHttpAdapter', () => {
   })
   describe('get', () => {
     it('Should call axios.get with correct values', async () => {
-      const request = mockGetRequest()
       const { sut, mockedAxios } = makeSut()
+      const request = mockGetRequest()
 
       await sut.get(request)
 
       expect(mockedAxios.get).toHaveBeenCalledWith(request.url)
+    })
+    it('Should return correct response on axios.get', async () => {
+      const mockedAxiosResult = {
+        status: faker.number.int(),
+        data: faker.finance.currency(),
+      }
+      const { sut, mockedAxios } = makeSut()
+      mockedAxios.get.mockResolvedValue(mockedAxiosResult)
+
+      const httpResponse = await sut.get(mockGetRequest())
+
+      expect(httpResponse).toEqual({
+        statusCode: mockedAxiosResult.status,
+        body: mockedAxiosResult.data,
+      })
     })
   })
 })
