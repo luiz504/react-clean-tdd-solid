@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker'
 import {
+  HttpGetClient,
+  HttpGetParams,
   HttpPostClient,
   HttpPostParams,
   HttpResponse,
@@ -24,3 +26,15 @@ export const mockPostRequest = (): HttpPostParams<any> => ({
   url: faker.internet.url(),
   body: faker.finance.currency(),
 })
+
+export class HttpGetClientSpy implements HttpGetClient {
+  url?: string
+  response: HttpResponse<any> = {
+    statusCode: HttpStatusCode.ok,
+  }
+
+  async get<R = any>(params: HttpGetParams): Promise<HttpResponse<R>> {
+    this.url = params.url
+    return this.response
+  }
+}
