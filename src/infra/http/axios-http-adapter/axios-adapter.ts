@@ -7,7 +7,7 @@ import {
   HttpStatusCode,
 } from '~/data/protocols/http'
 
-export class AxiosHttpAdapter implements HttpPostClient {
+export class AxiosHttpAdapter implements HttpPostClient, HttpPostClient {
   async post<T, R>(params: HttpPostParams<T>): Promise<HttpResponse<R>> {
     try {
       const response = await axios.post(params.url, params.body)
@@ -29,7 +29,18 @@ export class AxiosHttpAdapter implements HttpPostClient {
     }
   }
 
-  async get(params: HttpGetParams): Promise<void> {
-    await axios.get(params.url)
+  async get<R>(params: HttpGetParams): Promise<HttpResponse<R>> {
+    try {
+      const response = await axios.get(params.url)
+
+      return {
+        statusCode: response.status,
+        body: response.data,
+      }
+    } catch (err) {
+      return {
+        statusCode: 500,
+      }
+    }
   }
 }
