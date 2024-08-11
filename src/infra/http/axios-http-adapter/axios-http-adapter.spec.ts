@@ -107,10 +107,33 @@ describe('AxiosHttpAdapter', () => {
 
       mockedAxios.get.mockRejectedValueOnce(new Error())
 
-      const promise = await sut.get(mockPostRequest())
+      const promise = await sut.get(mockGetRequest())
 
       expect(promise).toEqual({
         statusCode: HttpStatusCode.serverError,
+      })
+    })
+
+    it('should return correct response on Failure with AxiosResponse on axios.post', async () => {
+      const { sut, mockedAxios } = makeSut()
+
+      const mockedErrorResponse = mockHttpResponse()
+
+      // Create AxiosError
+      const axiosError = new AxiosError('any_message', 'any_code')
+
+      // Manually set the response property
+      axiosError.response = {
+        status: mockedErrorResponse.status,
+        data: mockedErrorResponse.data,
+      } as any
+
+      mockedAxios.get.mockRejectedValueOnce(axiosError)
+
+      const promise = await sut.get(mockGetRequest())
+      expect(promise).toEqual({
+        statusCode: mockedErrorResponse.status,
+        body: mockedErrorResponse.data,
       })
     })
   })
