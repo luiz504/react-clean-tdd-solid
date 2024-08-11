@@ -39,7 +39,7 @@ export class AxiosHttpAdapter implements HttpPostClient, HttpPostClient {
       }
     } catch (err) {
       return {
-        statusCode: 500,
+        statusCode: HttpStatusCode.serverError,
       }
     }
   }
