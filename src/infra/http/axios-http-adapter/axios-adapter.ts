@@ -38,6 +38,12 @@ export class AxiosHttpAdapter implements HttpPostClient, HttpPostClient {
         body: response.data,
       }
     } catch (err) {
+      if (err instanceof AxiosError && err.response) {
+        return {
+          statusCode: err.response.status,
+          body: err.response.data,
+        }
+      }
       return {
         statusCode: HttpStatusCode.serverError,
       }
