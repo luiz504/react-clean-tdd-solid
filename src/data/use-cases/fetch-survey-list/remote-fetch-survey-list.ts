@@ -15,8 +15,10 @@ export class RemoteFetchSurveyList implements FetchSurveyList {
     })
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
-        return httpResponse.body || []
-
+        if (Array.isArray(httpResponse.body)) {
+          return httpResponse.body
+        }
+        throw new UnexpectedError()
       case HttpStatusCode.forbidden:
       case HttpStatusCode.notFound:
       case HttpStatusCode.serverError:
