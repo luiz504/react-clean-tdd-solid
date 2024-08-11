@@ -18,6 +18,10 @@ describe('RemoteFetchSurveyList', () => {
   it('should call HttpGetClient with correct URL', async () => {
     const url = faker.internet.url()
     const { sut, httpGetClientSpy } = makeSut(url)
+    httpGetClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: mockSurveyModelList(),
+    }
     await sut.fetch()
 
     expect(httpGetClientSpy.url).toBe(url)
@@ -45,6 +49,17 @@ describe('RemoteFetchSurveyList', () => {
     const { sut, httpGetClientSpy } = makeSut()
     httpGetClientSpy.response = {
       statusCode: HttpStatusCode.serverError,
+    }
+    const promise = sut.fetch()
+    await expect(promise).rejects.toThrow(new UnexpectedError())
+  })
+
+  it('should throw UnexpectedError if HttpGetClient returns 200 with invalid data', async () => {
+    const { sut, httpGetClientSpy } = makeSut()
+    const httpResult = undefined
+    httpGetClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: httpResult,
     }
     const promise = sut.fetch()
     await expect(promise).rejects.toThrow(new UnexpectedError())
