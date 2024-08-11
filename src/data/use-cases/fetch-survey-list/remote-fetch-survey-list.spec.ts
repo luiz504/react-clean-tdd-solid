@@ -1,8 +1,11 @@
 import { faker } from '@faker-js/faker'
+
 import { HttpGetClientSpy } from '~/data/__test__'
-import { RemoteFetchSurveyList } from './remote-fetch-survey-list'
 import { HttpStatusCode } from '~/data/protocols/http'
+import { mockSurveyModelList } from '~/domain/__test__'
 import { UnexpectedError } from '~/domain/errors'
+
+import { RemoteFetchSurveyList } from './remote-fetch-survey-list'
 
 const makeSut = (url = faker.internet.url()) => {
   const httpGetClientSpy = new HttpGetClientSpy()
@@ -45,5 +48,19 @@ describe('RemoteFetchSurveyList', () => {
     }
     const promise = sut.fetch()
     await expect(promise).rejects.toThrow(new UnexpectedError())
+  })
+
+  it('should return a list of SurveyModels if HttpGetClient returns 200', async () => {
+    const { sut, httpGetClientSpy } = makeSut()
+    const httpResult = mockSurveyModelList()
+    httpGetClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: httpResult,
+    }
+    // Act
+    const surveys = await sut.fetch()
+
+    // Assert
+    expect(surveys).toEqual(httpResult)
   })
 })
