@@ -19,6 +19,8 @@ export class RemoteFetchSurveyList implements FetchSurveyList {
           return httpResponse.body
         }
         throw new UnexpectedError()
+      case HttpStatusCode.noContent:
+        return []
       case HttpStatusCode.forbidden:
       case HttpStatusCode.notFound:
       case HttpStatusCode.serverError:
