@@ -54,7 +54,7 @@ describe('RemoteFetchSurveyList', () => {
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 
-  it('should throw UnexpectedError if HttpGetClient returns 200 with invalid data', async () => {
+  it('should throw UnexpectedError if HttpGetClient returns success with invalid data', async () => {
     const { sut, httpGetClientSpy } = makeSut()
     const httpResult = undefined
     httpGetClientSpy.response = {
@@ -77,5 +77,18 @@ describe('RemoteFetchSurveyList', () => {
 
     // Assert
     expect(surveys).toEqual(httpResult)
+  })
+
+  it('should return a empty list if HttpGetClient returns 204', async () => {
+    const { sut, httpGetClientSpy } = makeSut()
+
+    httpGetClientSpy.response = {
+      statusCode: HttpStatusCode.noContent,
+    }
+    // Act
+    const surveys = await sut.fetch()
+
+    // Assert
+    expect(surveys).toEqual([])
   })
 })
