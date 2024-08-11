@@ -1,6 +1,8 @@
 import { faker } from '@faker-js/faker'
 import { HttpGetClientSpy } from '~/data/__test__'
 import { RemoteFetchSurveyList } from './remote-fetch-survey-list'
+import { HttpStatusCode } from '~/data/protocols/http'
+import { UnexpectedError } from '~/domain/errors'
 
 const makeSut = (url = faker.internet.url()) => {
   const httpGetClientSpy = new HttpGetClientSpy()
@@ -16,5 +18,14 @@ describe('RemoteFetchSurveyList', () => {
     await sut.fetch()
 
     expect(httpGetClientSpy.url).toBe(url)
+  })
+
+  it('should throw UnexpectedError if HttpGetClient returns 403', async () => {
+    const { sut, httpGetClientSpy } = makeSut()
+    httpGetClientSpy.response = {
+      statusCode: HttpStatusCode.forbidden,
+    }
+    const promise = sut.fetch()
+    await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 })
