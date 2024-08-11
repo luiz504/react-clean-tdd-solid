@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios'
 import {
+  HttpGetParams,
   HttpPostClient,
   HttpPostParams,
   HttpResponse,
@@ -26,5 +27,9 @@ export class AxiosHttpAdapter implements HttpPostClient {
         statusCode: HttpStatusCode.serverError,
       }
     }
+  }
+
+  async get(params: HttpGetParams): Promise<void> {
+    await axios.get(params.url)
   }
 }
