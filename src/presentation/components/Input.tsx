@@ -18,6 +18,7 @@ const Input = ({ className, children, ...rest }: RootProps) => {
 
 type InputFieldProps = ComponentProps<'input'> & {
   label: string
+  ['data-testid']?: string
 }
 const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
   ({ className, placeholder, label, ...rest }, ref) => {
@@ -29,7 +30,10 @@ const InputField = forwardRef<HTMLInputElement, InputFieldProps>(
           placeholder={placeholder || ' '}
           {...rest}
         />
-        <label className="after:content[''] pointer-events-none absolute -top-1.5 left-0 flex h-full w-full select-none !overflow-visible truncate text-[11px] font-normal leading-tight text-gray-500 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-gray-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-500 peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:after:scale-x-100 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-500">
+        <label
+          data-testid={`${rest['data-testid']}-label`}
+          className="after:content[''] pointer-events-none absolute -top-1.5 left-0 flex h-full w-full select-none !overflow-visible truncate text-[11px] font-normal leading-tight text-gray-500 transition-all after:absolute after:-bottom-1.5 after:block after:w-full after:scale-x-0 after:border-b-2 after:border-gray-500 after:transition-transform after:duration-300 peer-placeholder-shown:text-sm peer-placeholder-shown:leading-[4.25] peer-placeholder-shown:text-gray-500 peer-focus:text-[11px] peer-focus:leading-tight peer-focus:text-gray-900 peer-focus:after:scale-x-100 peer-focus:after:border-gray-900 peer-disabled:text-transparent peer-disabled:peer-placeholder-shown:text-gray-500"
+        >
           {label}
         </label>
       </div>

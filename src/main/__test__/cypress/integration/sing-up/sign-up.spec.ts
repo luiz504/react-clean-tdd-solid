@@ -3,12 +3,16 @@ import { AuthenticateMocks } from './mocks'
 import { FormHelper } from '../../support/form-helper'
 const elementsId = {
   nameInput: 'name-input',
+  nameInputLabel: 'name-input-label',
   nameError: 'name-error',
   emailInput: 'email-input',
+  emailInputLabel: 'email-input-label',
   emailError: 'email-error',
   pwInput: 'pw-input',
+  pwInputLabel: 'pw-input-label',
   pwError: 'pw-error',
   pwConfirmationInput: 'pw-confirmation-input',
+  pwConfirmationInputLabel: 'pw-confirmation-input-label',
   pwConfirmationError: 'pw-confirmation-error',
   submitButton: 'submit-button',
   form: 'form',
@@ -37,28 +41,32 @@ describe('Page: Sign Up', () => {
       .should('have.attr', 'type', 'text')
       .and('be.enabled')
       .and('be.empty')
-      .and('have.attr', 'placeholder', 'Name')
+    cy.getByTestId(elementsId.nameInputLabel).should('have.text', 'Name')
     cy.getByTestId(elementsId.nameError).should('not.exist')
 
     cy.getByTestId(elementsId.emailInput)
       .should('have.attr', 'type', 'email')
       .and('be.enabled')
       .and('be.empty')
-      .and('have.attr', 'placeholder', 'Email')
+    cy.getByTestId(elementsId.emailInputLabel).should('have.text', 'Email')
     cy.getByTestId(elementsId.emailError).should('not.exist')
 
     cy.getByTestId(elementsId.pwInput)
       .should('have.attr', 'type', 'password')
       .and('be.enabled')
       .and('be.empty')
-      .and('have.attr', 'placeholder', 'Password')
+    cy.getByTestId(elementsId.pwInputLabel).should('have.text', 'Password')
     cy.getByTestId(elementsId.pwError).should('not.exist')
 
     cy.getByTestId(elementsId.pwConfirmationInput)
       .should('have.attr', 'type', 'password')
       .and('be.enabled')
       .and('be.empty')
-      .and('have.attr', 'placeholder', 'Confirm Password')
+
+    cy.getByTestId(elementsId.pwConfirmationInputLabel).should(
+      'have.text',
+      'Confirm Password',
+    )
     cy.getByTestId(elementsId.pwConfirmationError).should('not.exist')
 
     cy.getByTestId(elementsId.submitButton)
@@ -143,7 +151,7 @@ describe('Page: Sign Up', () => {
     cy.getByTestId(elementsId.submitButton).should('be.disabled')
 
     FormHelper.testUrl('/')
-    FormHelper.testLocalStorageItem('accessToken')
+    FormHelper.testLocalStorageItem('account')
   })
 
   it('should not call Authenticate if form is invalid', () => {

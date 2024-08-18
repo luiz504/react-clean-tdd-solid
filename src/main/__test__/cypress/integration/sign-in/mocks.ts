@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker'
 import * as Helper from '../../support/http-mocks'
+import { AccountModel } from '../../../../../domain/models/account-model'
 
 const InvalidCredentialsError = () =>
   Helper.mockSignInApiCall({
@@ -27,7 +28,8 @@ const Success = () =>
     statusCode: 200,
     body: {
       accessToken: faker.string.uuid(),
-    },
+      name: faker.person.fullName(),
+    } satisfies AccountModel,
   }).as('request')
 
 export const AuthenticateMocks = {
