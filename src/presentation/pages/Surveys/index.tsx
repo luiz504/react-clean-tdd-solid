@@ -1,10 +1,8 @@
 import { FC } from 'react'
-import { ThumbsUp } from 'lucide-react'
-
-import { cn } from '~/presentation/utils/cn'
 
 import { Footer } from '~/presentation/components'
 import { HeaderPrivate } from '~/presentation/components/headers/HeaderPrivate'
+import { LikeActionBtn } from './components/like-action-btn'
 
 export const Surveys: FC = () => {
   return (
@@ -19,13 +17,11 @@ export const Surveys: FC = () => {
         <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2">
           <li className="flex flex-col justify-between rounded-md p-2">
             <div className="card-bg relative flex flex-1 gap-6 rounded-t-md pb-4 pr-4 pt-6">
-              <button
-                className={cn(
-                  'absolute -right-2 -top-2 flex items-center rounded-full bg-white p-2 shadow-md',
-                )}
-              >
-                <ThumbsUp size={16} />
-              </button>
+              <LikeActionBtn
+                className="absolute -right-2 -top-2"
+                status="like"
+              />
+
               <time className="flex h-fit flex-col items-center justify-center self-center rounded-md bg-primary-light px-5 py-2 font-medium text-white">
                 <span className="text-4xl font-bold">22</span>
                 <span className="my-1 lowercase">May</span>
