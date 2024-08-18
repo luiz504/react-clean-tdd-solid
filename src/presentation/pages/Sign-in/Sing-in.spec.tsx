@@ -5,7 +5,7 @@ import { MemoryRouter } from 'react-router-dom'
 import {
   AuthenticationSpy,
   ValidationStub,
-  SaveAccessTokenMock,
+  UpdateCurrentAccountMock,
   populateInputField,
 } from '~/presentation/__test__'
 import { InvalidCredentialsError } from '~/domain/errors'
@@ -42,20 +42,20 @@ type SutParams = {
 const makeSut = (params?: SutParams) => {
   const validationStub = new ValidationStub()
   const authenticationSpy = new AuthenticationSpy()
-  const saveAccessTokenMock = new SaveAccessTokenMock()
+  const updateCurrentAccountMock = new UpdateCurrentAccountMock()
   validationStub.errorMessage = params?.validationError || null
   render(
     <MemoryRouter>
       <SignIn
         validation={validationStub}
         authentication={authenticationSpy}
-        saveAccessToken={saveAccessTokenMock}
+        updateCurrentAccount={updateCurrentAccountMock}
       />
       ,
     </MemoryRouter>,
   )
 
-  return { authenticationSpy, saveAccessTokenMock }
+  return { authenticationSpy, updateCurrentAccountMock }
 }
 
 const simulateValidSubmit = (
@@ -218,21 +218,23 @@ describe('Page: Sing-in', () => {
     expect(formStatusError).not.toBeInTheDocument()
   })
 
-  it('should call SaveAccessToken on Authentication success', async () => {
-    const { authenticationSpy, saveAccessTokenMock } = makeSut()
+  it('should call UpdateCurrentAccount on Authentication success', async () => {
+    const { authenticationSpy, updateCurrentAccountMock } = makeSut()
     simulateValidSubmit()
 
     await waitFor(() => {
-      expect(saveAccessTokenMock.accessToken).toBe(
-        authenticationSpy.account.accessToken,
+      expect(updateCurrentAccountMock.account).toEqual(
+        authenticationSpy.account,
       )
     })
   })
 
-  it('should display error if SaveAccessToken fails', async () => {
-    const { saveAccessTokenMock } = makeSut()
+  it('should display error if UpdateCurrentAccount fails', async () => {
+    const { updateCurrentAccountMock } = makeSut()
 
-    vi.spyOn(saveAccessTokenMock, 'save').mockRejectedValueOnce(new Error())
+    vi.spyOn(updateCurrentAccountMock, 'save').mockRejectedValueOnce(
+      new Error(),
+    )
 
     simulateValidSubmit()
     const formStatusError = await screen.findByTestId(

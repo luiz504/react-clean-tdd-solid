@@ -1,5 +1,6 @@
 import { FC, ReactNode } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Surveys } from '../pages/Surveys'
 
 type Factory = {
   makeSignIn: ReactNode
@@ -11,6 +12,7 @@ export const Router: FC<Factory> = (factory) => {
       <Routes>
         <Route path="/sign-in" element={factory.makeSignIn} />
         <Route path="/sign-up" element={factory.makeSignUp} />
+        <Route path="/surveys" element={<Surveys />} />
         <Route
           path="*"
           element={

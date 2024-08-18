@@ -2,16 +2,21 @@ import { FC, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { cn } from '~/presentation/utils/cn'
-import { Header, Input, Footer, FormStatus } from '~/presentation/components'
+import {
+  Input,
+  Footer,
+  FormStatus,
+  HeaderGuest,
+} from '~/presentation/components'
 
 import { Validation } from '~/presentation/protocols/validation'
-import { Authentication, SaveAccessToken } from '~/domain/use-cases'
+import { Authentication, UpdateCurrentAccount } from '~/domain/use-cases'
 import { InvalidCredentialsError } from '~/domain/errors'
 
 type Props = {
   validation: Validation
   authentication: Authentication
-  saveAccessToken: SaveAccessToken
+  updateCurrentAccount: UpdateCurrentAccount
 }
 type FieldName = 'email' | 'password'
 type Field = {
@@ -27,7 +32,7 @@ type FormType = {
 export const SignIn: FC<Props> = ({
   validation,
   authentication,
-  saveAccessToken,
+  updateCurrentAccount,
 }) => {
   const emailInputRef = useRef<HTMLInputElement>(null)
   const pwInputRef = useRef<HTMLInputElement>(null)
@@ -94,12 +99,12 @@ export const SignIn: FC<Props> = ({
         submitError: undefined,
       }))
 
-      const { accessToken } = await authentication.auth({
+      const account = await authentication.auth({
         email: email.value,
         password: password.value,
       })
 
-      await saveAccessToken.save(accessToken)
+      await updateCurrentAccount.save(account)
 
       navigate('/', { replace: true })
     } catch (err) {
@@ -119,14 +124,14 @@ export const SignIn: FC<Props> = ({
 
   return (
     <>
-      <Header />
+      <HeaderGuest />
 
-      <main className="flex flex-1 flex-col items-center px-4">
+      <main className="flex flex-1 flex-col items-center justify-center px-4">
         <form
           data-testid="form"
           className={cn(
             'flex w-full max-w-[400px] flex-col',
-            'mt-[10%] p-10',
+            'my-10 px-4 py-10 md:px-10',
             'rounded-lg bg-white shadow-md',
           )}
           onSubmit={handleSubmit}
@@ -140,7 +145,9 @@ export const SignIn: FC<Props> = ({
               ref={emailInputRef}
               type="email"
               name="email"
-              placeholder="Email"
+              label="Email"
+              placeholder="john@example.com"
+              autoComplete="email"
               onChange={({ target }) => handleChange('email', target.value)}
             />
             <Input.Error data-testid="email-error" error={email.error} />
@@ -152,7 +159,8 @@ export const SignIn: FC<Props> = ({
               ref={pwInputRef}
               type="password"
               name="password"
-              placeholder="Password"
+              label="Password"
+              autoComplete="current-password"
               onChange={({ target }) => handleChange('password', target.value)}
             />
             <Input.Error data-testid="pw-error" error={password.error} />

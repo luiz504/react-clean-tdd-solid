@@ -1,5 +1,5 @@
 export * from './Footer'
 export * from './FormStatus'
-export * from './Header'
+export * from './headers/HeaderGuest'
 export * from './Input'
 export * from './Spinner'

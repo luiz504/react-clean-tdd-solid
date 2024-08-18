@@ -2,8 +2,8 @@ import { FC } from 'react'
 
 import { SignIn } from '~/presentation/pages/Sign-in'
 
+import { makeLocalUpdateCurrentAccount } from '../../use-cases/update-current-account/local-update-current-account-factory'
 import { makeRemoteAuthentication } from '../../use-cases/authentication/remote-authentication-factory'
-import { makeLocalSaveAccessToken } from '../../use-cases/save-access-token/local-save-access-token-factory'
 import { makeSignInValidation } from './sign-in-validation-factory'
 
 export const MakeSignIn: FC = () => {
@@ -11,7 +11,7 @@ export const MakeSignIn: FC = () => {
     <SignIn
       authentication={makeRemoteAuthentication()}
       validation={makeSignInValidation()}
-      saveAccessToken={makeLocalSaveAccessToken()}
+      updateCurrentAccount={makeLocalUpdateCurrentAccount()}
     />
   )
 }

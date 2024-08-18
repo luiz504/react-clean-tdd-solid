@@ -3,8 +3,10 @@ import { AuthenticateMocks } from './mocks'
 import { FormHelper } from '../../support/form-helper'
 const elementsId = {
   emailInput: 'email-input',
+  emailInputLabel: 'email-input-label',
   emailError: 'email-error',
   pwInput: 'pw-input',
+  pwInputLabel: 'pw-input-label',
   pwError: 'pw-error',
   submitButton: 'submit-button',
   form: 'form',
@@ -28,14 +30,16 @@ describe('Page: Sign in', () => {
       .should('have.attr', 'type', 'email')
       .and('be.enabled')
       .and('be.empty')
-      .and('have.attr', 'placeholder', 'Email')
+
+    cy.getByTestId(elementsId.emailInputLabel).should('contain.text', 'Email')
     cy.getByTestId(elementsId.emailError).should('not.exist')
 
     cy.getByTestId(elementsId.pwInput)
       .should('have.attr', 'type', 'password')
       .and('be.enabled')
       .and('be.empty')
-      .and('have.attr', 'placeholder', 'Password')
+
+    cy.getByTestId(elementsId.pwInputLabel).should('contain.text', 'Password')
     cy.getByTestId(elementsId.pwError).should('not.exist')
 
     cy.getByTestId(elementsId.submitButton)
@@ -106,7 +110,7 @@ describe('Page: Sign in', () => {
     FormHelper.testHttpCallsCount(1)
   })
 
-  it('should save access token and redirect on success', () => {
+  it('should save account and redirect on success', () => {
     AuthenticateMocks.Success()
     fillAndSubmitForm()
 
@@ -115,7 +119,7 @@ describe('Page: Sign in', () => {
     cy.getByTestId(elementsId.submitButton).should('be.disabled')
 
     FormHelper.testUrl('/')
-    FormHelper.testLocalStorageItem('accessToken')
+    FormHelper.testLocalStorageItem('account')
   })
 
   it('should not call Authenticate if form is invalid', () => {
