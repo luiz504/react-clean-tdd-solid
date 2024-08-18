@@ -7,7 +7,7 @@ export const HeaderPrivate: FC<Props> = ({ className, ...rest }) => {
   return (
     <header
       className={cn(
-        'flex justify-center px-4 py-10',
+        'flex justify-center px-4 py-4 md:py-10',
         'bg-gradient-to-b from-primary-dark to-primary',
         className,
       )}
