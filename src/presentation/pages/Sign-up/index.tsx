@@ -11,7 +11,7 @@ import {
 
 import { EmailInUserError } from '~/domain/errors'
 import { Validation } from '~/presentation/protocols/validation'
-import { RegisterAccount, SaveAccessToken } from '~/domain/use-cases'
+import { RegisterAccount, UpdateCurrentAccount } from '~/domain/use-cases'
 
 type Field = {
   value: string
@@ -28,12 +28,12 @@ type FormType = {
 type Props = {
   validation: Validation
   registerAccount: RegisterAccount
-  saveAccessToken: SaveAccessToken
+  updateCurrentAccount: UpdateCurrentAccount
 }
 export const SignUp: FC<Props> = ({
   validation,
   registerAccount,
-  saveAccessToken,
+  updateCurrentAccount,
 }) => {
   const nameInputRef = useRef<HTMLInputElement>(null)
   const emailInputRef = useRef<HTMLInputElement>(null)
@@ -139,14 +139,14 @@ export const SignUp: FC<Props> = ({
         isSubmitting: true,
         submitError: undefined,
       }))
-      const { accessToken } = await registerAccount.register({
+      const account = await registerAccount.register({
         name: name.value,
         email: email.value,
         password: password.value,
         passwordConfirmation: passwordConfirmation.value,
       })
 
-      await saveAccessToken.save(accessToken)
+      await updateCurrentAccount.save(account)
 
       navigate('/', { replace: true })
     } catch (err) {

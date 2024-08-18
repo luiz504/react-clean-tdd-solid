@@ -4,7 +4,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import {
   RegisterAccountSpy,
-  SaveAccessTokenMock,
+  UpdateCurrentAccountMock,
   ValidationStub,
   populateInputField,
 } from '~/presentation/__test__'
@@ -51,19 +51,19 @@ const makeSut = (params?: SutParams) => {
   validationStub.errorMessage = params?.validationError || null
 
   const registerAccountSpy = new RegisterAccountSpy()
-  const saveAccessTokenMock = new SaveAccessTokenMock()
+  const updateCurrentAccountMock = new UpdateCurrentAccountMock()
 
   render(
     <MemoryRouter>
       <SignUp
         validation={validationStub}
         registerAccount={registerAccountSpy}
-        saveAccessToken={saveAccessTokenMock}
+        updateCurrentAccount={updateCurrentAccountMock}
       />
       ,
     </MemoryRouter>,
   )
-  return { validationStub, registerAccountSpy, saveAccessTokenMock }
+  return { validationStub, registerAccountSpy, updateCurrentAccountMock }
 }
 
 const simulateValidSubmit = (
@@ -284,21 +284,23 @@ describe('Page: Sign-up', () => {
   })
 
   it('should call SaveAccessToken on registerAccount success and replace to `/`', async () => {
-    const { registerAccountSpy, saveAccessTokenMock } = makeSut()
+    const { registerAccountSpy, updateCurrentAccountMock } = makeSut()
     simulateValidSubmit()
 
     await waitFor(() => {
-      expect(saveAccessTokenMock.accessToken).toBe(
-        registerAccountSpy.account.accessToken,
+      expect(updateCurrentAccountMock.account).toEqual(
+        registerAccountSpy.account,
       )
     })
     expect(mockedNavigate).toBeCalledWith('/', { replace: true })
   })
 
   it('should display error if SaveAccessToken fails', async () => {
-    const { saveAccessTokenMock } = makeSut()
+    const { updateCurrentAccountMock } = makeSut()
 
-    vi.spyOn(saveAccessTokenMock, 'save').mockRejectedValueOnce(new Error())
+    vi.spyOn(updateCurrentAccountMock, 'save').mockRejectedValueOnce(
+      new Error(),
+    )
 
     simulateValidSubmit()
     const formStatusError = await screen.findByTestId(

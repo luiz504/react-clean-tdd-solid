@@ -1,7 +1,7 @@
 import { HttpPostClient, HttpStatusCode } from '~/data/protocols/http'
 
 import { InvalidCredentialsError, UnexpectedError } from '~/domain/errors'
-import { AccountModel } from '~/domain/models'
+import { AccountModel, accountModelSchema } from '~/domain/models'
 import { Authentication, AuthenticationParams } from '~/domain/use-cases'
 
 export class RemoteAuthentication implements Authentication {
@@ -11,7 +11,7 @@ export class RemoteAuthentication implements Authentication {
   ) {}
 
   async auth(params: AuthenticationParams): Promise<AccountModel> {
-    const HttpResponse = await this.httpPostClient.post<
+    const httpResponse = await this.httpPostClient.post<
       AuthenticationParams,
       AccountModel
     >({
@@ -19,11 +19,13 @@ export class RemoteAuthentication implements Authentication {
       body: params,
     })
 
-    switch (HttpResponse.statusCode) {
+    switch (httpResponse.statusCode) {
       case HttpStatusCode.ok: {
-        if (HttpResponse.body?.accessToken) {
-          return { accessToken: HttpResponse.body.accessToken }
+        const account = accountModelSchema.safeParse(httpResponse.body)
+        if (account.success) {
+          return account.data
         }
+
         throw new UnexpectedError()
       }
       case HttpStatusCode.unauthorized:

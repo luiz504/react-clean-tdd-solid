@@ -10,13 +10,13 @@ import {
 } from '~/presentation/components'
 
 import { Validation } from '~/presentation/protocols/validation'
-import { Authentication, SaveAccessToken } from '~/domain/use-cases'
+import { Authentication, UpdateCurrentAccount } from '~/domain/use-cases'
 import { InvalidCredentialsError } from '~/domain/errors'
 
 type Props = {
   validation: Validation
   authentication: Authentication
-  saveAccessToken: SaveAccessToken
+  updateCurrentAccount: UpdateCurrentAccount
 }
 type FieldName = 'email' | 'password'
 type Field = {
@@ -32,7 +32,7 @@ type FormType = {
 export const SignIn: FC<Props> = ({
   validation,
   authentication,
-  saveAccessToken,
+  updateCurrentAccount,
 }) => {
   const emailInputRef = useRef<HTMLInputElement>(null)
   const pwInputRef = useRef<HTMLInputElement>(null)
@@ -99,12 +99,12 @@ export const SignIn: FC<Props> = ({
         submitError: undefined,
       }))
 
-      const { accessToken } = await authentication.auth({
+      const account = await authentication.auth({
         email: email.value,
         password: password.value,
       })
 
-      await saveAccessToken.save(accessToken)
+      await updateCurrentAccount.save(account)
 
       navigate('/', { replace: true })
     } catch (err) {
