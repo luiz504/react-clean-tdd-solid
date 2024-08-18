@@ -2,7 +2,12 @@ import { FC, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { cn } from '~/presentation/utils/cn'
-import { Header, Input, Footer, FormStatus } from '~/presentation/components'
+import {
+  HeaderGuest,
+  Input,
+  Footer,
+  FormStatus,
+} from '~/presentation/components'
 
 import { EmailInUserError } from '~/domain/errors'
 import { Validation } from '~/presentation/protocols/validation'
@@ -161,7 +166,7 @@ export const SignUp: FC<Props> = ({
 
   return (
     <>
-      <Header />
+      <HeaderGuest />
 
       <main className="flex flex-1 flex-col items-center px-4">
         <form

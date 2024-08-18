@@ -3,7 +3,7 @@ import { cn } from '~/presentation/utils/cn'
 
 type Props = ComponentProps<'header'>
 
-export const Header: FC<Props> = ({ className, ...rest }) => {
+export const HeaderGuest: FC<Props> = ({ className, ...rest }) => {
   return (
     <header
       className={cn(

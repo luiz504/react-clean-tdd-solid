@@ -2,7 +2,12 @@ import { FC, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { cn } from '~/presentation/utils/cn'
-import { Header, Input, Footer, FormStatus } from '~/presentation/components'
+import {
+  Input,
+  Footer,
+  FormStatus,
+  HeaderGuest,
+} from '~/presentation/components'
 
 import { Validation } from '~/presentation/protocols/validation'
 import { Authentication, SaveAccessToken } from '~/domain/use-cases'
@@ -119,7 +124,7 @@ export const SignIn: FC<Props> = ({
 
   return (
     <>
-      <Header />
+      <HeaderGuest />
 
       <main className="flex flex-1 flex-col items-center px-4">
         <form

@@ -1,32 +1,15 @@
 import { FC } from 'react'
 import { ThumbsUp } from 'lucide-react'
 
-import { Footer } from '~/presentation/components'
 import { cn } from '~/presentation/utils/cn'
+
+import { Footer } from '~/presentation/components'
+import { HeaderPrivate } from '~/presentation/components/headers/HeaderPrivate'
 
 export const Surveys: FC = () => {
   return (
     <div className="flex min-h-svh flex-col">
-      <header
-        className={cn(
-          'flex justify-center px-4 py-10',
-          'bg-gradient-to-b from-primary-dark to-primary',
-        )}
-      >
-        <div className="flex max-w-[800px] grow items-center justify-between">
-          <img className="h-[60px]" src="/logo.svg" alt="logo" />
-
-          <div className="flex flex-col items-end gap-1 text-white">
-            <span>Luiz Bueno</span>
-            <button
-              type="button"
-              className="rounded-lg py-1 text-sm outline-offset-4 transition-colors hover:text-gray-300"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </header>
+      <HeaderPrivate />
 
       <main className="mx-auto flex max-w-[800px] flex-1 flex-col p-10">
         <h1 className="mb-6 text-xl font-bold uppercase text-primary-dark">
