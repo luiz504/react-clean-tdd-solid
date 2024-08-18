@@ -147,6 +147,7 @@ export const SignIn: FC<Props> = ({
               name="email"
               label="Email"
               placeholder="john@example.com"
+              autoComplete="email"
               onChange={({ target }) => handleChange('email', target.value)}
             />
             <Input.Error data-testid="email-error" error={email.error} />
@@ -159,6 +160,7 @@ export const SignIn: FC<Props> = ({
               type="password"
               name="password"
               label="Password"
+              autoComplete="current-password"
               onChange={({ target }) => handleChange('password', target.value)}
             />
             <Input.Error data-testid="pw-error" error={password.error} />
