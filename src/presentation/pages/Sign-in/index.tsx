@@ -126,12 +126,12 @@ export const SignIn: FC<Props> = ({
     <>
       <HeaderGuest />
 
-      <main className="flex flex-1 flex-col items-center px-4">
+      <main className="flex flex-1 flex-col items-center justify-center px-4">
         <form
           data-testid="form"
           className={cn(
             'flex w-full max-w-[400px] flex-col',
-            'mt-[10%] p-10',
+            'my-10 px-4 py-10 md:px-10',
             'rounded-lg bg-white shadow-md',
           )}
           onSubmit={handleSubmit}
@@ -145,7 +145,8 @@ export const SignIn: FC<Props> = ({
               ref={emailInputRef}
               type="email"
               name="email"
-              placeholder="Email"
+              label="Email"
+              placeholder="john@example.com"
               onChange={({ target }) => handleChange('email', target.value)}
             />
             <Input.Error data-testid="email-error" error={email.error} />
@@ -157,7 +158,7 @@ export const SignIn: FC<Props> = ({
               ref={pwInputRef}
               type="password"
               name="password"
-              placeholder="Password"
+              label="Password"
               onChange={({ target }) => handleChange('password', target.value)}
             />
             <Input.Error data-testid="pw-error" error={password.error} />
