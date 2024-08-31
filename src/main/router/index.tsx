@@ -1,17 +1,15 @@
-import { FC, ReactNode } from 'react'
+import { FC } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Surveys } from '../pages/Surveys'
+import { MakeSignIn } from '../factories/pages/sign-in/sign-in-factory'
+import { MakeSignUp } from '../factories/pages/sign-up/sign-up-factory'
+import { Surveys } from '~/presentation/pages/Surveys'
 
-type Factory = {
-  makeSignIn: ReactNode
-  makeSignUp: ReactNode
-}
-export const Router: FC<Factory> = (factory) => {
+export const Router: FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/sign-in" element={factory.makeSignIn} />
-        <Route path="/sign-up" element={factory.makeSignUp} />
+        <Route path="/sign-in" element={<MakeSignIn />} />
+        <Route path="/sign-up" element={<MakeSignUp />} />
         <Route path="/surveys" element={<Surveys />} />
         <Route
           path="*"
