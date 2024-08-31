@@ -23,7 +23,9 @@ describe('LocalUpdateCurrentAccount', () => {
   it('should throw if Storage.save throws', async () => {
     const { storageMock, sut } = makeSut()
 
-    vi.spyOn(storageMock, 'set').mockRejectedValueOnce(new Error())
+    vi.spyOn(storageMock, 'set').mockImplementationOnce(() => {
+      throw new Error()
+    })
 
     const promise = sut.save(mockAccountModel())
 

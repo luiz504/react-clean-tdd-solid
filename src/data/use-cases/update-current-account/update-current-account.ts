@@ -9,6 +9,6 @@ export class LocalUpdateCurrentAccount implements UpdateCurrentAccount {
     const accountValidation = accountModelSchema.safeParse(account)
     if (!accountValidation.success) throw new UnexpectedError('Invalid account')
 
-    await this.storage.set('account', JSON.stringify(account))
+    this.storage.set('account', JSON.stringify(account))
   }
 }
