@@ -10,13 +10,13 @@ import {
 } from '~/presentation/components'
 
 import { Validation } from '~/presentation/protocols/validation'
-import { Authentication, UpdateCurrentAccount } from '~/domain/use-cases'
+import { Authentication } from '~/domain/use-cases'
 import { InvalidCredentialsError } from '~/domain/errors'
+import { useApiContext } from '~/presentation/context/api-context/context'
 
 type Props = {
   validation: Validation
   authentication: Authentication
-  updateCurrentAccount: UpdateCurrentAccount
 }
 type FieldName = 'email' | 'password'
 type Field = {
@@ -29,11 +29,7 @@ type FormType = {
   submitError?: string
   isSubmitting: boolean
 }
-export const SignIn: FC<Props> = ({
-  validation,
-  authentication,
-  updateCurrentAccount,
-}) => {
+export const SignIn: FC<Props> = ({ validation, authentication }) => {
   const emailInputRef = useRef<HTMLInputElement>(null)
   const pwInputRef = useRef<HTMLInputElement>(null)
   const [formValue, setFormValue] = useState<FormType>({
@@ -51,6 +47,7 @@ export const SignIn: FC<Props> = ({
   const { submitError, isSubmitting, email, password } = formValue
   const formData = { email: email.value, password: password.value }
 
+  const { setCurrentAccount } = useApiContext()
   const navigate = useNavigate()
 
   const handleChange = (fieldName: FieldName, value: string) => {
@@ -104,7 +101,7 @@ export const SignIn: FC<Props> = ({
         password: password.value,
       })
 
-      await updateCurrentAccount.save(account)
+      setCurrentAccount(account)
 
       navigate('/', { replace: true })
     } catch (err) {

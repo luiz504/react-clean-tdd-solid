@@ -5,12 +5,12 @@ import { MemoryRouter } from 'react-router-dom'
 import {
   AuthenticationSpy,
   ValidationStub,
-  UpdateCurrentAccountMock,
   populateInputField,
 } from '~/presentation/__test__'
 import { InvalidCredentialsError } from '~/domain/errors'
 
 import { SignIn } from '.'
+import { ApiContext } from '~/presentation/context/api-context/context'
 
 const FIELDS_TEST_ID = {
   email: {
@@ -42,20 +42,22 @@ type SutParams = {
 const makeSut = (params?: SutParams) => {
   const validationStub = new ValidationStub()
   const authenticationSpy = new AuthenticationSpy()
-  const updateCurrentAccountMock = new UpdateCurrentAccountMock()
+
+  const setCurrentAccountMock = vi.fn()
   validationStub.errorMessage = params?.validationError || null
   render(
     <MemoryRouter>
-      <SignIn
-        validation={validationStub}
-        authentication={authenticationSpy}
-        updateCurrentAccount={updateCurrentAccountMock}
-      />
-      ,
+      <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock }}>
+        <SignIn
+          validation={validationStub}
+          authentication={authenticationSpy}
+        />
+        ,
+      </ApiContext.Provider>
     </MemoryRouter>,
   )
 
-  return { authenticationSpy, updateCurrentAccountMock }
+  return { authenticationSpy, setCurrentAccountMock }
 }
 
 const simulateValidSubmit = (
@@ -219,32 +221,16 @@ describe('Page: Sing-in', () => {
   })
 
   it('should call UpdateCurrentAccount on Authentication success', async () => {
-    const { authenticationSpy, updateCurrentAccountMock } = makeSut()
+    const { authenticationSpy, setCurrentAccountMock } = makeSut()
     simulateValidSubmit()
 
     await waitFor(() => {
-      expect(updateCurrentAccountMock.account).toEqual(
+      expect(setCurrentAccountMock).toHaveBeenCalledWith(
         authenticationSpy.account,
       )
     })
   })
 
-  it('should display error if UpdateCurrentAccount fails', async () => {
-    const { updateCurrentAccountMock } = makeSut()
-
-    vi.spyOn(updateCurrentAccountMock, 'save').mockRejectedValueOnce(
-      new Error(),
-    )
-
-    simulateValidSubmit()
-    const formStatusError = await screen.findByTestId(
-      FIELDS_TEST_ID['form-status-error'],
-    )
-    expect(formStatusError).toBeInTheDocument()
-    expect(formStatusError).toHaveTextContent(
-      'Something went wrong. Please try again.',
-    )
-  })
   it('should navigate to home page on Authentication success', async () => {
     makeSut()
     simulateValidSubmit()

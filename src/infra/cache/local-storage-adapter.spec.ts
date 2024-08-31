@@ -15,11 +15,14 @@ describe('LocalStorageAdapter', () => {
       const { sut } = makeSut()
 
       const key = faker.database.column()
-      const value = faker.string.uuid()
+      const value = faker.finance.currency()
 
       sut.set(key, value)
 
-      expect(localStorage.setItem).toHaveBeenCalledWith(key, value)
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        key,
+        JSON.stringify(value),
+      )
     })
   })
 })

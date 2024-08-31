@@ -11,7 +11,8 @@ import {
 
 import { EmailInUserError } from '~/domain/errors'
 import { Validation } from '~/presentation/protocols/validation'
-import { RegisterAccount, UpdateCurrentAccount } from '~/domain/use-cases'
+import { RegisterAccount } from '~/domain/use-cases'
+import { useApiContext } from '~/presentation/context/api-context/context'
 
 type Field = {
   value: string
@@ -28,19 +29,15 @@ type FormType = {
 type Props = {
   validation: Validation
   registerAccount: RegisterAccount
-  updateCurrentAccount: UpdateCurrentAccount
 }
-export const SignUp: FC<Props> = ({
-  validation,
-  registerAccount,
-  updateCurrentAccount,
-}) => {
+export const SignUp: FC<Props> = ({ validation, registerAccount }) => {
   const nameInputRef = useRef<HTMLInputElement>(null)
   const emailInputRef = useRef<HTMLInputElement>(null)
   const pwInputRef = useRef<HTMLInputElement>(null)
   const pwConfirmationInputRef = useRef<HTMLInputElement>(null)
 
   const navigate = useNavigate()
+  const { setCurrentAccount } = useApiContext()
 
   const [formValue, setFormValue] = useState<FormType>({
     isSubmitting: false,
@@ -146,7 +143,7 @@ export const SignUp: FC<Props> = ({
         passwordConfirmation: passwordConfirmation.value,
       })
 
-      await updateCurrentAccount.save(account)
+      setCurrentAccount(account)
 
       navigate('/', { replace: true })
     } catch (err) {
