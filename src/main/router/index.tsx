@@ -12,19 +12,11 @@ export const Router: FC = () => {
         <Routes>
           <Route path="/sign-in" element={<MakeSignIn />} />
           <Route path="/sign-up" element={<MakeSignUp />} />
-          <Route path="/surveys" element={<Surveys />} />
+          <Route path="/" element={<Surveys />} />
           <Route
             path="*"
             element={
               <div className="flex flex-1 items-center justify-center text-3xl font-semibold text-primary">
-                Page not found
-              </div>
-            }
-          />
-          <Route
-            path="*"
-            element={
-              <div className="flex min-h-screen items-center justify-center">
                 Page not found
               </div>
             }
