@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { LocalStorageAdapter } from './local-storage-adapter'
+import { mockAccountModel } from '~/domain/__test__'
 
 const makeSut = () => {
   const sut = new LocalStorageAdapter()
@@ -23,6 +24,20 @@ describe('LocalStorageAdapter', () => {
         key,
         JSON.stringify(value),
       )
+    })
+  })
+  describe('get', () => {
+    it('should call localStorage with correct value', () => {
+      const { sut } = makeSut()
+      const key = faker.database.column()
+      const value = JSON.stringify(mockAccountModel())
+      localStorage.setItem(key, value)
+
+      // Act
+      const result = sut.get(key)
+
+      expect(localStorage.getItem).toHaveBeenCalledWith(key)
+      expect(result).toEqual(value)
     })
   })
 })
