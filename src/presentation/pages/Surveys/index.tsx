@@ -5,7 +5,8 @@ import { HeaderPrivate } from '~/presentation/components/headers/HeaderPrivate'
 
 import { SurveySkeleton } from './components/survey-skeleton'
 import { SurveyCard } from './components/survey-card'
-
+import { makeSkeletonList } from '~/presentation/utils/make-skeleton-list'
+const skeletonItems = makeSkeletonList(4)
 export const Surveys: FC = () => {
   return (
     <div className="flex min-h-svh flex-col">
@@ -17,9 +18,11 @@ export const Surveys: FC = () => {
         </h1>
 
         <ul className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <SurveyCard />
-          <SurveyCard />
-          <SurveySkeleton />
+          <SurveyCard data-testid="survey-card" />
+          <SurveyCard data-testid="survey-card" />
+          {skeletonItems.map((item) => (
+            <SurveySkeleton key={item.id} data-testid="survey-skeleton" />
+          ))}
         </ul>
       </main>
 
