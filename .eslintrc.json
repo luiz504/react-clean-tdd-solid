@@ -1,5 +1,8 @@
 {
-  "extends": ["@rocketseat/eslint-config/react"],
+  "extends": [
+    "@rocketseat/eslint-config/react",
+    "plugin:@tanstack/query/recommended"
+  ],
   "overrides": [
     {
       // 3) Now we enable eslint-plugin-testing-library rules or preset only for matching testing files!
