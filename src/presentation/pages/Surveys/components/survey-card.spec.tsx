@@ -12,13 +12,19 @@ const ELEMENTS_TEST_ID = {
   'survey-year': 'survey-year',
 } as const
 
+const makeSUT = (survey = mockSurveyModel()) => {
+  render(<SurveyCard survey={survey} />)
+}
+
 describe('Component: SurveyCard', () => {
   it('should render correctly', () => {
-    const surveyModel = mockSurveyModel()
-    surveyModel.didAnswer = true
-    surveyModel.date = new Date('2020-05-22T00:00:00')
+    const survey = {
+      ...mockSurveyModel(),
+      didAnswer: true,
+      date: new Date('2020-05-22T00:00:00'),
+    }
 
-    render(<SurveyCard survey={surveyModel} />)
+    makeSUT(survey)
 
     expect(
       screen.getByTestId(ELEMENTS_TEST_ID['thumbs-down-icon']),
@@ -29,7 +35,7 @@ describe('Component: SurveyCard', () => {
 
     expect(
       screen.getByTestId(ELEMENTS_TEST_ID['survey-question']),
-    ).toHaveTextContent(surveyModel.question)
+    ).toHaveTextContent(survey.question)
     expect(
       screen.getByRole('button', { name: 'Ver Result' }),
     ).toBeInTheDocument()
@@ -46,9 +52,9 @@ describe('Component: SurveyCard', () => {
   })
 
   it('should render correctly when didAnswer is false', () => {
-    const surveyModel = mockSurveyModel()
-    surveyModel.didAnswer = false
-    render(<SurveyCard survey={surveyModel} />)
+    const surveyModel = { ...mockSurveyModel(), didAnswer: false }
+
+    makeSUT(surveyModel)
 
     expect(
       screen.getByTestId(ELEMENTS_TEST_ID['thumbs-up-icon']),
