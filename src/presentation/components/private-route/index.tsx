@@ -8,5 +8,5 @@ type Props = {
 export const PrivateRoute: FC<Props> = ({ element }) => {
   const { getCurrentAccount } = useApiContext()
   const accessToken = getCurrentAccount()?.accessToken
-  return accessToken ? element : <Navigate to="/login" />
+  return accessToken ? element : <Navigate to="/sign-in" />
 }

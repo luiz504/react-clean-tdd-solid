@@ -4,11 +4,7 @@ import {
   setCurrentAccountAdapter,
 } from './current-account-adapter'
 import { LocalStorageAdapter } from '~/infra/cache/local-storage-adapter'
-import {
-  InvalidResourceFormatError,
-  ResourceNotFoundError,
-  UnexpectedError,
-} from '~/domain/errors'
+import { InvalidResourceFormatError } from '~/domain/errors'
 
 describe('CurrentAccountAdapter', () => {
   beforeEach(() => {
@@ -40,24 +36,22 @@ describe('CurrentAccountAdapter', () => {
       expect(result).toEqual(account)
     })
     it('should throw ResourceNotFoundError if no account is stored', () => {
-      expect(() => getCurrentAccountAdapter()).toThrow(
-        new ResourceNotFoundError(),
-      )
+      const result = getCurrentAccountAdapter()
+      expect(result).toBeNull()
     })
-    it('should throw InvalidResourceFormatError if the stored account an invalid object', () => {
+    it('should return null if the stored account an invalid object', () => {
       localStorage.setItem(
         'account',
         JSON.stringify({ value: 'invalid account persisted' }),
       )
 
-      expect(() => getCurrentAccountAdapter()).toThrow(
-        new InvalidResourceFormatError(),
-      )
+      const result = getCurrentAccountAdapter()
+      expect(result).toBeNull()
     })
-    it('should throw UnexpectedError if an unexpected error is thrown', () => {
+    it('should return null if an unexpected error is thrown', () => {
       localStorage.setItem('account', 'invalid json persisted')
-
-      expect(() => getCurrentAccountAdapter()).toThrow(new UnexpectedError())
+      const result = getCurrentAccountAdapter()
+      expect(result).toBeNull()
     })
   })
 })

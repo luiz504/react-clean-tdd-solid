@@ -17,7 +17,7 @@ const makeSut = (account: AccountModel | null = mockAccountModel()) => {
             path="/"
             element={<PrivateRoute element={<div data-testid="home" />} />}
           />
-          <Route path="/login" element={<div data-testid="login" />} />
+          <Route path="/sign-in" element={<div data-testid="sign-in" />} />
         </Routes>
       </MemoryRouter>
     </ApiContext.Provider>
@@ -25,15 +25,15 @@ const makeSut = (account: AccountModel | null = mockAccountModel()) => {
 }
 
 describe('PrivateRoute', () => {
-  it('should redirect to /login if token is empty', async () => {
+  it('should redirect to /sign-in if token is empty', async () => {
     render(makeSut(null))
 
     await waitFor(() => {
-      expect(screen.getByTestId('login')).toBeInTheDocument()
+      expect(screen.getByTestId('sign-in')).toBeInTheDocument()
     })
     expect(screen.queryByTestId('home')).not.toBeInTheDocument()
   })
-  it('should not redirect to /login if token is not empty', async () => {
+  it('should not redirect to /sign-in if token is not empty', async () => {
     render(makeSut())
     await waitFor(() => {
       expect(screen.getByTestId('home')).toBeInTheDocument()
