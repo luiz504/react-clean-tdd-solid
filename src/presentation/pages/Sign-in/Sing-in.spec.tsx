@@ -47,7 +47,12 @@ const makeSut = (params?: SutParams) => {
   validationStub.errorMessage = params?.validationError || null
   render(
     <MemoryRouter>
-      <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock }}>
+      <ApiContext.Provider
+        value={{
+          setCurrentAccount: setCurrentAccountMock,
+          getCurrentAccount: vi.fn(),
+        }}
+      >
         <SignIn
           validation={validationStub}
           authentication={authenticationSpy}

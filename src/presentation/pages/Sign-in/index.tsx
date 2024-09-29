@@ -12,7 +12,7 @@ import {
 import { Validation } from '~/presentation/protocols/validation'
 import { Authentication } from '~/domain/use-cases'
 import { InvalidCredentialsError } from '~/domain/errors'
-import { useApiContext } from '~/presentation/context/api-context/context'
+import { useApiContext } from '~/presentation/context/api-context/hook'
 
 type Props = {
   validation: Validation

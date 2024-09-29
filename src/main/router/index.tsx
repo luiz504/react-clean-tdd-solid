@@ -21,6 +21,14 @@ export const Router: FC = () => {
               </div>
             }
           />
+          <Route
+            path="*"
+            element={
+              <div className="flex min-h-screen items-center justify-center">
+                Page not found
+              </div>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </ApiContextProvider>

@@ -55,7 +55,12 @@ const makeSut = (params?: SutParams) => {
   const setCurrentAccountMock = vi.fn()
   render(
     <MemoryRouter>
-      <ApiContext.Provider value={{ setCurrentAccount: setCurrentAccountMock }}>
+      <ApiContext.Provider
+        value={{
+          setCurrentAccount: setCurrentAccountMock,
+          getCurrentAccount: vi.fn(),
+        }}
+      >
         <SignUp
           validation={validationStub}
           registerAccount={registerAccountSpy}
