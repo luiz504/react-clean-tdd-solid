@@ -52,7 +52,11 @@ describe('Component: SurveyCard', () => {
   })
 
   it('should render correctly when didAnswer is false', () => {
-    const surveyModel = { ...mockSurveyModel(), didAnswer: false }
+    const surveyModel = {
+      ...mockSurveyModel(),
+      didAnswer: false,
+      date: new Date('2020-05-03T00:00:00'),
+    }
 
     makeSUT(surveyModel)
 
@@ -62,5 +66,8 @@ describe('Component: SurveyCard', () => {
     expect(
       screen.queryByTestId(ELEMENTS_TEST_ID['thumbs-down-icon']),
     ).not.toBeInTheDocument()
+    expect(
+      screen.getByTestId(ELEMENTS_TEST_ID['survey-day']),
+    ).toHaveTextContent('03')
   })
 })

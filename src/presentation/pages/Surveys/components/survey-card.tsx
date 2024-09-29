@@ -9,7 +9,7 @@ type Props = ComponentProps<'li'> & {
 
 export const SurveyCard: FC<Props> = ({ survey, className, ...rest }) => {
   const status = survey.didAnswer ? 'dislike' : 'like'
-  const day = survey.date.getDate()
+  const day = survey.date.getDate().toString().padStart(2, '0')
   const month = survey.date
     .toLocaleDateString('pt-BR', {
       month: 'short',
