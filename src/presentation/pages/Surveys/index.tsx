@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 
 import { Footer } from '~/presentation/components'
 import { HeaderPrivate } from '~/presentation/components/headers/HeaderPrivate'
@@ -6,8 +6,17 @@ import { HeaderPrivate } from '~/presentation/components/headers/HeaderPrivate'
 import { SurveySkeleton } from './components/survey-skeleton'
 import { SurveyCard } from './components/survey-card'
 import { makeSkeletonList } from '~/presentation/utils/make-skeleton-list'
+import { FetchSurveyList } from '~/domain/use-cases'
 const skeletonItems = makeSkeletonList(4)
-export const Surveys: FC = () => {
+
+type Props = {
+  fetchSurveyList: FetchSurveyList
+}
+export const Surveys: FC<Props> = ({ fetchSurveyList }) => {
+  useEffect(() => {
+    fetchSurveyList.fetch()
+  }, [fetchSurveyList])
+
   return (
     <div className="flex min-h-svh flex-col">
       <HeaderPrivate />
