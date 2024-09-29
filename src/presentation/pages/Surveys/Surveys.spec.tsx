@@ -1,34 +1,82 @@
-import { render, screen } from '@testing-library/react'
+import {
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+} from '@testing-library/react'
 import { Surveys } from '.'
-import { FetchSurveyList } from '~/domain/use-cases'
-import { SurveyModel } from '~/domain/models'
+
+import {
+  queryClient,
+  QueryClientProvider,
+} from '~/presentation/__test__/query-client'
+import { FetchSurveyListSpy } from '~/presentation/__test__/mock-survey-list'
+
 const ELEMENTS_TEST_ID = {
   'survey-skeleton': 'survey-skeleton',
+  'survey-card': 'survey-card',
+  'survey-load-error': 'survey-load-error',
 } as const
 
-class FetchSurveyListSpy implements FetchSurveyList {
-  callCount = 0
-  async fetch(): Promise<SurveyModel[]> {
-    this.callCount += 1
-    return Promise.resolve([])
-  }
-}
-const makeSut = () => {
-  const fetchSurveyListSpy = new FetchSurveyListSpy()
-
-  render(<Surveys fetchSurveyList={fetchSurveyListSpy} />)
+const makeSut = (fetchSurveyListSpy = new FetchSurveyListSpy()) => {
+  render(
+    <QueryClientProvider client={queryClient}>
+      <Surveys fetchSurveyList={fetchSurveyListSpy} />
+    </QueryClientProvider>,
+  )
   return { fetchSurveyListSpy }
 }
-describe('Component: Surveys', () => {
+
+describe('Page: Surveys', () => {
+  beforeEach(() => {
+    queryClient.clear()
+  })
   it('should render 4 survey skeletons when is initial loading', () => {
     makeSut()
     const skeletons = screen.getAllByTestId(ELEMENTS_TEST_ID['survey-skeleton'])
+    expect(
+      screen.queryByAltText(ELEMENTS_TEST_ID['survey-load-error']),
+    ).not.toBeInTheDocument()
     expect(skeletons).toHaveLength(4)
   })
-  it('should call FetchSurveyList on mount', () => {
+  it('should call FetchSurveyList on mount', async () => {
     const { fetchSurveyListSpy } = makeSut()
     makeSut()
-
+    expect(
+      screen.queryByAltText(ELEMENTS_TEST_ID['survey-load-error']),
+    ).not.toBeInTheDocument()
+    await waitForElementToBeRemoved(() =>
+      screen.queryAllByTestId('survey-skeleton'),
+    )
     expect(fetchSurveyListSpy.callCount).toBe(1)
+  })
+  it('should render Survey Items on success', async () => {
+    makeSut()
+    expect(
+      screen.queryByAltText(ELEMENTS_TEST_ID['survey-load-error']),
+    ).not.toBeInTheDocument()
+    await waitForElementToBeRemoved(() =>
+      screen.queryAllByTestId(ELEMENTS_TEST_ID['survey-skeleton']),
+    )
+
+    await waitFor(() =>
+      expect(
+        screen.getAllByTestId(ELEMENTS_TEST_ID['survey-card']),
+      ).toHaveLength(5),
+    )
+  })
+  it('should render an error message if FetchSurveyList fails', async () => {
+    const fetchSurveyListSpy = new FetchSurveyListSpy()
+    vi.spyOn(fetchSurveyListSpy, 'fetch').mockRejectedValueOnce(new Error())
+
+    makeSut(fetchSurveyListSpy)
+    expect(
+      screen.queryByAltText(ELEMENTS_TEST_ID['survey-load-error']),
+    ).not.toBeInTheDocument()
+
+    const error = await screen.findByTestId(
+      ELEMENTS_TEST_ID['survey-load-error'],
+    )
+    expect(error).toBeInTheDocument()
   })
 })
