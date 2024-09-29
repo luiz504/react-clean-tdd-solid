@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const accountModelSchema = z.object({
-  accessToken: z.string().uuid(),
+  accessToken: z.string().min(1),
   name: z.string().min(1),
 })
 

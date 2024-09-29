@@ -4,13 +4,13 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 
 import {
   RegisterAccountSpy,
-  UpdateCurrentAccountMock,
   ValidationStub,
   populateInputField,
 } from '~/presentation/__test__'
 
 import { SignUp } from '.'
 import { EmailInUserError } from '~/domain/errors'
+import { ApiContext } from '~/presentation/context/api-context/context'
 
 const mockedNavigate = vi.fn()
 vi.mock('react-router-dom', async () => {
@@ -51,19 +51,25 @@ const makeSut = (params?: SutParams) => {
   validationStub.errorMessage = params?.validationError || null
 
   const registerAccountSpy = new RegisterAccountSpy()
-  const updateCurrentAccountMock = new UpdateCurrentAccountMock()
 
+  const setCurrentAccountMock = vi.fn()
   render(
     <MemoryRouter>
-      <SignUp
-        validation={validationStub}
-        registerAccount={registerAccountSpy}
-        updateCurrentAccount={updateCurrentAccountMock}
-      />
+      <ApiContext.Provider
+        value={{
+          setCurrentAccount: setCurrentAccountMock,
+          getCurrentAccount: vi.fn(),
+        }}
+      >
+        <SignUp
+          validation={validationStub}
+          registerAccount={registerAccountSpy}
+        />
+      </ApiContext.Provider>
       ,
     </MemoryRouter>,
   )
-  return { validationStub, registerAccountSpy, updateCurrentAccountMock }
+  return { validationStub, registerAccountSpy, setCurrentAccountMock }
 }
 
 const simulateValidSubmit = (
@@ -284,31 +290,14 @@ describe('Page: Sign-up', () => {
   })
 
   it('should call SaveAccessToken on registerAccount success and replace to `/`', async () => {
-    const { registerAccountSpy, updateCurrentAccountMock } = makeSut()
+    const { registerAccountSpy, setCurrentAccountMock } = makeSut()
     simulateValidSubmit()
 
     await waitFor(() => {
-      expect(updateCurrentAccountMock.account).toEqual(
+      expect(setCurrentAccountMock).toHaveBeenCalledWith(
         registerAccountSpy.account,
       )
     })
     expect(mockedNavigate).toBeCalledWith('/', { replace: true })
-  })
-
-  it('should display error if SaveAccessToken fails', async () => {
-    const { updateCurrentAccountMock } = makeSut()
-
-    vi.spyOn(updateCurrentAccountMock, 'save').mockRejectedValueOnce(
-      new Error(),
-    )
-
-    simulateValidSubmit()
-    const formStatusError = await screen.findByTestId(
-      FIELDS_TEST_ID['form-status-error'],
-    )
-    expect(formStatusError).toBeInTheDocument()
-    expect(formStatusError).toHaveTextContent(
-      'Something went wrong. Please try again.',
-    )
   })
 })
