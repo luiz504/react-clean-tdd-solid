@@ -184,6 +184,7 @@ export const SignUp: FC<Props> = ({ validation, registerAccount }) => {
               data-testid="name-input"
               ref={nameInputRef}
               type="text"
+              autoComplete="name"
               name="name"
               label="Name"
               onChange={({ target }) => handleChange('name', target.value)}
@@ -195,6 +196,7 @@ export const SignUp: FC<Props> = ({ validation, registerAccount }) => {
               data-testid="email-input"
               ref={emailInputRef}
               type="email"
+              autoComplete="email"
               name="email"
               label="Email"
               placeholder="john@example.com"
@@ -208,6 +210,7 @@ export const SignUp: FC<Props> = ({ validation, registerAccount }) => {
               data-testid="pw-input"
               ref={pwInputRef}
               type="password"
+              autoComplete="new-password"
               name="password"
               label="Password"
               onChange={({ target }) => handleChange('password', target.value)}
