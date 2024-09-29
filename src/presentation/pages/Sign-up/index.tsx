@@ -12,7 +12,7 @@ import {
 import { EmailInUserError } from '~/domain/errors'
 import { Validation } from '~/presentation/protocols/validation'
 import { RegisterAccount } from '~/domain/use-cases'
-import { useApiContext } from '~/presentation/context/api-context/context'
+import { useApiContext } from '~/presentation/context/api-context/hook'
 
 type Field = {
   value: string
