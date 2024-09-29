@@ -15,7 +15,7 @@ type Props = {
   fetchSurveyList: FetchSurveyList
 }
 export const Surveys: FC<Props> = ({ fetchSurveyList }) => {
-  const { data, isLoading, isSuccess, isError } = useQuery({
+  const { data, isLoading, isSuccess, isError, refetch } = useQuery({
     queryKey: ['surveys'],
     queryFn: async () => await fetchSurveyList.fetch(),
     staleTime: 1000 * 60 * 10,
@@ -55,7 +55,11 @@ export const Surveys: FC<Props> = ({ fetchSurveyList }) => {
               Falha ao carregar surveys
             </p>
 
-            <button className="mt-6 rounded-md bg-primary px-4 py-2 text-white">
+            <button
+              data-testid="survey-load-error-btn"
+              className="mt-6 rounded-md bg-primary px-4 py-2 text-white"
+              onClick={() => refetch()}
+            >
               Tentar novamente
             </button>
           </div>
