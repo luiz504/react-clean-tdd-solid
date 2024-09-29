@@ -1,4 +1,5 @@
 import {
+  fireEvent,
   render,
   screen,
   waitFor,
@@ -16,6 +17,7 @@ const ELEMENTS_TEST_ID = {
   'survey-skeleton': 'survey-skeleton',
   'survey-card': 'survey-card',
   'survey-load-error': 'survey-load-error',
+  'survey-load-error-btn': 'survey-load-error-btn',
 } as const
 
 const makeSut = (fetchSurveyListSpy = new FetchSurveyListSpy()) => {
@@ -78,5 +80,24 @@ describe('Page: Surveys', () => {
       ELEMENTS_TEST_ID['survey-load-error'],
     )
     expect(error).toBeInTheDocument()
+  })
+  it('should be able to refetch when there is an error', async () => {
+    const fetchSurveyListSpy = new FetchSurveyListSpy()
+    vi.spyOn(fetchSurveyListSpy, 'fetch').mockImplementation(
+      () =>
+        // eslint-disable-next-line promise/param-names
+        new Promise((_, reject) => setTimeout(() => reject(new Error()), 150)),
+    )
+
+    makeSut(fetchSurveyListSpy)
+    const refetchBtn = await screen.findByTestId(
+      ELEMENTS_TEST_ID['survey-load-error-btn'],
+    )
+    fireEvent.click(refetchBtn)
+    const loadingSkeletons = await screen.findAllByTestId(
+      ELEMENTS_TEST_ID['survey-skeleton'],
+    )
+
+    expect(loadingSkeletons).toHaveLength(4)
   })
 })
