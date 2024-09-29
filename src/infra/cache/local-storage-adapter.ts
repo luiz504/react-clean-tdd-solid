@@ -5,7 +5,7 @@ export class LocalStorageAdapter implements SetStorage, GetStorage {
     localStorage.setItem(key, JSON.stringify(value))
   }
 
-  get(key: string): any {
+  get(key: string): string | null {
     return localStorage.getItem(key)
   }
 }
