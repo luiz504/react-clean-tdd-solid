@@ -22,7 +22,10 @@ export const LikeActionBtn: FC<Props> = ({
       )}
       {...rest}
     >
-      {status === 'like' ? <ThumbsUp size={16} /> : <ThumbsDown size={16} />}
+      {status === 'like' && <ThumbsUp data-testid="thumbs-up-icon" size={16} />}
+      {status === 'dislike' && (
+        <ThumbsDown data-testid="thumbs-down-icon" size={16} />
+      )}
     </button>
   )
 }
