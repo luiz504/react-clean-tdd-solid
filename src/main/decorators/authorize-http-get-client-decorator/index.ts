@@ -4,6 +4,7 @@ import {
   HttpGetParams,
   HttpResponse,
 } from '~/data/protocols/http'
+import { AccountModel } from '~/domain/models'
 
 export class AuthorizeHttpGetClientDecorator implements HttpGetClient {
   constructor(
@@ -12,8 +13,28 @@ export class AuthorizeHttpGetClientDecorator implements HttpGetClient {
   ) {}
 
   async get(params: HttpGetParams): Promise<HttpResponse> {
-    this.getStorage.get('account')
-    await this.httpGetClient.get(params)
-    return { statusCode: 200 }
+    try {
+      const storedAccount = this.getStorage.get('account')
+
+      if (storedAccount) {
+        const account: AccountModel = JSON.parse(storedAccount)
+
+        if (!account.accessToken) {
+          throw new Error('Access token not found in account')
+        }
+
+        await this.httpGetClient.get({
+          url: params.url,
+          headers: { 'x-access-token': account.accessToken },
+        })
+
+        return { statusCode: 200 }
+      }
+      await this.httpGetClient.get(params)
+
+      return { statusCode: 200 }
+    } catch {
+      return { statusCode: 403 }
+    }
   }
 }
