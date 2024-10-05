@@ -97,7 +97,12 @@ describe('Page: Surveys', () => {
     const loadingSkeletons = await screen.findAllByTestId(
       ELEMENTS_TEST_ID['survey-skeleton'],
     )
-
+    expect(
+      screen.queryByTestId(ELEMENTS_TEST_ID['survey-card']),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByTestId(ELEMENTS_TEST_ID['survey-load-error']),
+    ).not.toBeInTheDocument()
     expect(loadingSkeletons).toHaveLength(4)
   })
 })
