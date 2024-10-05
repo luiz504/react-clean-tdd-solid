@@ -9,6 +9,7 @@ import { SurveySkeleton } from './components/survey-skeleton'
 import { SurveyCard } from './components/survey-card'
 
 import { FetchSurveys } from '~/domain/use-cases'
+import { ErrorFeedback } from './components/error-feedback'
 const skeletonItems = makeSkeletonList(4)
 
 type Props = {
@@ -28,7 +29,7 @@ export const Surveys: FC<Props> = ({ fetchSurveys }) => {
     <div className="flex min-h-svh flex-col">
       <HeaderPrivate />
 
-      <main className="mx-auto flex max-w-[800px] flex-1 flex-col p-4 sm:p-10">
+      <main className="mx-auto flex w-full max-w-[50rem] flex-1 flex-col p-4 sm:p-10">
         <h1 className="mb-6 text-center text-xl font-bold uppercase">
           Surveys
         </h1>
@@ -48,22 +49,10 @@ export const Surveys: FC<Props> = ({ fetchSurveys }) => {
           </ul>
         )}
         {isError && (
-          <div
+          <ErrorFeedback
             data-testid="survey-load-error"
-            className="flex flex-1 flex-col items-center justify-center"
-          >
-            <p className="text-center text-lg font-medium text-neutral-500">
-              Falha ao carregar surveys
-            </p>
-
-            <button
-              data-testid="survey-load-error-btn"
-              className="mt-6 rounded-md bg-primary px-4 py-2 text-white"
-              onClick={() => refetch()}
-            >
-              Tentar novamente
-            </button>
-          </div>
+            onClickTryAgain={refetch}
+          />
         )}
       </main>
 
