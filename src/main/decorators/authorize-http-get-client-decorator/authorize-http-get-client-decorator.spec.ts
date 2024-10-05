@@ -28,7 +28,7 @@ describe('AuthorizeHttpGetClientDecorator', () => {
     await sut.get(mockGetRequest())
     expect(getStorageSpy.key).toBe('account')
   })
-  it.only('should not add header if GetStorage returns null', async () => {
+  it('should not add header if GetStorage returns null', async () => {
     const { sut, getStorageSpy, httpGetClientSpy } = makeSut()
     getStorageSpy.value = null
 
@@ -42,7 +42,7 @@ describe('AuthorizeHttpGetClientDecorator', () => {
     expect(httpGetClientSpy.url).toBe(httpRequest.url)
     expect(httpGetClientSpy.headers).toEqual(httpRequest.headers)
   })
-  it('should add header to HttpGetClient header if GetStorage is not null', async () => {
+  it('should add header to HttpGetClient if GetStorage is not null', async () => {
     const { sut, getStorageSpy, httpGetClientSpy } = makeSut()
     const account = mockAccountModel()
 
@@ -53,6 +53,24 @@ describe('AuthorizeHttpGetClientDecorator', () => {
     await sut.get(httpRequest)
     expect(httpGetClientSpy.url).toEqual(httpRequest.url)
     expect(httpGetClientSpy.headers).toEqual({
+      'x-access-token': account.accessToken,
+    })
+  })
+  it('should merge headers to HttpGetClient if GetStorage is not null', async () => {
+    const { sut, getStorageSpy, httpGetClientSpy } = makeSut()
+    const account = mockAccountModel()
+
+    getStorageSpy.value = JSON.stringify(account)
+    const httpRequest: HttpGetParams = {
+      url: faker.internet.url(),
+      headers: {
+        [faker.database.column()]: faker.lorem.word(),
+      },
+    }
+    await sut.get(httpRequest)
+    expect(httpGetClientSpy.url).toEqual(httpRequest.url)
+    expect(httpGetClientSpy.headers).toEqual({
+      ...httpRequest.headers,
       'x-access-token': account.accessToken,
     })
   })
