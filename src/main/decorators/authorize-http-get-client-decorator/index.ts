@@ -23,18 +23,14 @@ export class AuthorizeHttpGetClientDecorator implements HttpGetClient {
           throw new Error('Access token not found in account')
         }
 
-        await this.httpGetClient.get({
+        return this.httpGetClient.get({
           url: params.url,
           headers: { ...params.headers, 'x-access-token': account.accessToken },
         })
-
-        return { statusCode: 200 }
       }
-      await this.httpGetClient.get(params)
-
-      return { statusCode: 200 }
+      return this.httpGetClient.get(params)
     } catch {
-      return { statusCode: 403 }
+      return this.httpGetClient.get(params)
     }
   }
 }
