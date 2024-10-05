@@ -1,5 +1,5 @@
 import { SurveyModel } from '../models'
 
-export interface FetchSurveyList {
+export interface FetchSurveys {
   fetch: () => Promise<SurveyModel[]>
 }

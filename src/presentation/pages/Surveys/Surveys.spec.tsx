@@ -20,13 +20,13 @@ const ELEMENTS_TEST_ID = {
   'survey-load-error-btn': 'survey-load-error-btn',
 } as const
 
-const makeSut = (fetchSurveyListSpy = new FetchSurveyListSpy()) => {
+const makeSut = (fetchSurveysSpy = new FetchSurveyListSpy()) => {
   render(
     <QueryClientProvider client={queryClient}>
-      <Surveys fetchSurveyList={fetchSurveyListSpy} />
+      <Surveys fetchSurveys={fetchSurveysSpy} />
     </QueryClientProvider>,
   )
-  return { fetchSurveyListSpy }
+  return { fetchSurveysSpy }
 }
 
 describe('Page: Surveys', () => {
@@ -42,7 +42,7 @@ describe('Page: Surveys', () => {
     expect(skeletons).toHaveLength(4)
   })
   it('should call FetchSurveyList on mount', async () => {
-    const { fetchSurveyListSpy } = makeSut()
+    const { fetchSurveysSpy } = makeSut()
     makeSut()
     expect(
       screen.queryByAltText(ELEMENTS_TEST_ID['survey-load-error']),
@@ -50,7 +50,7 @@ describe('Page: Surveys', () => {
     await waitForElementToBeRemoved(() =>
       screen.queryAllByTestId('survey-skeleton'),
     )
-    expect(fetchSurveyListSpy.callCount).toBe(1)
+    expect(fetchSurveysSpy.callCount).toBe(1)
   })
   it('should render Survey Items on success', async () => {
     makeSut()

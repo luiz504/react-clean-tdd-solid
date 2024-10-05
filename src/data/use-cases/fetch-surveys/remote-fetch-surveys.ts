@@ -1,9 +1,9 @@
 import { HttpGetClient, HttpStatusCode } from '~/data/protocols/http'
 import { UnexpectedError } from '~/domain/errors'
 import { SurveyModel } from '~/domain/models'
-import { FetchSurveyList } from '~/domain/use-cases/fetch-survey-list'
+import { FetchSurveys } from '~/domain/use-cases/fetch-surveys'
 
-export class RemoteFetchSurveyList implements FetchSurveyList {
+export class RemoteFetchSurveys implements FetchSurveys {
   constructor(
     private readonly url: string,
     private readonly httpGetClient: HttpGetClient,

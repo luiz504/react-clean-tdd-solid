@@ -8,17 +8,18 @@ import { makeSkeletonList } from '~/presentation/utils/make-skeleton-list'
 import { SurveySkeleton } from './components/survey-skeleton'
 import { SurveyCard } from './components/survey-card'
 
-import { FetchSurveyList } from '~/domain/use-cases'
+import { FetchSurveys } from '~/domain/use-cases'
 const skeletonItems = makeSkeletonList(4)
 
 type Props = {
-  fetchSurveyList: FetchSurveyList
+  fetchSurveys: FetchSurveys
 }
-export const Surveys: FC<Props> = ({ fetchSurveyList }) => {
+export const Surveys: FC<Props> = ({ fetchSurveys }) => {
   const { data, isLoading, isSuccess, isError, refetch } = useQuery({
     queryKey: ['surveys'],
-    queryFn: async () => await fetchSurveyList.fetch(),
+    queryFn: async () => await fetchSurveys.fetch(),
     staleTime: 1000 * 60 * 10,
+    retry: false,
   })
 
   const renderGridSection = (isSuccess && data.length > 0) || isLoading

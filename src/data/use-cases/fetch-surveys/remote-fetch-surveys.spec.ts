@@ -5,11 +5,11 @@ import { HttpStatusCode } from '~/data/protocols/http'
 import { mockSurveyModelList } from '~/domain/__test__'
 import { UnexpectedError } from '~/domain/errors'
 
-import { RemoteFetchSurveyList } from './remote-fetch-survey-list'
+import { RemoteFetchSurveys } from './remote-fetch-surveys'
 
 const makeSut = (url = faker.internet.url()) => {
   const httpGetClientSpy = new HttpGetClientSpy()
-  const sut = new RemoteFetchSurveyList(url, httpGetClientSpy)
+  const sut = new RemoteFetchSurveys(url, httpGetClientSpy)
 
   return { sut, httpGetClientSpy }
 }

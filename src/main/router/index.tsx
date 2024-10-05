@@ -1,10 +1,10 @@
 import { FC } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { MakeSignIn } from '../factories/pages/sign-in/sign-in-factory'
-import { MakeSignUp } from '../factories/pages/sign-up/sign-up-factory'
-import { Surveys } from '~/presentation/pages/Surveys'
+
 import { ApiContextProvider } from '~/presentation/context/api-context/provider'
 import { PrivateRoute } from '~/presentation/components/private-route'
+
+import { MakeSignIn, MakeSignUp, MakeSurveys } from '../factories/pages'
 
 export const Router: FC = () => {
   return (
@@ -13,7 +13,10 @@ export const Router: FC = () => {
         <Routes>
           <Route path="/sign-in" element={<MakeSignIn />} />
           <Route path="/sign-up" element={<MakeSignUp />} />
-          <Route path="/" element={<PrivateRoute element={<Surveys />} />} />
+          <Route
+            path="/"
+            element={<PrivateRoute element={<MakeSurveys />} />}
+          />
           <Route
             path="*"
             element={
