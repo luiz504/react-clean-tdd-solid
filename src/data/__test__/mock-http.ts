@@ -40,4 +40,10 @@ export class HttpGetClientSpy implements HttpGetClient {
 }
 export const mockGetRequest = (): HttpGetParams => ({
   url: faker.internet.url(),
+  headers: Object.fromEntries(
+    faker.helpers.multiple(
+      () => [faker.database.column(), faker.lorem.word()],
+      { count: 3 },
+    ),
+  ),
 })
