@@ -11,7 +11,7 @@ import {
   queryClient,
   QueryClientProvider,
 } from '~/presentation/__test__/query-client'
-import { FetchSurveyListSpy } from '~/presentation/__test__/mock-survey-list'
+import { FetchSurveysSpy } from '~/presentation/__test__/mock-surveys'
 
 const ELEMENTS_TEST_ID = {
   'survey-skeleton': 'survey-skeleton',
@@ -20,7 +20,7 @@ const ELEMENTS_TEST_ID = {
   'survey-load-error-btn': 'survey-load-error-btn',
 } as const
 
-const makeSut = (fetchSurveysSpy = new FetchSurveyListSpy()) => {
+const makeSut = (fetchSurveysSpy = new FetchSurveysSpy()) => {
   render(
     <QueryClientProvider client={queryClient}>
       <Surveys fetchSurveys={fetchSurveysSpy} />
@@ -68,10 +68,12 @@ describe('Page: Surveys', () => {
     )
   })
   it('should render an error message if FetchSurveyList fails', async () => {
-    const fetchSurveyListSpy = new FetchSurveyListSpy()
-    vi.spyOn(fetchSurveyListSpy, 'fetch').mockRejectedValueOnce(new Error())
+    const fetchSurveysSpy = new FetchSurveysSpy()
+    vi.spyOn(FetchSurveysSpy.prototype, 'fetch').mockRejectedValueOnce(
+      new Error(),
+    )
 
-    makeSut(fetchSurveyListSpy)
+    makeSut(fetchSurveysSpy)
     expect(
       screen.queryByAltText(ELEMENTS_TEST_ID['survey-load-error']),
     ).not.toBeInTheDocument()
@@ -82,14 +84,14 @@ describe('Page: Surveys', () => {
     expect(error).toBeInTheDocument()
   })
   it('should be able to refetch when there is an error', async () => {
-    const fetchSurveyListSpy = new FetchSurveyListSpy()
-    vi.spyOn(fetchSurveyListSpy, 'fetch').mockImplementation(
+    const fetchSurveysSpy = new FetchSurveysSpy()
+    vi.spyOn(fetchSurveysSpy, 'fetch').mockImplementation(
       () =>
         // eslint-disable-next-line promise/param-names
         new Promise((_, reject) => setTimeout(() => reject(new Error()), 150)),
     )
 
-    makeSut(fetchSurveyListSpy)
+    makeSut(fetchSurveysSpy)
     const refetchBtn = await screen.findByTestId(
       ELEMENTS_TEST_ID['survey-load-error-btn'],
     )
