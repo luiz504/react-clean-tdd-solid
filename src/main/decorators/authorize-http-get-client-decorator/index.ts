@@ -25,7 +25,7 @@ export class AuthorizeHttpGetClientDecorator implements HttpGetClient {
 
         await this.httpGetClient.get({
           url: params.url,
-          headers: { 'x-access-token': account.accessToken },
+          headers: { ...params.headers, 'x-access-token': account.accessToken },
         })
 
         return { statusCode: 200 }
