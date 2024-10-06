@@ -1,6 +1,6 @@
 import { SurveyModel } from '../models'
 
-export type FetchSurveysModel = SurveyModel[]
+export type FetchSurveyModel = SurveyModel
 export interface FetchSurveys {
-  fetch: () => Promise<FetchSurveysModel>
+  fetch: () => Promise<FetchSurveyModel[]>
 }

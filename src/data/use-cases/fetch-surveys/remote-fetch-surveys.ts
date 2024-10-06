@@ -4,7 +4,7 @@ import { SurveyAnswerModel } from '~/domain/models'
 
 import {
   FetchSurveys,
-  FetchSurveysModel,
+  FetchSurveyModel,
 } from '~/domain/use-cases/fetch-surveys'
 
 export type RemoteFetchSurveysModel = {
@@ -20,7 +20,7 @@ export class RemoteFetchSurveys implements FetchSurveys {
     private readonly httpGetClient: HttpGetClient,
   ) {}
 
-  async fetch(): Promise<FetchSurveysModel> {
+  async fetch(): Promise<FetchSurveyModel[]> {
     const httpResponse = await this.httpGetClient.get<
       RemoteFetchSurveysModel[]
     >({
@@ -29,10 +29,7 @@ export class RemoteFetchSurveys implements FetchSurveys {
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
         if (Array.isArray(httpResponse.body)) {
-          return httpResponse.body.map((item) => ({
-            ...item,
-            date: new Date(item.date),
-          }))
+          return httpResponse.body.map(this.mapToModel)
         }
         throw new UnexpectedError()
       case HttpStatusCode.noContent:
@@ -42,6 +39,16 @@ export class RemoteFetchSurveys implements FetchSurveys {
       case HttpStatusCode.serverError:
       default:
         throw new UnexpectedError()
+    }
+  }
+
+  private mapToModel(item: RemoteFetchSurveysModel): FetchSurveyModel {
+    return {
+      id: item.id,
+      question: item.question,
+      answers: item.answers,
+      date: new Date(item.date),
+      didAnswer: item.didAnswer,
     }
   }
 }
