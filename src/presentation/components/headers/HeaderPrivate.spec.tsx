@@ -14,21 +14,29 @@ vi.mock('react-router-dom', async () => {
     useNavigate: () => mockedNavigate,
   }
 })
+
+const makeSut = () => {
+  const setCurrentAccountMock = vi.fn()
+  render(
+    <MemoryRouter>
+      <ApiContext.Provider
+        value={{
+          getCurrentAccount: vi.fn(),
+          setCurrentAccount: setCurrentAccountMock,
+        }}
+      >
+        <HeaderPrivate />
+      </ApiContext.Provider>
+    </MemoryRouter>,
+  )
+  return {
+    setCurrentAccountMock,
+  }
+}
+
 describe('Component: HeaderPrivate', () => {
   it('should call setCurrentAccount with null and redirect to /sign-in', () => {
-    const setCurrentAccountMock = vi.fn()
-    render(
-      <MemoryRouter>
-        <ApiContext.Provider
-          value={{
-            getCurrentAccount: vi.fn(),
-            setCurrentAccount: setCurrentAccountMock,
-          }}
-        >
-          <HeaderPrivate />
-        </ApiContext.Provider>
-      </MemoryRouter>,
-    )
+    const { setCurrentAccountMock } = makeSut()
     fireEvent.click(screen.getByTestId(ELEMENTS_TEST_ID['logout-btn']))
     expect(setCurrentAccountMock).toHaveBeenCalledWith(null)
     expect(mockedNavigate).toHaveBeenCalledWith('/sign-in')
