@@ -2,10 +2,10 @@ import { faker } from '@faker-js/faker'
 
 import { HttpGetClientSpy } from '~/data/__test__'
 import { HttpStatusCode } from '~/data/protocols/http'
-import { mockSurveyModelList } from '~/domain/__test__'
-import { UnexpectedError } from '~/domain/errors'
+import { mockRemoteSurveysModel } from '~/data/__test__/mock-remote-surveys'
 
 import { RemoteFetchSurveys } from './remote-fetch-surveys'
+import { UnexpectedError } from '~/domain/errors'
 
 const makeSut = (url = faker.internet.url()) => {
   const httpGetClientSpy = new HttpGetClientSpy()
@@ -20,7 +20,7 @@ describe('RemoteFetchSurveyList', () => {
     const { sut, httpGetClientSpy } = makeSut(url)
     httpGetClientSpy.response = {
       statusCode: HttpStatusCode.ok,
-      body: mockSurveyModelList(),
+      body: mockRemoteSurveysModel(),
     }
     await sut.fetch()
 
@@ -67,7 +67,7 @@ describe('RemoteFetchSurveyList', () => {
 
   it('should return a SurveyModelsModel if HttpGetClient returns 200', async () => {
     const { sut, httpGetClientSpy } = makeSut()
-    const httpResult = mockSurveyModelList()
+    const httpResult = mockRemoteSurveysModel(2)
     httpGetClientSpy.response = {
       statusCode: HttpStatusCode.ok,
       body: httpResult,
@@ -76,7 +76,10 @@ describe('RemoteFetchSurveyList', () => {
     const surveys = await sut.fetch()
 
     // Assert
-    expect(surveys).toEqual(httpResult)
+    expect(surveys).toEqual([
+      { ...httpResult[0], date: new Date(httpResult[0].date) },
+      { ...httpResult[1], date: new Date(httpResult[1].date) },
+    ])
   })
 
   it('should return a empty list if HttpGetClient returns 204', async () => {
