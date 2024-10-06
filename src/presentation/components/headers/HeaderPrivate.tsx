@@ -1,12 +1,14 @@
 import { ComponentProps, FC } from 'react'
 
 import { useApiContext } from '~/presentation/context/api-context/hook'
+import { useAuth } from '~/presentation/hooks/use-auth'
 import { cn } from '~/presentation/utils/cn'
 
 type Props = ComponentProps<'header'>
 
 export const HeaderPrivate: FC<Props> = ({ className, ...rest }) => {
-  const { signOut, getCurrentAccount } = useApiContext()
+  const { getCurrentAccount } = useApiContext()
+  const { signOut } = useAuth()
 
   return (
     <header
