@@ -1,5 +1,5 @@
 import { HttpGetClient, HttpStatusCode } from '~/data/protocols/http'
-import { UnexpectedError } from '~/domain/errors'
+import { AccessDeniedError, UnexpectedError } from '~/domain/errors'
 import { SurveyAnswerModel } from '~/domain/models'
 
 import {
@@ -34,7 +34,9 @@ export class RemoteFetchSurveys implements FetchSurveys {
         throw new UnexpectedError()
       case HttpStatusCode.noContent:
         return []
-      case HttpStatusCode.forbidden:
+      case HttpStatusCode.forbidden: {
+        throw new AccessDeniedError()
+      }
       case HttpStatusCode.notFound:
       case HttpStatusCode.serverError:
       default:
