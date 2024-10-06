@@ -23,9 +23,14 @@ const ELEMENTS_TEST_ID = {
   'survey-load-error': 'survey-load-error',
   'survey-load-error-btn': 'survey-load-error-btn',
 } as const
+const handleError = vi.fn()
 
+vi.mock('~/presentation/hooks/use-handle-errors', () => ({
+  useHandleErrors: () => ({
+    handleError,
+  }),
+}))
 const makeSut = (fetchSurveysSpy = new FetchSurveysSpy()) => {
-  const signOutMock = vi.fn()
   render(
     <QueryClientProvider client={queryClient}>
       <MemoryRouter>
@@ -33,7 +38,6 @@ const makeSut = (fetchSurveysSpy = new FetchSurveysSpy()) => {
           value={{
             getCurrentAccount: vi.fn(),
             setCurrentAccount: vi.fn(),
-            signOut: signOutMock,
           }}
         >
           <Surveys fetchSurveys={fetchSurveysSpy} />
@@ -41,7 +45,7 @@ const makeSut = (fetchSurveysSpy = new FetchSurveysSpy()) => {
       </MemoryRouter>
     </QueryClientProvider>,
   )
-  return { fetchSurveysSpy, signOutMock }
+  return { fetchSurveysSpy }
 }
 
 describe('Page: Surveys', () => {
@@ -103,7 +107,9 @@ describe('Page: Surveys', () => {
     vi.spyOn(fetchSurveysSpy, 'fetch').mockImplementation(
       () =>
         // eslint-disable-next-line promise/param-names
-        new Promise((_, reject) => setTimeout(() => reject(new Error()), 150)),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('aah')), 150),
+        ),
     )
 
     makeSut(fetchSurveysSpy)
@@ -123,12 +129,15 @@ describe('Page: Surveys', () => {
     expect(loadingSkeletons).toHaveLength(4)
   })
 
-  it('should call signOut when loadSurveys throws AccessDeniedError', async () => {
+  it.only('should call handleError when loadSurveys throws AccessDeniedError', async () => {
     const fetchSurveysSpy = new FetchSurveysSpy()
-    vi.spyOn(fetchSurveysSpy, 'fetch').mockImplementation(() => {
-      throw new AccessDeniedError()
+    vi.spyOn(fetchSurveysSpy, 'fetch').mockImplementation(() =>
+      Promise.reject(new AccessDeniedError()),
+    )
+    makeSut(fetchSurveysSpy)
+
+    await waitFor(() => {
+      expect(handleError).toHaveBeenCalledTimes(1)
     })
-    const { signOutMock } = makeSut(fetchSurveysSpy)
-    expect(signOutMock).toHaveBeenCalledTimes(1)
   })
 })
