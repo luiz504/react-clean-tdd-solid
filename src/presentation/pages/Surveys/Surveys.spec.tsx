@@ -12,6 +12,8 @@ import {
   QueryClientProvider,
 } from '~/presentation/__test__/query-client'
 import { FetchSurveysSpy } from '~/presentation/__test__/mock-surveys'
+import { MemoryRouter } from 'react-router-dom'
+import { ApiContextProvider } from '~/presentation/context/api-context/provider'
 
 const ELEMENTS_TEST_ID = {
   'survey-skeleton': 'survey-skeleton',
@@ -23,7 +25,11 @@ const ELEMENTS_TEST_ID = {
 const makeSut = (fetchSurveysSpy = new FetchSurveysSpy()) => {
   render(
     <QueryClientProvider client={queryClient}>
-      <Surveys fetchSurveys={fetchSurveysSpy} />
+      <MemoryRouter>
+        <ApiContextProvider>
+          <Surveys fetchSurveys={fetchSurveysSpy} />
+        </ApiContextProvider>
+      </MemoryRouter>
     </QueryClientProvider>,
   )
   return { fetchSurveysSpy }
