@@ -1,16 +1,20 @@
 import { HttpGetClient, HttpStatusCode } from '~/data/protocols/http'
 import { UnexpectedError } from '~/domain/errors'
-import { SurveyModel } from '~/domain/models'
-import { FetchSurveys } from '~/domain/use-cases/fetch-surveys'
 
+import {
+  FetchSurveys,
+  FetchSurveysModel,
+} from '~/domain/use-cases/fetch-surveys'
+
+type RemoteFetchSurveysModel = FetchSurveysModel
 export class RemoteFetchSurveys implements FetchSurveys {
   constructor(
     private readonly url: string,
     private readonly httpGetClient: HttpGetClient,
   ) {}
 
-  async fetch(): Promise<SurveyModel[]> {
-    const httpResponse = await this.httpGetClient.get<SurveyModel[]>({
+  async fetch(): Promise<FetchSurveysModel> {
+    const httpResponse = await this.httpGetClient.get<RemoteFetchSurveysModel>({
       url: this.url,
     })
     switch (httpResponse.statusCode) {
