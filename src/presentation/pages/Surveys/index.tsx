@@ -10,16 +10,16 @@ import { SurveyCard } from './components/survey-card'
 
 import { FetchSurveys } from '~/domain/use-cases'
 import { ErrorFeedback } from './components/error-feedback'
-import { AccessDeniedError } from '~/domain/errors'
-import { useApiContext } from '~/presentation/context/api-context/hook'
+import { useHandleErrors } from '~/presentation/hooks/use-handle-errors'
 
 const skeletonItems = makeSkeletonList(4)
 
 type Props = {
   fetchSurveys: FetchSurveys
 }
+
 export const Surveys: FC<Props> = ({ fetchSurveys }) => {
-  const { signOut } = useApiContext()
+  const { handleError } = useHandleErrors()
 
   const { data, isLoading, isSuccess, isError, refetch } = useQuery({
     queryKey: ['surveys'],
@@ -27,10 +27,7 @@ export const Surveys: FC<Props> = ({ fetchSurveys }) => {
       try {
         return await fetchSurveys.fetch()
       } catch (err) {
-        if (err instanceof AccessDeniedError) {
-          signOut()
-          return []
-        }
+        handleError(err)
         throw err
       }
     },
