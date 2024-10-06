@@ -1,17 +1,13 @@
 import { ComponentProps, FC } from 'react'
-import { useNavigate } from 'react-router-dom'
+
 import { useApiContext } from '~/presentation/context/api-context/hook'
 import { cn } from '~/presentation/utils/cn'
 
 type Props = ComponentProps<'header'>
 
 export const HeaderPrivate: FC<Props> = ({ className, ...rest }) => {
-  const { setCurrentAccount, getCurrentAccount } = useApiContext()
-  const navigate = useNavigate()
-  const handleSignOut = () => {
-    setCurrentAccount(null)
-    navigate('/sign-in')
-  }
+  const { signOut, getCurrentAccount } = useApiContext()
+
   return (
     <header
       className={cn(
@@ -30,7 +26,7 @@ export const HeaderPrivate: FC<Props> = ({ className, ...rest }) => {
             data-testid="logout-btn"
             type="button"
             className="rounded-lg py-1 text-sm outline-offset-4 transition-colors hover:text-gray-300"
-            onClick={handleSignOut}
+            onClick={signOut}
           >
             Logout
           </button>

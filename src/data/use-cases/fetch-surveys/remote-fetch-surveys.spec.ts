@@ -5,7 +5,7 @@ import { HttpStatusCode } from '~/data/protocols/http'
 import { mockRemoteSurveysModel } from '~/data/__test__/mock-remote-surveys'
 
 import { RemoteFetchSurveys } from './remote-fetch-surveys'
-import { UnexpectedError } from '~/domain/errors'
+import { AccessDeniedError, UnexpectedError } from '~/domain/errors'
 
 const makeSut = (url = faker.internet.url()) => {
   const httpGetClientSpy = new HttpGetClientSpy()
@@ -27,13 +27,13 @@ describe('RemoteFetchSurveyList', () => {
     expect(httpGetClientSpy.url).toBe(url)
   })
 
-  it('should throw UnexpectedError if HttpGetClient returns 403', async () => {
+  it('should throw AccessDeniedError if HttpGetClient returns 403', async () => {
     const { sut, httpGetClientSpy } = makeSut()
     httpGetClientSpy.response = {
       statusCode: HttpStatusCode.forbidden,
     }
     const promise = sut.fetch()
-    await expect(promise).rejects.toThrow(new UnexpectedError())
+    await expect(promise).rejects.toThrow(new AccessDeniedError())
   })
 
   it('should throw UnexpectedError if HttpGetClient returns 404', async () => {
