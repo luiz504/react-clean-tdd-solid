@@ -17,10 +17,15 @@ describe('CurrentAccountAdapter', () => {
       setCurrentAccountAdapter(account)
       expect(setSpy).toHaveBeenCalledWith('account', account)
     })
-    it('should throw InvalidResourceFormatError if no account is provided', () => {
-      expect(() => setCurrentAccountAdapter(null as any)).toThrow(
-        new InvalidResourceFormatError(),
-      )
+    it('should throw InvalidResourceFormatError if no account has a invalid format', () => {
+      expect(() =>
+        setCurrentAccountAdapter({ invalid: 'field' } as any),
+      ).toThrow(new InvalidResourceFormatError())
+    })
+    it('should call LocalStorageAdapter.set with correct values if account is null', () => {
+      const setSpy = vi.spyOn(LocalStorageAdapter.prototype, 'set')
+      setCurrentAccountAdapter(null)
+      expect(setSpy).toHaveBeenCalledWith('account', null)
     })
   })
 
