@@ -1,9 +1,15 @@
 import { ComponentProps, FC } from 'react'
+
+import { useApiContext } from '~/presentation/context/api-context/hook'
+import { useAuth } from '~/presentation/hooks/use-auth'
 import { cn } from '~/presentation/utils/cn'
 
 type Props = ComponentProps<'header'>
 
 export const HeaderPrivate: FC<Props> = ({ className, ...rest }) => {
+  const { getCurrentAccount } = useApiContext()
+  const { signOut } = useAuth()
+
   return (
     <header
       className={cn(
@@ -17,10 +23,12 @@ export const HeaderPrivate: FC<Props> = ({ className, ...rest }) => {
         <img className="h-[60px]" src="/logo.svg" alt="logo" />
 
         <div className="flex flex-col items-end gap-1 text-white">
-          <span>Luiz Bueno</span>
+          <span data-testid="user-name">{getCurrentAccount()?.name}</span>
           <button
+            data-testid="logout-btn"
             type="button"
             className="rounded-lg py-1 text-sm outline-offset-4 transition-colors hover:text-gray-300"
+            onClick={signOut}
           >
             Logout
           </button>

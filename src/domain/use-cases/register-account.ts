@@ -1,4 +1,4 @@
-import { AccountModel } from '../models/account-model'
+import { AccountModel, accountModelSchema } from '../models/account-model'
 
 export type RegisterAccountParams = {
   name: string
@@ -6,6 +6,9 @@ export type RegisterAccountParams = {
   password: string
   passwordConfirmation: string
 }
+export const registerAccountModelSchema = accountModelSchema
+export type RegisterAccountModel = AccountModel
+
 export interface RegisterAccount {
-  register(params: RegisterAccountParams): Promise<AccountModel>
+  register(params: RegisterAccountParams): Promise<RegisterAccountModel>
 }

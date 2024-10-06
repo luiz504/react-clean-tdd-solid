@@ -2,14 +2,14 @@ import { faker } from '@faker-js/faker'
 
 import { HttpGetClientSpy } from '~/data/__test__'
 import { HttpStatusCode } from '~/data/protocols/http'
-import { mockSurveyModelList } from '~/domain/__test__'
-import { UnexpectedError } from '~/domain/errors'
+import { mockRemoteSurveysModel } from '~/data/__test__/mock-remote-surveys'
 
-import { RemoteFetchSurveyList } from './remote-fetch-survey-list'
+import { RemoteFetchSurveys } from './remote-fetch-surveys'
+import { AccessDeniedError, UnexpectedError } from '~/domain/errors'
 
 const makeSut = (url = faker.internet.url()) => {
   const httpGetClientSpy = new HttpGetClientSpy()
-  const sut = new RemoteFetchSurveyList(url, httpGetClientSpy)
+  const sut = new RemoteFetchSurveys(url, httpGetClientSpy)
 
   return { sut, httpGetClientSpy }
 }
@@ -20,20 +20,20 @@ describe('RemoteFetchSurveyList', () => {
     const { sut, httpGetClientSpy } = makeSut(url)
     httpGetClientSpy.response = {
       statusCode: HttpStatusCode.ok,
-      body: mockSurveyModelList(),
+      body: mockRemoteSurveysModel(),
     }
     await sut.fetch()
 
     expect(httpGetClientSpy.url).toBe(url)
   })
 
-  it('should throw UnexpectedError if HttpGetClient returns 403', async () => {
+  it('should throw AccessDeniedError if HttpGetClient returns 403', async () => {
     const { sut, httpGetClientSpy } = makeSut()
     httpGetClientSpy.response = {
       statusCode: HttpStatusCode.forbidden,
     }
     const promise = sut.fetch()
-    await expect(promise).rejects.toThrow(new UnexpectedError())
+    await expect(promise).rejects.toThrow(new AccessDeniedError())
   })
 
   it('should throw UnexpectedError if HttpGetClient returns 404', async () => {
@@ -65,9 +65,9 @@ describe('RemoteFetchSurveyList', () => {
     await expect(promise).rejects.toThrow(new UnexpectedError())
   })
 
-  it('should return a list of SurveyModels if HttpGetClient returns 200', async () => {
+  it('should return a SurveyModelsModel if HttpGetClient returns 200', async () => {
     const { sut, httpGetClientSpy } = makeSut()
-    const httpResult = mockSurveyModelList()
+    const httpResult = mockRemoteSurveysModel(2)
     httpGetClientSpy.response = {
       statusCode: HttpStatusCode.ok,
       body: httpResult,
@@ -76,7 +76,10 @@ describe('RemoteFetchSurveyList', () => {
     const surveys = await sut.fetch()
 
     // Assert
-    expect(surveys).toEqual(httpResult)
+    expect(surveys).toEqual([
+      { ...httpResult[0], date: new Date(httpResult[0].date) },
+      { ...httpResult[1], date: new Date(httpResult[1].date) },
+    ])
   })
 
   it('should return a empty list if HttpGetClient returns 204', async () => {

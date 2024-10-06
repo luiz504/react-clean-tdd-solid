@@ -25,6 +25,15 @@ describe('LocalStorageAdapter', () => {
         JSON.stringify(value),
       )
     })
+    it('should call removeItem if value is null or undefined', () => {
+      const { sut } = makeSut()
+
+      sut.set('key2', null)
+      expect(localStorage.removeItem).toHaveBeenCalledWith('key2')
+      sut.set('key3', undefined)
+      expect(localStorage.removeItem).toHaveBeenCalledWith('key3')
+      expect(localStorage.getItem).not.toHaveBeenCalled()
+    })
   })
   describe('get', () => {
     it('should call localStorage with correct value', () => {

@@ -20,7 +20,7 @@ export class AxiosHttpAdapter implements HttpPostClient, HttpPostClient {
 
   async get<R>(params: HttpGetParams): Promise<HttpResponse<R>> {
     try {
-      const response = await axios.get(params.url)
+      const response = await axios.get(params.url, { headers: params.headers })
 
       return this.adaptResponse(response)
     } catch (err) {

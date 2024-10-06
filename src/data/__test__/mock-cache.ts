@@ -1,11 +1,13 @@
-import { SetStorage } from '../protocols/cache/set-storage'
+import { faker } from '@faker-js/faker'
 
-export class StorageMock implements SetStorage {
+import { GetStorage } from '../protocols/cache'
+
+export class GetStorageSpy implements GetStorage {
   key?: string
-  value?: any
+  value: string | null = JSON.stringify(faker.finance.currency())
 
-  set(key: string, value: any): void {
+  get(key: string): string | null {
     this.key = key
-    this.value = value
+    return this.value
   }
 }

@@ -10,8 +10,8 @@ export const ApiContextProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
     <ApiContext.Provider
       value={{
-        setCurrentAccount: setCurrentAccountAdapter,
         getCurrentAccount: getCurrentAccountAdapter,
+        setCurrentAccount: setCurrentAccountAdapter,
       }}
     >
       {children}

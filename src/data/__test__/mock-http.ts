@@ -29,15 +29,23 @@ export const mockPostRequest = (): HttpPostParams<any> => ({
 
 export class HttpGetClientSpy implements HttpGetClient {
   url?: string
+  headers?: Record<string, string>
   response: HttpResponse<any> = {
     statusCode: HttpStatusCode.ok,
   }
 
   async get<R = any>(params: HttpGetParams): Promise<HttpResponse<R>> {
     this.url = params.url
+    this.headers = params.headers
     return this.response
   }
 }
 export const mockGetRequest = (): HttpGetParams => ({
   url: faker.internet.url(),
+  headers: Object.fromEntries(
+    faker.helpers.multiple(
+      () => [faker.database.column(), faker.lorem.word()],
+      { count: 3 },
+    ),
+  ),
 })

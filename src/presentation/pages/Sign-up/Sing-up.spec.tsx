@@ -12,12 +12,12 @@ import { SignUp } from '.'
 import { EmailInUserError } from '~/domain/errors'
 import { ApiContext } from '~/presentation/context/api-context/context'
 
-const mockedNavigate = vi.fn()
+const useNavigateMock = vi.fn()
 vi.mock('react-router-dom', async () => {
   const mod = await vi.importActual('react-router-dom')
   return {
     ...mod,
-    useNavigate: () => mockedNavigate,
+    useNavigate: () => useNavigateMock,
   }
 })
 
@@ -298,6 +298,6 @@ describe('Page: Sign-up', () => {
         registerAccountSpy.account,
       )
     })
-    expect(mockedNavigate).toBeCalledWith('/', { replace: true })
+    expect(useNavigateMock).toBeCalledWith('/', { replace: true })
   })
 })

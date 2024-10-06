@@ -1,29 +1,71 @@
 import { FC } from 'react'
+import { useQuery } from '@tanstack/react-query'
 
 import { Footer } from '~/presentation/components'
 import { HeaderPrivate } from '~/presentation/components/headers/HeaderPrivate'
+import { makeSkeletonList } from '~/presentation/utils/make-skeleton-list'
 
 import { SurveySkeleton } from './components/survey-skeleton'
 import { SurveyCard } from './components/survey-card'
-import { makeSkeletonList } from '~/presentation/utils/make-skeleton-list'
+
+import { FetchSurveys } from '~/domain/use-cases'
+import { ErrorFeedback } from './components/error-feedback'
+import { useHandleErrors } from '~/presentation/hooks/use-handle-errors'
+
 const skeletonItems = makeSkeletonList(4)
-export const Surveys: FC = () => {
+
+type Props = {
+  fetchSurveys: FetchSurveys
+}
+
+export const Surveys: FC<Props> = ({ fetchSurveys }) => {
+  const { handleError } = useHandleErrors()
+
+  const { data, isLoading, isSuccess, isError, refetch } = useQuery({
+    queryKey: ['surveys'],
+    queryFn: async () => {
+      try {
+        return await fetchSurveys.fetch()
+      } catch (err) {
+        handleError(err)
+        throw err
+      }
+    },
+    staleTime: 1000 * 60 * 10,
+    retry: false,
+  })
+
+  const renderGridSection = (isSuccess && data.length > 0) || isLoading
+
   return (
     <div className="flex min-h-svh flex-col">
       <HeaderPrivate />
 
-      <main className="mx-auto flex max-w-[800px] flex-1 flex-col p-4 sm:p-10">
-        <h1 className="mb-6 text-xl font-bold uppercase text-primary-dark">
+      <main className="mx-auto flex w-full max-w-[50rem] flex-1 flex-col p-4 sm:p-10">
+        <h1 className="mb-6 text-center text-xl font-bold uppercase">
           Surveys
         </h1>
-
-        <ul className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <SurveyCard data-testid="survey-card" />
-          <SurveyCard data-testid="survey-card" />
-          {skeletonItems.map((item) => (
-            <SurveySkeleton key={item.id} data-testid="survey-skeleton" />
-          ))}
-        </ul>
+        {renderGridSection && (
+          <ul className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
+            {data?.map((survey) => (
+              <SurveyCard
+                key={survey.id}
+                data-testid="survey-card"
+                survey={survey}
+              />
+            ))}
+            {isLoading &&
+              skeletonItems.map((item) => (
+                <SurveySkeleton key={item.id} data-testid="survey-skeleton" />
+              ))}
+          </ul>
+        )}
+        {isError && (
+          <ErrorFeedback
+            data-testid="survey-load-error"
+            onClickTryAgain={refetch}
+          />
+        )}
       </main>
 
       <Footer />
