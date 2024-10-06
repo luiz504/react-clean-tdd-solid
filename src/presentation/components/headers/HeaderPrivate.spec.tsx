@@ -18,13 +18,14 @@ vi.mock('react-router-dom', async () => {
 })
 
 const makeSut = (account = mockAccountModel()) => {
-  const setCurrentAccountMock = vi.fn()
+  const signOut = vi.fn()
   render(
     <MemoryRouter>
       <ApiContext.Provider
         value={{
           getCurrentAccount: () => account,
-          setCurrentAccount: setCurrentAccountMock,
+          signOut,
+          setCurrentAccount: vi.fn(),
         }}
       >
         <HeaderPrivate />
@@ -32,23 +33,21 @@ const makeSut = (account = mockAccountModel()) => {
     </MemoryRouter>,
   )
   return {
-    setCurrentAccountMock,
+    signOut,
   }
 }
 
 describe('Component: HeaderPrivate', () => {
-  it('should call setCurrentAccount with null and redirect to /sign-in', () => {
-    const { setCurrentAccountMock } = makeSut()
+  it('should call signOut when logout button is clicked', () => {
+    const { signOut } = makeSut()
     fireEvent.click(screen.getByTestId(ELEMENTS_TEST_ID['logout-btn']))
-    expect(setCurrentAccountMock).toHaveBeenCalledWith(null)
-    expect(mockedNavigate).toHaveBeenCalledWith('/sign-in')
+    expect(signOut).toHaveBeenCalled()
   })
 
   it('should render userName correctly', () => {
     const account = mockAccountModel()
-    const { setCurrentAccountMock } = makeSut(account)
-    const userName = 'any_user'
-    setCurrentAccountMock(userName)
+    makeSut(account)
+
     expect(screen.getByTestId(ELEMENTS_TEST_ID['user-name'])).toHaveTextContent(
       account.name,
     )

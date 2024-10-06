@@ -13,7 +13,9 @@ import {
 } from '~/presentation/__test__/query-client'
 import { FetchSurveysSpy } from '~/presentation/__test__/mock-surveys'
 import { MemoryRouter } from 'react-router-dom'
-import { ApiContextProvider } from '~/presentation/context/api-context/provider'
+
+import { AccessDeniedError } from '~/domain/errors'
+import { ApiContext } from '~/presentation/context/api-context/context'
 
 const ELEMENTS_TEST_ID = {
   'survey-skeleton': 'survey-skeleton',
@@ -23,16 +25,23 @@ const ELEMENTS_TEST_ID = {
 } as const
 
 const makeSut = (fetchSurveysSpy = new FetchSurveysSpy()) => {
+  const signOutMock = vi.fn()
   render(
     <QueryClientProvider client={queryClient}>
       <MemoryRouter>
-        <ApiContextProvider>
+        <ApiContext.Provider
+          value={{
+            getCurrentAccount: vi.fn(),
+            setCurrentAccount: vi.fn(),
+            signOut: signOutMock,
+          }}
+        >
           <Surveys fetchSurveys={fetchSurveysSpy} />
-        </ApiContextProvider>
+        </ApiContext.Provider>
       </MemoryRouter>
     </QueryClientProvider>,
   )
-  return { fetchSurveysSpy }
+  return { fetchSurveysSpy, signOutMock }
 }
 
 describe('Page: Surveys', () => {
@@ -112,5 +121,14 @@ describe('Page: Surveys', () => {
       screen.queryByTestId(ELEMENTS_TEST_ID['survey-load-error']),
     ).not.toBeInTheDocument()
     expect(loadingSkeletons).toHaveLength(4)
+  })
+
+  it('should call signOut when loadSurveys throws AccessDeniedError', async () => {
+    const fetchSurveysSpy = new FetchSurveysSpy()
+    vi.spyOn(fetchSurveysSpy, 'fetch').mockImplementation(() => {
+      throw new AccessDeniedError()
+    })
+    const { signOutMock } = makeSut(fetchSurveysSpy)
+    expect(signOutMock).toHaveBeenCalledTimes(1)
   })
 })

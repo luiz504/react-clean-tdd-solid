@@ -58,6 +58,7 @@ const makeSut = (params?: SutParams) => {
       <ApiContext.Provider
         value={{
           setCurrentAccount: setCurrentAccountMock,
+          signOut: vi.fn(),
           getCurrentAccount: vi.fn(),
         }}
       >

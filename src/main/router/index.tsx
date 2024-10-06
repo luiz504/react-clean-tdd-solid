@@ -8,8 +8,8 @@ import { MakeSignIn, MakeSignUp, MakeSurveys } from '../factories/pages'
 
 export const Router: FC = () => {
   return (
-    <ApiContextProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <ApiContextProvider>
         <Routes>
           <Route path="/sign-in" element={<MakeSignIn />} />
           <Route path="/sign-up" element={<MakeSignUp />} />
@@ -26,7 +26,7 @@ export const Router: FC = () => {
             }
           />
         </Routes>
-      </BrowserRouter>
-    </ApiContextProvider>
+      </ApiContextProvider>
+    </BrowserRouter>
   )
 }

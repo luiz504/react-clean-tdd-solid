@@ -29,6 +29,7 @@ export const Surveys: FC<Props> = ({ fetchSurveys }) => {
       } catch (err) {
         if (err instanceof AccessDeniedError) {
           signOut()
+          return []
         }
         throw err
       }
