@@ -27,12 +27,12 @@ const FIELDS_TEST_ID = {
   'form-status-spinner': 'form-status-spinner',
 } as const
 
-const mockedNavigate = vi.fn()
+const useNavigateMock = vi.fn()
 vi.mock('react-router-dom', async () => {
   const mod = await vi.importActual('react-router-dom')
   return {
     ...mod,
-    useNavigate: () => mockedNavigate,
+    useNavigate: () => useNavigateMock,
   }
 })
 type SutParams = {
@@ -241,7 +241,7 @@ describe('Page: Sing-in', () => {
     simulateValidSubmit()
 
     await waitFor(() => {
-      expect(mockedNavigate).toHaveBeenCalledWith('/', { replace: true })
+      expect(useNavigateMock).toHaveBeenCalledWith('/', { replace: true })
     })
   })
 })

@@ -8,23 +8,21 @@ const ELEMENTS_TEST_ID = {
   'logout-btn': 'logout-btn',
   'user-name': 'user-name',
 } as const
-const mockedNavigate = vi.fn()
-vi.mock('react-router-dom', async () => {
-  const mod = await vi.importActual('react-router-dom')
-  return {
-    ...mod,
-    useNavigate: () => mockedNavigate,
-  }
-})
+
+const signOutMock = vi.fn()
+vi.mock('~/presentation/hooks/use-auth', () => ({
+  useAuth: () => ({
+    signOut: signOutMock,
+  }),
+}))
 
 const makeSut = (account = mockAccountModel()) => {
-  const signOut = vi.fn()
   render(
     <MemoryRouter>
       <ApiContext.Provider
         value={{
           getCurrentAccount: () => account,
-          signOut,
+
           setCurrentAccount: vi.fn(),
         }}
       >
@@ -32,16 +30,13 @@ const makeSut = (account = mockAccountModel()) => {
       </ApiContext.Provider>
     </MemoryRouter>,
   )
-  return {
-    signOut,
-  }
 }
 
 describe('Component: HeaderPrivate', () => {
   it('should call signOut when logout button is clicked', () => {
-    const { signOut } = makeSut()
+    makeSut()
     fireEvent.click(screen.getByTestId(ELEMENTS_TEST_ID['logout-btn']))
-    expect(signOut).toHaveBeenCalled()
+    expect(signOutMock).toHaveBeenCalled()
   })
 
   it('should render userName correctly', () => {
