@@ -18,7 +18,7 @@ export const ErrorFeedback: FC<Props> = ({
       {...rest}
     >
       <p className="text-center text-xl font-medium text-neutral-500">
-        Falha ao carregar surveys
+        Fail to load Surveys
       </p>
 
       <button
@@ -26,7 +26,7 @@ export const ErrorFeedback: FC<Props> = ({
         className="rounded-md bg-primary px-4 py-2 text-white"
         onClick={onClickTryAgain}
       >
-        Tentar novamente
+        Try again
       </button>
     </div>
   )
