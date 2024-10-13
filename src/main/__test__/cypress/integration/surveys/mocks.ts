@@ -6,4 +6,9 @@ const mockUnexpectedError = () =>
     statusCode: faker.number.int({ min: 404, max: 600 }),
   })
 
-export const SurveysMocks = { mockUnexpectedError }
+const mockAccessDeniedError = () => {
+  HTTP.mockHttpRequest('GET', /surveys/, {
+    statusCode: 403,
+  })
+}
+export const SurveysMocks = { mockUnexpectedError, mockAccessDeniedError }

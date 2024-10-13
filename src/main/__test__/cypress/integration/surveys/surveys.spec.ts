@@ -18,4 +18,10 @@ describe('Page: Surveys', () => {
       'Falha ao carregar surveys',
     )
   })
+  it('should logout on AccessDeniedError', () => {
+    cy.visit('/')
+    SurveysMocks.mockAccessDeniedError()
+    Helpers.testUrl('/sign-in')
+    Helpers.testLocalStorageIsEmpty('account')
+  })
 })
