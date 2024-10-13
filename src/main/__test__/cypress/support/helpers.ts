@@ -12,6 +12,17 @@ const testLocalStorageIsEmpty = (key: string) => {
   cy.window().then((w) => assert.isNotOk(w.localStorage.getItem(key)))
 }
 
+const setLocalStorageItem = (key: string, value?: string | object | null) => {
+  if (!value) {
+    localStorage.removeItem(key)
+  }
+  if (typeof value === 'string') {
+    localStorage.setItem(key, value)
+    return
+  }
+
+  localStorage.setItem(key, JSON.stringify(value))
+}
 const testUrl = (url: string) => {
   cy.url().should('eq', `${baseUrl}${url}`)
 }
@@ -21,4 +32,5 @@ export const Helpers = {
   testUrl,
   testHttpCallsCount,
   testLocalStorageIsEmpty,
+  setLocalStorageItem,
 }
