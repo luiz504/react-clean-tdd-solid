@@ -2,10 +2,13 @@ import { faker } from '@faker-js/faker'
 import { HTTP } from '../../helpers/http-mocks'
 
 const path = /surveys/
-const mockUnexpectedError = () =>
+const UnexpectedError = () =>
   HTTP.mockServerError('GET', path, faker.number.int({ min: 404, max: 600 }))
 
-const mockAccessDeniedError = () => {
+const AccessDeniedError = () => {
   HTTP.mockForbiddenError('GET', path)
 }
-export const SurveysMocks = { mockUnexpectedError, mockAccessDeniedError }
+
+const Success = () => HTTP.mockOk('GET', path, 'fx:surveys')
+
+export const SurveysMocks = { UnexpectedError, AccessDeniedError, Success }

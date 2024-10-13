@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1",
+    "question": "What is your favorite programming language?",
+    "answers": [
+      {
+        "answer": "JavaScript"
+      },
+      {
+        "answer": "Python",
+        "image": "https://example.com/images/python.png"
+      },
+      {
+        "answer": "TypeScript"
+      }
+    ],
+    "date": "2023-10-12T12:34:56Z",
+    "didAnswer": false
+  },
+  {
+    "id": "2",
+    "question": "How do you prefer to work?",
+    "answers": [
+      {
+        "answer": "Remotely"
+      },
+      {
+        "answer": "In-office"
+      },
+      {
+        "answer": "Hybrid",
+        "image": "https://example.com/images/hybrid.png"
+      }
+    ],
+    "date": "2022-09-11T09:00:00Z",
+    "didAnswer": true
+  }
+]
