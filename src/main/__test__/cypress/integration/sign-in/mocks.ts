@@ -1,9 +1,9 @@
 import { faker } from '@faker-js/faker'
-import * as Helper from '../../support/http-mocks'
+import { HTTP } from '../../support/http-mocks'
 import { AuthenticationModel } from '../../../../../domain/use-cases/authentication'
 
 const InvalidCredentialsError = () =>
-  Helper.mockSignInApiCall({
+  HTTP.mockHttpRequest('POST', /login/, {
     statusCode: 401,
     body: {
       error: faker.lorem.paragraph(),
@@ -11,12 +11,12 @@ const InvalidCredentialsError = () =>
   }).as('request')
 
 const UnexpectedError = () =>
-  Helper.mockSignInApiCall({
+  HTTP.mockHttpRequest('POST', /login/, {
     statusCode: faker.number.int({ min: 402, max: 600 }),
   }).as('request')
 
 const SuccessWithInvalidData = () =>
-  Helper.mockSignInApiCall({
+  HTTP.mockHttpRequest('POST', /login/, {
     statusCode: 200,
     body: {
       xxx: faker.location.country(),
@@ -24,7 +24,7 @@ const SuccessWithInvalidData = () =>
   }).as('request')
 
 const Success = () =>
-  Helper.mockSignInApiCall({
+  HTTP.mockHttpRequest('POST', /login/, {
     statusCode: 200,
     body: {
       accessToken: faker.string.uuid(),

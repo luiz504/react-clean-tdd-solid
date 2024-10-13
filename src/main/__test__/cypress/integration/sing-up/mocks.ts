@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker'
-import * as Helper from '../../support/http-mocks'
+import { HTTP } from '../../support/http-mocks'
 import { AccountModel } from '../../../../../domain/models/account-model'
 const EmailInUseError = () =>
-  Helper.mockSignUpApiCall({
+  HTTP.mockHttpRequest('POST', /signup/, {
     statusCode: 403,
     body: {
       error: faker.lorem.paragraph(),
@@ -10,12 +10,12 @@ const EmailInUseError = () =>
   }).as('request')
 
 const UnexpectedError = () =>
-  Helper.mockSignUpApiCall({
+  HTTP.mockHttpRequest('POST', /signup/, {
     statusCode: faker.number.int({ min: 404, max: 600 }),
   }).as('request')
 
 const SuccessWithInvalidData = () =>
-  Helper.mockSignUpApiCall({
+  HTTP.mockHttpRequest('POST', /signup/, {
     statusCode: 200,
     body: {
       xxx: faker.location.country(),
@@ -23,7 +23,7 @@ const SuccessWithInvalidData = () =>
   }).as('request')
 
 const Success = () =>
-  Helper.mockSignUpApiCall({
+  HTTP.mockHttpRequest('POST', /signup/, {
     statusCode: 200,
     body: {
       accessToken: faker.string.uuid(),

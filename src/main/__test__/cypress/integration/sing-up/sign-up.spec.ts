@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { AuthenticateMocks } from './mocks'
-import { FormHelper } from '../../support/form-helper'
+import { Helpers } from '../../support/helpers'
 const elementsId = {
   nameInput: 'name-input',
   nameInputLabel: 'name-input-label',
@@ -101,7 +101,7 @@ describe('Page: Sign Up', () => {
       .should('exist')
       .should('have.text', 'Email already in use')
     cy.getByTestId(elementsId.submitButton).should('be.enabled')
-    FormHelper.testUrl(PAGE_URL)
+    Helpers.testUrl(PAGE_URL)
   })
 
   it('should show UnexpectedError if any general error occurs', () => {
@@ -113,7 +113,7 @@ describe('Page: Sign Up', () => {
       .should('exist')
       .should('have.text', 'Something went wrong. Please try again.')
 
-    FormHelper.testUrl(PAGE_URL)
+    Helpers.testUrl(PAGE_URL)
   })
 
   it('should show UnexpectedError if status 200 but unexpected response', () => {
@@ -125,7 +125,7 @@ describe('Page: Sign Up', () => {
       .should('exist')
       .should('have.text', 'Something went wrong. Please try again.')
 
-    FormHelper.testUrl(PAGE_URL)
+    Helpers.testUrl(PAGE_URL)
   })
 
   it('should not make multiple requests', () => {
@@ -139,7 +139,7 @@ describe('Page: Sign Up', () => {
 
     cy.getByTestId(elementsId.form).submit()
 
-    FormHelper.testHttpCallsCount(1)
+    Helpers.testHttpCallsCount(1)
   })
 
   it('should save access token and redirect on success', () => {
@@ -150,8 +150,8 @@ describe('Page: Sign Up', () => {
     cy.getByTestId(elementsId.formError).should('not.exist')
     cy.getByTestId(elementsId.submitButton).should('be.disabled')
 
-    FormHelper.testUrl('/')
-    FormHelper.testLocalStorageItem('account')
+    Helpers.testUrl('/')
+    Helpers.testLocalStorageItem('account')
   })
 
   it('should not call Authenticate if form is invalid', () => {
@@ -166,6 +166,6 @@ describe('Page: Sign Up', () => {
     )
     cy.getByTestId(elementsId.submitButton).click()
 
-    FormHelper.testHttpCallsCount(0)
+    Helpers.testHttpCallsCount(0)
   })
 })

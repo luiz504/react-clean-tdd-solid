@@ -1,15 +1,17 @@
+import { Method } from 'axios'
 import { RouteHandler } from 'cypress/types/net-stubbing'
 
-export const mockSignInApiCall = (response?: RouteHandler) => {
-  return cy.intercept('POST', /login/, {
+const mockHttpRequest = (
+  method: Method,
+  url: string | RegExp,
+  response?: RouteHandler,
+) => {
+  return cy.intercept(method, url, {
     delay: 200,
     ...(response as object),
   })
 }
 
-export const mockSignUpApiCall = (response?: RouteHandler) => {
-  return cy.intercept('POST', /signup/, {
-    delay: 200,
-    ...(response as object),
-  })
+export const HTTP = {
+  mockHttpRequest,
 }

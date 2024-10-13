@@ -11,4 +11,5 @@ const testLocalStorageItem = (key: string) => {
 const testUrl = (url: string) => {
   cy.url().should('eq', `${baseUrl}${url}`)
 }
-export const FormHelper = { testLocalStorageItem, testUrl, testHttpCallsCount }
+
+export const Helpers = { testLocalStorageItem, testUrl, testHttpCallsCount }
