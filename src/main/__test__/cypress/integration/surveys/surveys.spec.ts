@@ -9,18 +9,38 @@ describe('Page: Surveys', () => {
       accessToken: faker.string.uuid(),
       name: faker.person.fullName(),
     } satisfies AccountModel)
+    cy.visit('/')
   })
   it('should present error on UnexpectedError', () => {
-    cy.visit('/')
     SurveysMocks.mockUnexpectedError()
+
     cy.getByTestId('survey-load-error').should(
       'contain.text',
       'Falha ao carregar surveys',
     )
   })
   it('should logout on AccessDeniedError', () => {
-    cy.visit('/')
     SurveysMocks.mockAccessDeniedError()
+    Helpers.testUrl('/sign-in')
+    Helpers.testLocalStorageIsEmpty('account')
+  })
+  it('should present correct username', () => {
+    const account = {
+      accessToken: faker.string.uuid(),
+      name: faker.person.fullName(),
+    } satisfies AccountModel
+
+    Helpers.setLocalStorageItem('account', account)
+    SurveysMocks.mockUnexpectedError()
+    cy.getByTestId('user-name').should('contain.text', account.name)
+  })
+  it('should logout on click logout button', () => {
+    SurveysMocks.mockUnexpectedError()
+    cy.getByTestId('logout-btn')
+      .should('contain.text', 'Logout')
+      .should('be.enabled')
+      .click()
+
     Helpers.testUrl('/sign-in')
     Helpers.testLocalStorageIsEmpty('account')
   })
