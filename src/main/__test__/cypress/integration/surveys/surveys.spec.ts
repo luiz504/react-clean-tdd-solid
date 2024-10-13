@@ -1,14 +1,12 @@
-import { faker } from '@faker-js/faker'
-import { AccountModel } from '../../../../../domain/models/account-model'
-import { Helpers } from '../../support/helpers'
+import { Helpers } from '../../helpers/helpers'
 import { SurveysMocks } from './mocks'
 
 describe('Page: Surveys', () => {
   beforeEach(() => {
-    Helpers.setLocalStorageItem('account', {
-      accessToken: faker.string.uuid(),
-      name: faker.person.fullName(),
-    } satisfies AccountModel)
+    cy.fixture('fx:account').then((account) => {
+      Helpers.setLocalStorageItem('account', account)
+    })
+
     cy.visit('/')
   })
   it('should present error on UnexpectedError', () => {
@@ -25,14 +23,8 @@ describe('Page: Surveys', () => {
     Helpers.testLocalStorageIsEmpty('account')
   })
   it('should present correct username', () => {
-    const account = {
-      accessToken: faker.string.uuid(),
-      name: faker.person.fullName(),
-    } satisfies AccountModel
-
-    Helpers.setLocalStorageItem('account', account)
     SurveysMocks.mockUnexpectedError()
-    cy.getByTestId('user-name').should('contain.text', account.name)
+    cy.getByTestId('user-name').should('contain.text', 'any_name')
   })
   it('should logout on click logout button', () => {
     SurveysMocks.mockUnexpectedError()

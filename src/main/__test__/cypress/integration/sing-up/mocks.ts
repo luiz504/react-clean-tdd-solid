@@ -1,35 +1,16 @@
 import { faker } from '@faker-js/faker'
-import { HTTP } from '../../support/http-mocks'
-import { AccountModel } from '../../../../../domain/models/account-model'
-const EmailInUseError = () =>
-  HTTP.mockHttpRequest('POST', /signup/, {
-    statusCode: 403,
-    body: {
-      error: faker.lorem.paragraph(),
-    },
-  }).as('request')
+import { HTTP } from '../../helpers/http-mocks'
+
+const path = /signup/
+const EmailInUseError = () => HTTP.mockForbiddenError('POST', path)
 
 const UnexpectedError = () =>
-  HTTP.mockHttpRequest('POST', /signup/, {
-    statusCode: faker.number.int({ min: 404, max: 600 }),
-  }).as('request')
+  HTTP.mockServerError('POST', path, faker.number.int({ min: 404, max: 600 }))
 
 const SuccessWithInvalidData = () =>
-  HTTP.mockHttpRequest('POST', /signup/, {
-    statusCode: 200,
-    body: {
-      xxx: faker.location.country(),
-    },
-  }).as('request')
+  HTTP.mockOk('POST', path, 'fx:invalid-account')
 
-const Success = () =>
-  HTTP.mockHttpRequest('POST', /signup/, {
-    statusCode: 200,
-    body: {
-      accessToken: faker.string.uuid(),
-      name: faker.person.fullName(),
-    } satisfies AccountModel,
-  }).as('request')
+const Success = () => HTTP.mockOk('POST', path, 'fx:account')
 
 export const AuthenticateMocks = {
   EmailInUseError,

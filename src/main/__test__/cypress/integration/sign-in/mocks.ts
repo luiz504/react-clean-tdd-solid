@@ -1,36 +1,16 @@
 import { faker } from '@faker-js/faker'
-import { HTTP } from '../../support/http-mocks'
-import { AuthenticationModel } from '../../../../../domain/use-cases/authentication'
+import { HTTP } from '../../helpers/http-mocks'
 
-const InvalidCredentialsError = () =>
-  HTTP.mockHttpRequest('POST', /login/, {
-    statusCode: 401,
-    body: {
-      error: faker.lorem.paragraph(),
-    },
-  }).as('request')
+const path = /login/
+const InvalidCredentialsError = () => HTTP.mockUnauthorizedError('POST', path)
 
 const UnexpectedError = () =>
-  HTTP.mockHttpRequest('POST', /login/, {
-    statusCode: faker.number.int({ min: 402, max: 600 }),
-  }).as('request')
+  HTTP.mockServerError('POST', path, faker.number.int({ min: 402, max: 600 }))
 
 const SuccessWithInvalidData = () =>
-  HTTP.mockHttpRequest('POST', /login/, {
-    statusCode: 200,
-    body: {
-      xxx: faker.location.country(),
-    },
-  }).as('request')
+  HTTP.mockOk('POST', path, 'fx:invalid-account')
 
-const Success = () =>
-  HTTP.mockHttpRequest('POST', /login/, {
-    statusCode: 200,
-    body: {
-      accessToken: faker.string.uuid(),
-      name: faker.person.fullName(),
-    } satisfies AuthenticationModel,
-  }).as('request')
+const Success = () => HTTP.mockOk('POST', path, 'fx:account')
 
 export const AuthenticateMocks = {
   InvalidCredentialsError,

@@ -5,6 +5,6 @@ export default defineConfig({
     baseUrl: 'http://localhost:5173',
     specPattern: 'src/**/cypress/integration/**/*.{cy,spec}.{js,ts,jsx,tsx}',
     supportFile: 'src/main/__test__/cypress/support/e2e.ts',
-    fixturesFolder: false,
+    fixturesFolder: 'src/main/__test__/cypress/fixtures',
   },
 })

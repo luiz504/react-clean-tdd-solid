@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { AuthenticateMocks } from './mocks'
-import { Helpers } from '../../support/helpers'
+import { Helpers } from '../../helpers/helpers'
 const elementsId = {
   emailInput: 'email-input',
   emailInputLabel: 'email-input-label',

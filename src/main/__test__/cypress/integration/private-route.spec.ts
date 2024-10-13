@@ -1,4 +1,4 @@
-import { Helpers } from '../support/helpers'
+import { Helpers } from '../helpers/helpers'
 
 describe('Private Routes', () => {
   describe('should logout and redirect if not authenticated', () => {
