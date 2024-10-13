@@ -11,10 +11,11 @@ export const SurveyCard: FC<Props> = ({ survey, className, ...rest }) => {
   const status = survey.didAnswer ? 'dislike' : 'like'
   const day = survey.date.getDate().toString().padStart(2, '0')
   const month = survey.date
-    .toLocaleDateString('pt-BR', {
+    .toLocaleDateString('en', {
       month: 'short',
     })
     .replace('.', '')
+    .toLocaleLowerCase()
   const year = survey.date.getFullYear()
 
   return (
@@ -41,8 +42,11 @@ export const SurveyCard: FC<Props> = ({ survey, className, ...rest }) => {
           {survey.question}
         </p>
       </div>
-      <button className="min-h-10 rounded-b-md bg-primary text-sm font-semibold text-white transition-colors hover:bg-primary-dark">
-        Ver Result
+      <button
+        data-testid="survey-show-result-btn"
+        className="min-h-10 rounded-b-md bg-primary text-sm font-semibold text-white transition-colors hover:bg-primary-dark"
+      >
+        Show Result
       </button>
     </li>
   )

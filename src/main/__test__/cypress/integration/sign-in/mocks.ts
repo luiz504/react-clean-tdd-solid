@@ -1,36 +1,16 @@
 import { faker } from '@faker-js/faker'
-import * as Helper from '../../support/http-mocks'
-import { AuthenticationModel } from '../../../../../domain/use-cases/authentication'
+import { HTTP } from '../../helpers/http-mocks'
 
-const InvalidCredentialsError = () =>
-  Helper.mockSignInApiCall({
-    statusCode: 401,
-    body: {
-      error: faker.lorem.paragraph(),
-    },
-  }).as('request')
+const path = /login/
+const InvalidCredentialsError = () => HTTP.mockUnauthorizedError('POST', path)
 
 const UnexpectedError = () =>
-  Helper.mockSignInApiCall({
-    statusCode: faker.number.int({ min: 402, max: 600 }),
-  }).as('request')
+  HTTP.mockServerError('POST', path, faker.number.int({ min: 402, max: 600 }))
 
 const SuccessWithInvalidData = () =>
-  Helper.mockSignInApiCall({
-    statusCode: 200,
-    body: {
-      xxx: faker.location.country(),
-    },
-  }).as('request')
+  HTTP.mockOk('POST', path, 'fx:invalid-account')
 
-const Success = () =>
-  Helper.mockSignInApiCall({
-    statusCode: 200,
-    body: {
-      accessToken: faker.string.uuid(),
-      name: faker.person.fullName(),
-    } satisfies AuthenticationModel,
-  }).as('request')
+const Success = () => HTTP.mockOk('POST', path, 'fx:account')
 
 export const AuthenticateMocks = {
   InvalidCredentialsError,

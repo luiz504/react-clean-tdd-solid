@@ -26,6 +26,7 @@ export class RemoteFetchSurveys implements FetchSurveys {
     >({
       url: this.url,
     })
+
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
         if (Array.isArray(httpResponse.body)) {
