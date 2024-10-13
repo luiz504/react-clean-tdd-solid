@@ -37,7 +37,7 @@ describe('Component: SurveyCard', () => {
       screen.getByTestId(ELEMENTS_TEST_ID['survey-question']),
     ).toHaveTextContent(survey.question)
     expect(
-      screen.getByRole('button', { name: 'Ver Result' }),
+      screen.getByRole('button', { name: 'Show Result' }),
     ).toBeInTheDocument()
 
     expect(
@@ -45,7 +45,7 @@ describe('Component: SurveyCard', () => {
     ).toHaveTextContent('22')
     expect(
       screen.getByTestId(ELEMENTS_TEST_ID['survey-month']),
-    ).toHaveTextContent(/^mai$/)
+    ).toHaveTextContent(/^may$/)
     expect(
       screen.getByTestId(ELEMENTS_TEST_ID['survey-year']),
     ).toHaveTextContent('2020')

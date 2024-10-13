@@ -15,6 +15,7 @@ export const SurveyCard: FC<Props> = ({ survey, className, ...rest }) => {
       month: 'short',
     })
     .replace('.', '')
+    .toLocaleLowerCase()
   const year = survey.date.getFullYear()
 
   return (

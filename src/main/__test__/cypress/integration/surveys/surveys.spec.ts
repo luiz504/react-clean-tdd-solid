@@ -86,7 +86,7 @@ describe('Page: Surveys', () => {
       )
       assert.equal(
         li.find(makeJqueryDataTestId(elementsId.surveyMonth)).text(),
-        'Oct',
+        'oct',
       )
       assert.equal(
         li.find(makeJqueryDataTestId(elementsId.surveyYear)).text(),
@@ -111,7 +111,7 @@ describe('Page: Surveys', () => {
       )
       assert.equal(
         li.find(makeJqueryDataTestId(elementsId.surveyMonth)).text(),
-        'Sep',
+        'sep',
       )
       assert.equal(
         li.find(makeJqueryDataTestId(elementsId.surveyYear)).text(),
