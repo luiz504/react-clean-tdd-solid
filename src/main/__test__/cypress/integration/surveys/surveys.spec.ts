@@ -4,6 +4,7 @@ const elementsId = {
   surveyCard: 'survey-card',
   surveySkeleton: 'survey-skeleton',
   surveyLoadError: 'survey-load-error',
+  surveyLoadErrorBtn: 'survey-load-error-btn',
   logoutBtn: 'logout-btn',
   userName: 'user-name',
   surveyDay: 'survey-day',
@@ -24,15 +25,22 @@ describe('Page: Surveys', () => {
 
     cy.visit('/')
   })
-  it('should present error on UnexpectedError', () => {
+  it('should present error on UnexpectedError and reload when clicking on try again', () => {
     SurveysMocks.UnexpectedError()
 
     cy.getByTestId(elementsId.surveySkeleton).should('have.length', 4)
     cy.getByTestId(elementsId.surveyLoadError).should(
       'contain.text',
-      'Falha ao carregar surveys',
+      'Fail to load Surveys',
     )
     cy.getByTestId(elementsId.surveyCard).should('have.length', 0)
+
+    cy.getByTestId(elementsId.surveyLoadErrorBtn)
+      .should('be.visible')
+      .should('contain.text', 'Try again')
+      .click()
+    cy.getByTestId(elementsId.surveySkeleton).should('have.length', 4)
+    cy.getByTestId(elementsId.surveyLoadError).should('not.exist')
   })
   it('should logout on AccessDeniedError', () => {
     SurveysMocks.AccessDeniedError()
