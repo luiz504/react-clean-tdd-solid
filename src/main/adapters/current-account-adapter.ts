@@ -26,7 +26,7 @@ export const getCurrentAccountAdapter = (): AccountModel | null => {
     const account = accountModelSchema.parse(parsed)
 
     return account
-  } catch (err) {
+  } catch {
     return null
   }
 }

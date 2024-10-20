@@ -41,6 +41,7 @@
     ],
     "react/jsx-curly-brace-presence": ["error", { "props": "never" }],
     "@typescript-eslint/no-explicit-any": "off",
-    "no-useless-constructor": "off"
+    "no-useless-constructor": "off",
+    "@typescript-eslint/no-duplicate-enum-values": "off"
   }
 }
