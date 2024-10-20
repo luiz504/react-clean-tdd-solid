@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { AuthenticateMocks } from './mocks'
 import { Helpers } from '../../helpers/helpers'
+import { SurveysMocks } from '../surveys/mocks'
 const elementsId = {
   nameInput: 'name-input',
   nameInputLabel: 'name-input-label',
@@ -144,6 +145,7 @@ describe('Page: Sign Up', () => {
 
   it('should save access token and redirect on success', () => {
     AuthenticateMocks.Success()
+    SurveysMocks.Success()
     fillAndSubmitForm()
 
     cy.getByTestId(elementsId.spinner).should('exist')
