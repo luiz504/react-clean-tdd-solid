@@ -4,10 +4,6 @@ on:
   pull_request:
     branches:
       - main
-  workflow_run:
-    workflows: ['CI - lint']
-    types:
-      - completed
 
 jobs:
   build:
@@ -30,4 +26,6 @@ jobs:
           build: npm run build
           start: npm run preview
           browser: chrome
-          wait-on: 'http://localhost:4173'
+        env:
+          CYPRESS_host: api.dev.local
+          CYPRESS_port: 4173
