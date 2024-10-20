@@ -51,6 +51,7 @@ const makeSut = (fetchSurveysSpy = new FetchSurveysSpy()) => {
 describe('Page: Surveys', () => {
   beforeEach(() => {
     queryClient.clear()
+    vi.clearAllMocks()
   })
   it('should render 4 survey skeletons when is initial loading', () => {
     makeSut()
@@ -129,7 +130,7 @@ describe('Page: Surveys', () => {
     expect(loadingSkeletons).toHaveLength(4)
   })
 
-  it.only('should call handleError when loadSurveys throws AccessDeniedError', async () => {
+  it('should call handleError when loadSurveys throws AccessDeniedError', async () => {
     const fetchSurveysSpy = new FetchSurveysSpy()
     vi.spyOn(fetchSurveysSpy, 'fetch').mockImplementation(() =>
       Promise.reject(new AccessDeniedError()),
