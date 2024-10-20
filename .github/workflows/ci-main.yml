@@ -1,9 +1,11 @@
-name: CI main
+name: CI integration-test
 
 on:
-  pull_request:
-    branches:
-      - main
+  workflow_run:
+    workflows: ['CI - lint']
+    branches: [main]
+    types:
+      - completed
 
 jobs:
   build:
