@@ -26,3 +26,4 @@ jobs:
           build: npm run build
           start: npm run preview -- --port 5173
           browser: chrome
+          component: true
