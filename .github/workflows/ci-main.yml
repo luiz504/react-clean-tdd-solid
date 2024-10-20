@@ -24,8 +24,5 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           build: npm run build
-          start: npm run preview
+          start: npm run preview -- --port 5173
           browser: chrome
-        env:
-          CYPRESS_host: api.dev.local
-          CYPRESS_port: 4173
